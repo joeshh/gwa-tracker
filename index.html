@@ -49,7 +49,7 @@ td.t{white-space:normal;min-width:180px}th{font-size:12px;color:var(--mu);font-w
 .tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
 .pn[hidden]{display:none}
 input[type=text],input[type=number],input[type=time],input:not([type]){font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:6px 8px;width:100%}
-.fm{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left;margin:10px 0}.fm label{font-size:12px;color:var(--mu);display:block}.fm .w{grid-column:1/-1}
+.fm{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left;margin:10px 0}.fm label{font-size:12px;color:var(--mu);display:block}.fm .w{grid-column:1/-1}.fm input[readonly]{opacity:.75;cursor:not-allowed}
 .dys{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}.dys label{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--ln);border-radius:20px;padding:4px 10px;font-size:13px;color:var(--tx);cursor:pointer}
 .wk{display:grid;grid-template-columns:44px repeat(6,minmax(118px,1fr));min-width:780px;font-size:12px}
 .wk .hd{text-align:center;font-weight:600;color:var(--mu);padding:4px 0;border-bottom:1px solid var(--ln)}
@@ -131,12 +131,11 @@ input[type=text],input[type=number],input[type=time],input:not([type]){font:inhe
 <div class="ov" id="cov"><div class="modal" style="text-align:left"><h2 id="cmt">Add a class</h2>
 <div class="fm">
 <div><label>Section code<input id="f_sec" placeholder="e.g. 2419" inputmode="numeric"></label></div>
-<div><label>Subject code<input id="f_code" list="dl" placeholder="e.g. BCE 411"></label><datalist id="dl"></datalist></div>
-<div class="w"><label>Description<input id="f_desc" placeholder="Subject name"></label></div>
-<div><label>Units<input id="f_units" type="number" min="0" step="0.5"></label></div>
+<div><label>Subject code<input id="f_code" readonly placeholder="Auto-filled"></label><datalist id="dl"></datalist></div>
+<div class="w"><label>Description<select id="f_desc" style="width:100%"></select></label></div>
+<div><label>Units<input id="f_units" type="number" readonly placeholder="Auto-filled"></label></div>
 <div><label>Term<select id="f_term" style="width:100%"><option>Sem</option><option>1st Term</option><option>2nd Term</option></select></label></div>
-<div class="w"><label>Days (tick the days this class meets)</label><div class="dys" id="f_days"></div></div>
-<div class="w"><label>Day code from the portal (optional)<input id="f_dc" placeholder="M-SA1 = Mon–Wed, M-SA2 = Thu–Sat, M-Sa = Mon–Fri"></label></div>
+<div class="w"><label>Days<select id="f_dc" style="width:100%"><option value="">– Choose –</option><option value="M-SA">M-Sa · Monday to Friday</option><option value="M-SA1">M-Sa1 · Monday to Wednesday</option><option value="M-SA2">M-Sa2 · Thursday to Saturday</option></select></label></div>
 <div><label>Start time<input id="f_s" type="time"></label></div>
 <div><label>End time<input id="f_e" type="time"></label></div>
 <div class="w"><label style="color:var(--tx)"><input id="f_done" type="checkbox" style="width:auto"> Finished (grey it out)</label></div>
@@ -344,26 +343,35 @@ function drawWp(){
 $("wpt").onchange=$("wpf").onchange=drawWp;
 $("wpd").onclick=()=>{drawWp();$("wp").toBlob(b=>{if(!b){alert("Could not create the image.");return}const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="class-schedule-"+(S.sy||"")+".png";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)},"image/png")};
 $("dl").innerHTML=D.flatMap(x=>x[1]).map(s=>`<option value="${s[0]}">${esc(dsc(s[1]))}</option>`).join("");
-$("f_days").innerHTML=DAYS.map(d=>`<label><input type="checkbox" value="${d[0]}"> ${d[1]}</label>`).join("");
+const DCL={"M-SA":"M-Sa","M-SA1":"M-Sa1","M-SA2":"M-Sa2"};
+const dcKey=c=>{const k=(c.dc||"").toUpperCase();if(DC[k])return k;const d=(c.days||[]).join();return Object.keys(DC).find(x=>DC[x].join()===d)||""};
 let EC=null;
+function subjOpts(cur){
+ const used=new Set(CL().filter(c=>c.id!==EC).map(c=>c.code));
+ let any=false;
+ const h=D.map(([n,l])=>{
+  const o=l.filter(s=>s[0]===cur||(stOf(s)!=="done"&&!used.has(s[0]))).map(s=>{
+   const lk=s[0]!==cur&&lkOf(s[0],stOf(s));any=true;
+   return `<option value="${esc(s[0])}"${lk?" disabled":""}${s[0]===cur?" selected":""}>${lk?"🔒 ":""}${esc(s[0])} · ${esc(dsc(s[1]))} (${s[2]} unit${s[2]===1?"":"s"})</option>`}).join("");
+  return o?`<optgroup label="${esc(n)}">${o}</optgroup>`:""}).join("");
+ return `<option value="">– Choose a subject –</option>`+h+(any?"":"")}
+function pickSubj(){const s=find($("f_desc").value);$("f_code").value=s?s[0]:"";$("f_units").value=s?s[2]:""}
+$("f_desc").onchange=pickSubj;
 function openC(id){
  const c=id?CL().find(x=>x.id===id):null;EC=c?c.id:null;
  $("cmt").textContent=c?"Edit class":"Add a class";$("cdel").hidden=!c;
  const v=c||{sec:"",code:"",desc:"",u:"",term:"Sem",days:[],dc:"",s:"",e:"",room:""};
- $("f_sec").value=v.sec;$("f_code").value=v.code;$("f_desc").value=v.desc;$("f_units").value=v.u;$("f_term").value=v.term;$("f_dc").value=v.dc;$("f_s").value=v.s;$("f_e").value=v.e;$("f_room").value=v.room;
- document.querySelectorAll("#f_days input").forEach(i=>i.checked=(v.days||[]).includes(i.value));$("f_done").checked=c?isDone(c):false;
+ $("f_sec").value=v.sec;$("f_desc").innerHTML=subjOpts(v.code);$("f_desc").value=find(v.code)?v.code:"";$("f_code").value=v.code;$("f_units").value=v.u;$("f_term").value=v.term;$("f_dc").value=dcKey(v);$("f_s").value=v.s;$("f_e").value=v.e;$("f_room").value=v.room;
+ $("f_done").checked=c?isDone(c):false;
  $("cov").classList.add("on")}
 $("addc").onclick=()=>openC(null);
-$("f_code").oninput=()=>{const s=find($("f_code").value.trim().toUpperCase());if(s){if(!$("f_desc").value)$("f_desc").value=dsc(s[1]);if(!$("f_units").value)$("f_units").value=s[2]}};
-$("f_dc").oninput=()=>{const m=DC[$("f_dc").value.trim().toUpperCase()];if(m&&!document.querySelector("#f_days input:checked"))document.querySelectorAll("#f_days input").forEach(i=>i.checked=m.includes(i.value))};
 $("ccx").onclick=()=>$("cov").classList.remove("on");
 $("cdel").onclick=()=>{if(EC&&confirm("Delete this class from your schedule?")){S.cls=CL().filter(x=>x.id!==EC);$("cov").classList.remove("on");save();render()}};
 $("csv").onclick=()=>{
- const code=$("f_code").value.trim().toUpperCase(),desc=$("f_desc").value.trim(),u=parseFloat($("f_units").value),s=$("f_s").value,e=$("f_e").value;
- if(!code&&!desc){alert("Please enter a subject code or description.");return}
- if(!(u>=0)){alert("Please enter the units.");return}
+ const sj=find($("f_desc").value),code=sj?sj[0]:"",desc=sj?dsc(sj[1]):"",u=sj?sj[2]:NaN,s=$("f_s").value,e=$("f_e").value;
+ if(!sj){alert("Please choose a subject from the list.");return}
  if((s&&!e)||(!s&&e)||(s&&e&&mins(e)<=mins(s))){alert("Please enter a start time and an end time that is later than the start.");return}
- const o={id:EC||"c"+Date.now(),sec:$("f_sec").value.trim(),code,desc:desc||(find(code)?dsc(find(code)[1]):""),u,term:$("f_term").value,days:[...document.querySelectorAll("#f_days input:checked")].map(i=>i.value),dc:$("f_dc").value.trim(),s,e,room:$("f_room").value.trim(),done:$("f_done").checked};
+ const o={id:EC||"c"+Date.now(),sec:$("f_sec").value.trim(),code,desc,u,term:$("f_term").value,days:DC[$("f_dc").value]?DC[$("f_dc").value].slice():[],dc:DCL[$("f_dc").value]||"",s,e,room:$("f_room").value.trim(),done:$("f_done").checked};
  const cl=CL(),i=cl.findIndex(x=>x.id===o.id);if(i>=0)cl[i]=o;else cl.push(o);
  $("cov").classList.remove("on");save();render()};
 let TB="sch";try{TB=localStorage.getItem("gwa-tab")||"sch"}catch(e){}
