@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BSCE GWA Counter &amp; Degree Checklist</title>
+<style>
+:root{--bg:#f4f2ee;--card:#fff;--tx:#1d1d1f;--mu:#6b6b72;--ac:#9b1c2e;--ok:#1f7a4d;--ln:#e6e3dd;--pen:#c27a00;--sh:0 1px 3px rgba(0,0,0,.06);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141416;--card:#1f1f23;--tx:#ececee;--mu:#9a9aa3;--ac:#e8657a;--ok:#4cc38a;--ln:#33333a;--pen:#eba53f;--sh:none;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141416;--card:#1f1f23;--tx:#ececee;--mu:#9a9aa3;--ac:#e8657a;--ok:#4cc38a;--ln:#33333a;--pen:#eba53f;--sh:none;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;transition:background .2s}
+main{max-width:920px;margin:0 auto;padding:16px}
+h2{font-size:15px;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:14px;box-shadow:var(--sh);margin-bottom:12px}
+.hero{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-top:4px solid var(--ac)}
+.hero h1{font-size:20px;margin:0 0 2px}.lbl{font-size:12px;color:var(--mu)}
+.info{display:flex;flex-wrap:wrap;gap:6px 28px;margin-top:8px}.info b{display:block;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.grid .card{margin:0}.big{font-size:28px;font-weight:700;color:var(--ac);line-height:1.2}
+.bar{height:8px;background:var(--ln);border-radius:6px;overflow:hidden;display:flex}.bar i{display:block;height:100%;background:var(--ok);transition:width .4s}
+.bar.lg{height:14px}
+.meter{position:relative;height:16px;background:var(--ln);border-radius:8px;margin:22px 0 8px}
+.meter .f{position:absolute;inset:0 auto 0 0;border-radius:8px;background:linear-gradient(90deg,var(--pen),var(--ok));transition:width .4s}
+.tick{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--tx)}
+.tick span{position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-size:11px;white-space:nowrap;color:var(--tx)}
+.tick.p{background:var(--ac);opacity:.7;top:0;bottom:0}.tick.p span{top:auto;bottom:-17px}
+.scale{display:flex;justify-content:space-between;font-size:11px;color:var(--mu);margin-top:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:6px 0}
+select,button{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:5px 8px}
+button{background:var(--ac);color:#fff;border:0;padding:7px 14px;cursor:pointer}button.g{background:transparent;color:var(--mu);border:1px solid var(--ln)}
+button.ic{background:var(--card);color:var(--tx);border:1px solid var(--ln);padding:6px 10px}
+details{background:var(--card);border:1px solid var(--ln);border-radius:14px;margin-bottom:10px;box-shadow:var(--sh);overflow:hidden}
+summary{cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;gap:8px;align-items:baseline;list-style:none}
+summary::-webkit-details-marker{display:none}summary b{color:var(--ac)}summary span{font-size:12px;color:var(--mu)}
+details>.bar{margin:0 14px 8px}.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:7px 10px;border-top:1px solid var(--ln);white-space:nowrap}
+td.t{white-space:normal;min-width:180px}th{font-size:12px;color:var(--mu);font-weight:600}
+.sel.done{color:var(--ok);border-color:var(--ok)}.sel.prog{color:var(--pen);border-color:var(--pen)}
+.rt{font-size:12px;color:var(--pen);margin-top:3px}.rt button,.rt0{font:inherit;font-size:12px;line-height:1;color:var(--mu);background:none;border:1px solid var(--ln);border-radius:6px;padding:2px 7px;margin-left:4px;cursor:pointer}.rt0{margin:0 0 0 6px;opacity:.6}.rt0:hover,.rt button:hover{opacity:1;color:var(--tx)}
+#pb{max-height:48vh;overflow:auto;margin:8px 0;border:1px solid var(--ln);border-radius:10px;padding:6px 10px}.pl{display:block;padding:5px 0;font-size:13px}.lk{font-size:12px;color:#d64545;margin-top:3px}.rt2{font-size:12px;color:var(--mu);margin-top:3px}
+.chip{display:inline-block;font-size:12px;border:1px solid var(--ln);border-radius:20px;padding:2px 10px;margin:3px 4px 3px 0}
+.chip.prog{border-color:var(--pen);color:var(--pen)}.sel.fail,.chip.fail{color:#d64545;border-color:#d64545}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}.ov.on{display:flex}
+.modal{background:var(--card);border-radius:18px;max-width:480px;max-height:88vh;overflow:auto;padding:26px;text-align:center;border-top:5px solid var(--ok)}
+.modal h2{font-size:22px;margin-bottom:10px}.modal p{text-align:left;margin:8px 0}.em{font-size:44px}
+.cf{position:fixed;top:-14px;width:8px;height:12px;animation:fall 3.2s linear forwards;z-index:21}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.tq{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);opacity:0;pointer-events:none;background:var(--card);border:1px solid var(--ok);border-radius:14px;padding:12px 16px;max-width:min(92vw,420px);text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.25);transition:.3s;z-index:15}.tq.on{opacity:1;transform:translate(-50%,0)}.tq span{color:var(--mu);font-size:13px}
+.tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;position:sticky;top:0;z-index:10;background:var(--bg);padding:6px 0}
+.tabs button{background:var(--card);color:var(--mu);border:1px solid var(--ln);border-radius:20px;padding:8px 14px;white-space:nowrap}
+.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.pn[hidden]{display:none}
+input[type=text],input[type=number],input[type=time],input:not([type]){font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:6px 8px;width:100%}
+.fm{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left;margin:10px 0}.fm label{font-size:12px;color:var(--mu);display:block}.fm .w{grid-column:1/-1}.fm input[readonly]{opacity:.75;cursor:not-allowed}
+.dys{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}.dys label{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--ln);border-radius:20px;padding:4px 10px;font-size:13px;color:var(--tx);cursor:pointer}
+.wk{display:grid;grid-template-columns:44px repeat(6,minmax(118px,1fr));min-width:780px;font-size:12px}
+.wk .hd{text-align:center;font-weight:600;color:var(--mu);padding:4px 0;border-bottom:1px solid var(--ln)}
+.wk .hr{color:var(--mu);font-size:11px;text-align:right;padding-right:6px;border-top:1px solid var(--ln);position:relative;top:-7px;height:0}
+.wk .dc{position:relative;border-left:1px solid var(--ln)}
+.wk .hl{position:absolute;left:0;right:0;border-top:1px solid var(--ln)}
+.ev{position:absolute;left:2px;right:2px;border-radius:8px;padding:3px 5px;overflow:hidden;color:#fff;font-size:11px;line-height:1.25;cursor:pointer;border:0;text-align:left}
+.ev b{display:block;font-size:12px}.ev .ds{display:block;font-size:11px;font-weight:600;opacity:.95;margin-bottom:1px}
+.cl{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--ln);border-radius:12px;padding:10px;margin:8px 0}
+.cl .tm{min-width:92px;font-weight:700;font-size:13px}.cl .tm small{display:block;font-weight:400;color:var(--mu)}
+.cl .sw{width:6px;align-self:stretch;border-radius:4px;flex:none}
+.cl .bd{flex:1}.cl .bd b{display:block}.cl .mt2{font-size:12px;color:var(--mu);margin-top:2px}
+.dp{display:inline-block;font-size:11px;border:1px solid var(--ln);border-radius:12px;padding:1px 8px;margin:2px 3px 0 0;color:var(--mu)}
+.dp.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.cl.dn{opacity:.5}.cl.dn .tm,.cl.dn .bd b{text-decoration:line-through}.dnb{font:inherit;font-size:12px;background:none;color:var(--mu);border:1px solid var(--ln);border-radius:14px;padding:3px 10px;margin-top:6px}.nw{display:inline-block;font-size:11px;background:var(--ok);color:#fff;border-radius:10px;padding:1px 8px;margin-left:6px}
+.eu{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--ln);font-size:14px}.eu:first-child{border-top:0}
+</style></head><body><main>
+
+<div class="card hero"><div>
+<h1>BSCE GWA Counter &amp; Degree Checklist</h1>
+<div class="lbl">University of Mindanao – Matina Campus</div>
+<div class="info"><div><span class="lbl">Student’s Name</span><b>Joeshua M. Dapar</b></div><div><span class="lbl">Account Number</span><b>530917</b></div><div><span class="lbl">Program/Course</span><b id="pg">4th Year Bachelor of Science in Civil Engineering – Major in Structural</b></div></div>
+<div class="row" style="margin-top:10px;gap:12px;flex-wrap:wrap"><label class="lbl">School year <select id="ysy"></select></label><label class="lbl">Term <select id="ytm"><option value="1">1st term</option><option value="2">2nd term</option></select></label><label class="lbl">Semester <select id="ysm"><option value="1">1st semester</option><option value="2">2nd semester</option></select></label></div>
+</div><div class="row"><span class="lbl" id="sy"></span><button class="ic" id="th" title="Switch light/dark mode">🌙</button></div></div>
+
+<div class="tabs" role="tablist"><button data-tab="sch" class="on">📅 Class schedule</button><button data-tab="eu">🎓 Enrolled units</button><button data-tab="pg">📊 Progress &amp; grades</button></div>
+
+<div class="pn" id="tab-sch">
+<div class="card"><h2>Class schedule <span class="lbl" id="schsub"></span></h2>
+<div class="row"><button id="addc">＋ Add a class</button><span class="lbl" id="schn"></span></div>
+<div class="lbl" id="schhint" style="margin:4px 0 8px"></div>
+<div class="tw" id="wkw"></div></div>
+<div class="card"><h2>My classes</h2><div id="cls"></div></div>
+<div class="card"><h2>Class schedule wallpaper</h2>
+<div class="lbl" style="margin-bottom:8px">A phone wallpaper (1080 × 2340) made from your current schedule. The preview updates every time you edit a class; tap Download to save the latest one. It is made on your device, so it also works offline.</div>
+<div class="row"><label class="lbl">Style <select id="wpt"><option value="dark">Dark</option><option value="light">Light</option></select></label><label class="lbl"><input type="checkbox" id="wpf"> Include finished classes (faded)</label></div>
+<div class="row"><button id="wpd">⬇ Download wallpaper (PNG)</button></div>
+<canvas id="wp" style="width:100%;max-width:300px;border:1px solid var(--ln);border-radius:14px;display:block;margin-top:8px"></canvas></div>
+</div>
+
+<div class="pn" id="tab-eu" hidden>
+<div class="card"><h2 id="eut"></h2>
+<div class="big" id="euv">–</div><div class="lbl" id="eus"></div>
+<div class="lbl" id="euc" style="margin-top:8px"></div></div>
+<div class="card"><h2>Units by subject</h2><div id="eul"></div></div>
+<div class="card"><h2>Units by term</h2><div id="eut2"></div></div>
+</div>
+
+<div class="pn" id="tab-pg" hidden>
+<div class="card"><h2>Subject progress</h2>
+<div class="lbl" style="margin:-4px 0 8px">4.0 is the highest grade · 2.0 is the lowest passing grade · 1.0 is a failed grade</div>
+<div class="bar lg"><i id="b1"></i><i id="b2" style="background:var(--pen)"></i></div>
+<div class="lbl" id="sp" style="margin-top:8px"></div>
+<div class="lbl"><span style="color:var(--ok)">■</span> completed &nbsp;<span style="color:var(--pen)">■</span> in progress</div>
+<div class="row"><button id="lt" hidden>🎓 Read my graduation letter</button></div></div>
+
+<div class="grid">
+<div class="card"><div class="lbl">Current GWA</div><div class="big" id="gwa">–</div><div class="lbl" id="gwan"></div></div>
+<div class="card"><div class="lbl">Units earned</div><div class="big" id="ue">–</div><div class="lbl" id="pt"></div></div>
+<div class="card"><div class="lbl">Subjects left</div><div class="big" id="sl">–</div><div class="lbl" id="ul"></div></div>
+<div class="card"><div class="lbl">Projected GWA</div><div class="big" id="pj">–</div><div class="lbl">if pending subjects get the assumed grade</div></div>
+</div>
+
+<div class="card"><h2>Target GWA: 3.00</h2>
+<div class="meter"><div class="f" id="mf"></div><div class="tick" style="left:66.67%"><span>Target 3.00</span></div><div class="tick p" id="mp"><span>Projected</span></div></div>
+<div class="scale"><span>1.0</span><span>2.0</span><span>3.0</span><span>4.0</span></div>
+<div id="tgt" style="margin-top:10px;font-weight:600"></div><div class="lbl" id="need" style="font-size:13px;margin-top:2px"></div>
+<div class="row" style="margin-top:10px"><label class="lbl">Assume pending grade: <select id="as"></select></label></div></div>
+
+<div class="card"><h2>Still needed to graduate</h2><div id="rem"></div></div>
+
+<div id="secs"></div>
+<div class="card"><h2>Backup &amp; cloud sync</h2><div class="row"><button class="g" onclick="setupSync()">☁ Set up cloud sync</button><button class="g" onclick="exportData()">⬇ Export backup</button><button class="g" onclick="document.getElementById('imp').click()">⬆ Import backup</button><input type="file" id="imp" accept=".json,application/json" hidden onchange="importData(this.files[0]);this.value=''"></div><div class="lbl" style="margin-top:8px">Your data is always saved on this device and works offline. With cloud sync on, it is also copied to a private GitHub Gist and loads on your other devices.</div></div>
+<div class="row"><button class="g" id="rs">Reset all my edits</button></div>
+<div class="lbl">Set a subject’s status when you enroll, then enter its grade when released. Choosing a grade marks it Completed automatically. Edits are saved on this device automatically.</div>
+</div>
+</main>
+
+<div class="ov" id="cov"><div class="modal" style="text-align:left"><h2 id="cmt">Add a class</h2>
+<div class="fm">
+<div><label>Section code<input id="f_sec" placeholder="e.g. 2419" inputmode="numeric"></label></div>
+<div><label>Subject code<input id="f_code" readonly placeholder="Auto-filled"></label><datalist id="dl"></datalist></div>
+<div class="w"><label>Description<select id="f_desc" style="width:100%"></select></label></div>
+<div><label>Units<input id="f_units" type="number" readonly placeholder="Auto-filled"></label></div>
+<div><label>Term<select id="f_term" style="width:100%"><option>Sem</option><option>1st Term</option><option>2nd Term</option></select></label></div>
+<div class="w"><label>Days<select id="f_dc" style="width:100%"><option value="">– Choose –</option><option value="M-SA">M-Sa · Monday to Friday</option><option value="M-SA1">M-Sa1 · Monday to Wednesday</option><option value="M-SA2">M-Sa2 · Thursday to Saturday</option></select></label></div>
+<div><label>Start time<input id="f_s" type="time"></label></div>
+<div><label>End time<input id="f_e" type="time"></label></div>
+<div class="w"><label style="color:var(--tx)"><input id="f_done" type="checkbox" style="width:auto"> Finished (grey it out)</label></div>
+<div class="w"><label>Room<input id="f_room" placeholder="e.g. BE 334"></label></div>
+</div>
+<div class="row" style="justify-content:space-between"><button class="g" id="cdel" style="color:#d64545">Delete</button><span class="row"><button class="g" id="ccx">Cancel</button><button id="csv">Save</button></span></div></div></div>
+
+<div class="ov" id="pov"><div class="modal" style="text-align:left"><h2 id="pt2"></h2><div class="lbl">Tick the subjects that must be passed first. A subject you haven’t taken stays locked until they are all Completed.</div><div id="pb"></div><div class="row" style="justify-content:flex-end"><button class="g" id="pcx">Cancel</button><button id="psv">Save</button></div></div></div>
+<div class="tq" id="tq"></div>
+<div class="ov" id="ov"><div class="modal"><div class="em">🎓</div><h2 id="mt"></h2><div id="mb"></div><div class="row" style="justify-content:center"><button id="mc">Close</button></div></div></div>
+
+<script>
+const D=[
+["1st Year / 1st Sem",[["GE 5","Science, Technology and Society",3,3.5],["GPE 1","Movement Enhancement",2,3.5],["GE 1","Understanding the Self",3,3.5],["BCHE 111","Chemistry for Engineers",4,2.5],["GE 2","Purposive Communication",6,3.5],["BCE 111","CE Orientation",2,3.5],["GE 4","Mathematics in the Modern World",3,2],["CEE 100","Math Plus",3,3.5]]],
+["1st Year / 2nd Sem",[["GE 3","The Contemporary World",3,3],["DRAW 101","Engineering Drawing and Plans",2,2],["GE 15","Environmental Science",3,2.5],["GE 8","Readings in Philippine History",3,3.5],["UGE 1","Reading Comprehension",6,2.5],["CEE 101","Engineering Calculus 1",5,2.5],["GPE 2","Fitness Exercises",2,3.5],["EDP 101","Computer Fundamentals and Programming",2,2]]],
+["1st Year / Summer",[["CEE 102","Physics 1 for Engineers",4,3],["CEE 103","Engineering Calculus 2",5,2]]],
+["2nd Year / 1st Sem",[["CEE 108","Engineering Management",3,2],["GE 6","Rizal’s Life and Works",3,2.5],["GPE 3","Physical Activities (Health &amp; Fitness)",2,4],["DRAW 102","Computer Aided Drafting",2,2.5],["GE 20","Reading Visual Arts",3,3],["CEE 109","Engineering Economics",3,2],["BCE 211","Fundamentals of Surveying",5,2.5],["CEE 117","Statics of Rigid Bodies",3,3]]],
+["2nd Year / 2nd Sem",[["GE 7","Art Appreciation",3,4],["BCE 222","Mechanics of Deformable Bodies",5,2],["GPE 4","Physical Activities (Health &amp; Fitness)",2,4],["CEE 118","Dynamics of Rigid Bodies",3,3],["BCE 223","Construction Materials and Testing",3,2.5],["BCE 221","Geology for Civil Engineers",3,3.5],["CEE 104","Differential Equations",3,2.5],["CEE 105","Engineering Data Analysis",3,2.5]]],
+["3rd Year / 1st Sem",[["NSTP 1","National Service Training Program 1",3,3.5],["BCE 313","Hydrology",3,2.5],["BCE 311","Structural Theory",4,2.5],["BCE 314","Hydraulics",5,3],["UGE 2","Technical Writing in the Discipline",3,3],["BCE 315","Numerical Solutions to CE Problems",3,3],["BCE 312","Highway and Railroad Engineering",3,3]]],
+["3rd Year / 2nd Sem",[["CEE 115","Technopreneurship",3,2.5],["BCE 324","Engineering Utilities 1",3,2],["NSTP 2","National Service Training Program 2",3,4],["BCE 325","Engineering Utilities 2",3,2.5],["BCE 322","Geotechnical Engineering 1 (Soil Mechanics)",4,2.5],["BCE 321","Building Systems Design",3,2.5],["BCE 323","Principles of Reinforced/Prestressed Concrete",5,2]]],
+["3rd Year / Summer",[["BCE 326","CE Law, Ethics and Contracts",3,3],["GE 11","The Entrepreneurial Minds",3,4],["BCE 327","Field Trip and Seminar",2,3.5]]],
+["4th Year / 1st Sem",[["BCE 413","Quantity Surveying",3,3.5],["BCES 1","Computer Software in Structural Analysis",3,null],["BCE 412","Principles of Transportation Engineering",3,3.5],["BCE 415","CE Project 1",3,null],["BCE 411","Principles of Steel Design",4,null],["GE 9","Ethics (Disciplinal)",3,3],["BCES 3","Reinforced Concrete Design",3,null]]],
+["4th Year / 2nd Sem",[["BCES 4","Design of Steel Structures",3,null],["CEE 112","Basic Occupational Safety and Health",3,null],["BCET 6","Bridge Engineering",3,null],["BCES 2","Earthquake Engineering",3,3],["BCES 6","Foundation and Retaining Wall Design",3,null],["BCE 421","CE Project 2",3,null],["BCE 422","Construction Methods and Project Management",4,null]]],
+["4th Year / Summer",[["BCE 423","On-the-Job Training (320 hours)",2,null]]],
+["5th Year / 1st Sem",[["CAED 500C","Career and Personality Development",3,null],["BCE 601","CA-Mathematics, Surveying and Transportation Eng’g",4,null],["BCE 602","CA-Hydraulics and Geotechnical Engineering",3,null],["BCE 603","CA-Structural Engineering and Construction",5,null]]]
+];
+const GR=[4,3.5,3,2.5,2,1],TG=3,INP=["BCES 1","BCE 415","BCE 411","BCES 3","BCE 422"];
+const ST=[["none","Not yet taken"],["prog","Enrolled · in progress"],["done","Completed"],["fail","Failed · retake"]];
+const PE=c=>/^(GPE|NSTP)/.test(c);
+let S={g:{},st:{},ex:false,as:"3",theme:null,cel:false},OPEN={};
+try{Object.assign(S,JSON.parse(localStorage.getItem("gwa-v1")||"{}"))}catch(e){}
+if(!S.st)S.st={};if(!S.g)S.g={};
+let pt;
+const sync=t=>{const e=document.getElementById("sy");if(e)e.textContent=t};
+const save=()=>{S.u=Date.now();try{localStorage.setItem("gwa-v1",JSON.stringify(S))}catch(e){}push()};
+const SK="gwa-sync";let SY={};try{SY=JSON.parse(localStorage.getItem(SK)||"{}")}catch(e){}
+let UA=false;
+const GH=(p,o)=>fetch("https://api.github.com"+p,Object.assign({},o,{headers:{Authorization:"Bearer "+SY.t,Accept:"application/vnd.github+json","Content-Type":"application/json"}})).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()});
+const payload=()=>{const d=JSON.parse(JSON.stringify(S));delete d.theme;return d};
+function push(){if(!SY.id)return;clearTimeout(pt);sync("Syncing…");pt=setTimeout(()=>GH("/gists/"+SY.id,{method:"PATCH",body:JSON.stringify({files:{"gwa.json":{content:JSON.stringify(payload())}}})}).then(()=>sync("☁ Synced")).catch(()=>sync(navigator.onLine?"Sync error: saved on this device":"Offline: saved on this device, will sync later")),600)}
+function adopt(d){const t=S.theme;S=Object.assign({g:{},st:{},ex:false,as:"3",cel:false},d,{theme:t});try{localStorage.setItem("gwa-v1",JSON.stringify(S))}catch(e){}$("as").innerHTML=opts(S.as);render()}
+async function cloud(){
+ if(!SY.t){sync("Saved on this device only");return}
+ try{
+  if(!SY.id){const l=await GH("/gists?per_page=100");const g=l.find(x=>x.description==="gwa-tracker-data");
+   SY.id=g?g.id:(await GH("/gists",{method:"POST",body:JSON.stringify({description:"gwa-tracker-data",public:false,files:{"gwa.json":{content:JSON.stringify(payload())}}})})).id;
+   localStorage.setItem(SK,JSON.stringify(SY))}
+  const g=await GH("/gists/"+SY.id),f=g.files&&g.files["gwa.json"],d=f?JSON.parse(f.content):null;
+  if(d&&(d.u||0)>(S.u||0)){adopt(d);sync("☁ Synced")}else if(d&&(d.u||0)<(S.u||0))push();else sync("☁ Synced")
+ }catch(e){sync(navigator.onLine?"Sync error: check your token":"Offline: saved on this device")}}
+function setupSync(){const t=prompt("Paste your GitHub token (classic token with only the “gist” permission). Leave empty to turn cloud sync off.",SY.t||"");
+ if(t===null)return;SY=t.trim()?{t:t.trim()}:{};localStorage.setItem(SK,JSON.stringify(SY));cloud()}
+function exportData(){const b=new Blob([JSON.stringify(payload(),null,1)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="gwa-backup-"+new Date().toISOString().slice(0,10)+".json";a.click()}
+function importData(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(typeof d!=="object"||!d.g||!d.st)throw 0;d.u=Date.now();d.cel=false;adopt(d);save()}catch(e){alert("That file isn’t a valid backup.")}};r.readAsText(f)}
+const $=i=>document.getElementById(i);
+const gradeOf=s=>s[0] in S.g?(S.g[s[0]]===""?null:+S.g[s[0]]):s[3];
+const stOf=s=>gradeOf(s)===1?"fail":S.st[s[0]]||(gradeOf(s)!=null?"done":INP.includes(s[0])?"prog":"none");
+const opts=(sel,blank)=>(blank?'<option value="">–</option>':'')+GR.map(g=>`<option value="${g}"${String(g)===String(sel)?' selected':''}>${g.toFixed(1)}${g===1?" (failed)":""}</option>`).join("");
+const NT=D.reduce((a,x)=>a+x[1].length,0);
+
+function theme(){const r=document.documentElement;if(S.theme)r.dataset.theme=S.theme;
+ const d=S.theme?S.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;$("th").textContent=d?"☀️":"🌙"}
+$("th").onclick=()=>{const d=S.theme?S.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;S.theme=d?"light":"dark";save();theme()};
+
+const PRE={"UGE 1":["GE 2"],"CEE 101":["CEE 100"],"GPE 2":["GPE 1"],"CEE 102":["CEE 101"],"CEE 103":["CEE 102"],"CEE 108":["UGE 1"],"GPE 3":["GPE 2"],"DRAW 102":["DRAW 101"],"CEE 109":["CEE 102","CEE 101"],"BCE 211":["DRAW 101"],"CEE 117":["CEE 102","CEE 103"],"BCE 222":["CEE 117"],"GPE 4":["GPE 3"],"CEE 118":["CEE 117"],"BCE 223":["BCE 222"],"BCE 221":["BCHE 111"],"CEE 104":["CEE 103"],"CEE 105":["CEE 109"],"BCE 313":["BCE 221"],"BCE 311":["BCE 222"],"BCE 314":["BCE 222"],"UGE 2":["UGE 1"],"BCE 315":["CEE 104"],"BCE 312":["BCE 211"],"CEE 115":["CEE 108"],"BCE 324":["CEE 102"],"NSTP 2":["NSTP 1"],"BCE 325":["CEE 102"],"BCE 322":["BCE 221","BCE 222"],"BCE 321":["DRAW 102"],"BCE 323":["BCE 311"],"BCE 326":["BCE 323"],"GE 11":["BCE 323"],"BCE 327":["BCE 323","BCE 222"],"BCE 413":["BCE 321"],"BCES 1":["BCES 3"],"BCE 412":["BCE 312"],"BCE 415":["BCE 327"],"BCE 411":["BCE 323"],"BCES 3":["BCE 323"],"BCES 4":["BCE 411"],"CEE 112":["BCE 422"],"BCET 6":["BCES 3","BCES 4"],"BCES 2":["BCE 321"],"BCES 6":["BCE 322","BCE 323"],"BCE 421":["BCE 415"],"BCE 422":["BCE 326","BCE 321","CEE 108"],"BCE 423":["BCE 422","BCE 323","BCE 411","BCE 413"],"CAED 500C":["5th Year Standing"],"BCE 601":["5th Year Standing","BCE 421","BCE 411"],"BCE 602":["5th Year Standing","BCE 421","BCE 411"],"BCE 603":["5th Year Standing","BCE 421","BCE 411"]};let PS=new Set();
+const pre=c=>S.pre[c]||PRE[c]||[];
+const CO={"CEE 112":["BCE 422"]};
+const met=(c,x)=>PS.has(x)||((CO[c]||[]).includes(x)&&stOf(find(x))==="prog");
+const lkOf=(c,st)=>st==="none"&&pre(c).some(x=>!met(c,x));
+const pH=(c,st)=>{const p=pre(c);if(!p.length)return`<button class="rt0" data-pe="${c}" title="Set prerequisites">⚙</button>`;const lk=lkOf(c,st);return`<div class="${lk?"lk":"rt2"}">${lk?"🔒 Locked. Pass first: ":"Prerequisites: "}<br>${p.map(x=>{const f=find(x),d=PS.has(x),w=!d&&met(c,x);return`<span title="${x}" style="${d?"color:var(--ok)":w?"color:var(--pen)":""}">${d?"✅":w?"🟨":"⬜"} ${f?f[1]:x}${w?" (in progress is allowed)":""}</span>`}).join("<br>")}<button class="rt0" data-pe="${c}" title="Edit prerequisites">⚙</button></div>`};
+function editPre(c){const cur=new Set(pre(c));$("pb").innerHTML=[["5th Year Standing","(all 1st to 4th year subjects Completed)"]].concat(D.flatMap(x=>x[1])).filter(x=>x[0]!==c).map(x=>`<label class="pl"><input type="checkbox" value="${x[0]}"${cur.has(x[0])?" checked":""}> <b>${x[0]}</b> ${x[1]}</label>`).join("");$("pt2").textContent="Prerequisites for "+c;$("pov").dataset.c=c;$("pov").classList.add("on")}
+const rtH=c=>{const n=S.rt[c]||0;return n?`<div class="rt">↻ Retaken ${n}× <button data-rm="${c}" title="Remove one retake">−</button><button data-rp="${c}" title="Add one retake">+</button></div>`:`<button class="rt0" data-rp="${c}" title="Record a retake of this subject">↻</button>`};
+function render(){
+ if(!S.sy){S.sy="2026-2027";S.tm="1";S.sm="1"}
+ const ys=$("ysy");if(!ys.dataset.b){ys.innerHTML=Array.from({length:15},(_,i)=>`<option>${2020+i}-${2021+i}</option>`).join("");ys.dataset.b=1}
+ ys.value=S.sy;$("ytm").value=S.tm;$("ysm").value=S.sm;
+ if(!S.rt)S.rt={};if(!S.pre)S.pre={};
+ PS=new Set(D.flatMap(x=>x[1]).filter(x=>stOf(x)==="done").map(x=>x[0]));
+ if(D.every(([n,l])=>parseInt(n)>=5||l.every(y=>PS.has(y[0]))))PS.add("5th Year Standing");
+ let sum=0,gu=0,pu=0,earned=0,tu=0,nd=0,np=0,nn=0,nf=0,cy=0;const rem=[];
+ $("secs").innerHTML=D.map(([n,l])=>{
+  let su=0,sd=0,sc=0;
+  const rows=l.map(s=>{const g=gradeOf(s),st=stOf(s),u=s[2],cnt=true;tu+=u;su+=u;
+   if(st==="done"){earned+=u;sd+=u;sc++;nd++}else if(st==="prog")np++;else if(st==="fail")nf++;else nn++;
+   if((st==="done"||st==="fail")&&g!=null){if(cnt){sum+=u*g;gu+=u}}else if(cnt)pu+=u;
+   if(st!=="done")rem.push(`<span class="chip ${st}"><b>${s[0]}</b> ${s[1]} · ${u}u</span>`);
+   return `<tr><td><select class="sel ${st}" data-s="${s[0]}"${lkOf(s[0],st)?" disabled":""}>${ST.map(o=>`<option value="${o[0]}"${o[0]===st?' selected':''}>${o[1]}</option>`).join("")}</select></td><td><b>${s[0]}</b></td><td class="t">${s[1]}${rtH(s[0])}${pH(s[0],st)}</td><td>${u}</td><td><select data-c="${s[0]}"${lkOf(s[0],st)?" disabled":""}>${opts(g,true)}</select></td></tr>`}).join("");
+  if(!cy&&sc<l.length)cy=parseInt(n);
+  const open=n in OPEN?OPEN[n]:sc<l.length;
+  return `<details data-n="${n}"${open?' open':''}><summary><b>${n}</b><span>${sc}/${l.length} subjects · ${sd}/${su} units</span></summary><div class="bar"><i style="width:${sd/su*100}%"></i></div><div class="tw"><table><tr><th>Status</th><th>Code</th><th>Subject</th><th>Units</th><th>Grade</th></tr>${rows}</table></div></details>`}).join("");
+ $("pg").textContent=(nd===NT?"A graduate of":["1st","2nd","3rd","4th","5th"][(cy||5)-1]+" Year")+" Bachelor of Science in Civil Engineering – Major in Structural";
+ const gw=gu?sum/gu:0,a=+S.as,pj=(sum+a*pu)/(gu+pu||1);
+ $("gwa").textContent=gu?gw.toFixed(3):"–";$("gwan").textContent=`${gu} graded units counted`;
+ $("ue").textContent=earned;$("pt").textContent=`of ${tu} units (${(earned/tu*100).toFixed(0)}%)`;
+ $("sl").textContent=NT-nd;$("ul").textContent=`${np} in progress · ${nn} not yet taken${nf?` · ${nf} failed`:""}`;
+ $("pj").textContent=gu+pu?pj.toFixed(3):"–";
+ $("b1").style.width=nd/NT*100+"%";$("b2").style.width=np/NT*100+"%";
+ $("sp").textContent=`${nd} of ${NT} subjects completed (${(nd/NT*100).toFixed(0)}%) · ${np} in progress · ${nn} not yet taken${nf?` · ${nf} failed`:""} · ${tu-earned} units to go`;
+ const pos=g=>Math.max(0,Math.min(100,(g-1)/3*100));
+ $("mf").style.width=pos(gw)+"%";$("mp").style.left=pos(pj)+"%";
+ const df=gw-TG;
+ $("tgt").textContent=!gu?"":df>=0?`🎯 Target reached: ${df.toFixed(3)} above 3.00`:`${(-df).toFixed(3)} below the 3.00 target (${(gw/TG*100).toFixed(0)}% of the way)`;
+ const need=(TG*(gu+pu)-sum)/pu;
+ $("need").textContent=!pu?"No pending units left.":need>4?`3.00 can’t be reached with the remaining ${pu} units (would need ${need.toFixed(2)} average).`:need<=1?`A 3.00 GWA is already secured.`:`To finish at 3.00, average about ${need.toFixed(2)} across the remaining ${pu} units.`;
+ $("rem").innerHTML=rem.join("")||"Nothing left — all subjects completed!";
+
+ const all=nd===NT;$("lt").hidden=!all;
+ document.querySelectorAll("select[data-c]").forEach(e=>e.onchange=()=>{UA=true;const c=e.dataset.c;if(e.value!==""&&e.value!=="1"&&stOf(find(c))!=="done")toast(c);S.g[c]=e.value;S.st[c]=e.value===""?"none":e.value==="1"?"fail":"done";save();render()});
+ document.querySelectorAll("select[data-s]").forEach(e=>e.onchange=()=>{UA=true;const c=e.dataset.s;if(e.value==="done"&&stOf(find(c))!=="done")toast(c);S.st[c]=e.value;if(e.value==="none"||e.value==="prog"||(e.value!=="fail"&&gradeOf(find(c))===1))S.g[c]="";if(e.value==="fail")S.g[c]="1";save();render()});
+document.querySelectorAll("[data-pe]").forEach(e=>e.onclick=()=>editPre(e.dataset.pe));
+ document.querySelectorAll("[data-rp]").forEach(e=>e.onclick=()=>{const c=e.dataset.rp;S.rt[c]=(S.rt[c]||0)+1;save();render()});
+ document.querySelectorAll("[data-rm]").forEach(e=>e.onclick=()=>{const c=e.dataset.rm;S.rt[c]=(S.rt[c]||0)-1;if(S.rt[c]<=0)delete S.rt[c];save();render()});
+ document.querySelectorAll("details").forEach(d=>d.ontoggle=()=>{OPEN[d.dataset.n]=d.open});
+ renderSch();
+ if(all&&!S.cel){S.cel=true;save();if(UA)celebrate(gw)}else if(!all&&S.cel){S.cel=false;save()}UA=false;
+}
+/* ---- Class schedule + enrolled units ---- */
+const DAYS=[["M","Mon"],["T","Tue"],["W","Wed"],["Th","Thu"],["F","Fri"],["Sa","Sat"]];
+const SEED=[
+{id:"s1",sec:"2419",code:"BCE 411",desc:"Principles of Steel Design",u:4,term:"Sem",days:[],dc:"M-SA1",s:"13:30",e:"15:30",room:"BE 422"},
+{id:"s2",sec:"2359",code:"BCE 415",desc:"CE Project 1",u:3,term:"Sem",days:[],dc:"M-Sa",s:"15:30",e:"17:30",room:""},
+{id:"s3",sec:"2353",code:"BCES 3",desc:"Reinforced Concrete Design",u:3,term:"1st Term",days:[],dc:"M-SA2",s:"08:00",e:"10:00",room:"BE 332"},
+{id:"s4",sec:"2378",code:"BCE 422",desc:"Construction Methods and Project Management",u:4,term:"1st Term",days:[],dc:"M-SA1",s:"10:00",e:"12:00",room:"BE 334"},
+{id:"s5",sec:"5962",code:"BCES 1",desc:"Computer Software in Structural Analysis",u:3,term:"2nd Term",days:[],dc:"M-Sa",s:"19:30",e:"21:30",room:"BE 334"}];
+const DC={"M-SA1":["M","T","W"],"M-SA2":["Th","F","Sa"],"M-SA":["M","T","W","Th","F"]};
+const CL=()=>{if(!Array.isArray(S.cls))S.cls=JSON.parse(JSON.stringify(SEED));S.cls.forEach(c=>{if(!(c.days&&c.days.length)&&DC[(c.dc||"").toUpperCase()])c.days=DC[c.dc.toUpperCase()].slice()});return S.cls};
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const dsc=s=>String(s).replace(/&amp;/g,"&");
+const t12=h=>{if(!h)return"–";let[a,m]=h.split(":").map(Number);const p=a>=12?"PM":"AM";a=a%12||12;return a+":"+String(m).padStart(2,"0")+" "+p};
+const mins=h=>{const[a,m]=h.split(":").map(Number);return a*60+m};
+const isDone=c=>c.done===undefined?c.term==="1st Term":!!c.done;
+const COL=i=>`hsl(${(i*57+350)%360} 55% 36%)`;
+const nu=x=>Math.round(x*100)/100;
+function renderSch(){
+ const cl=CL(),per=`${S.sm==="2"?"2nd":"1st"} semester · S.Y. ${S.sy}`;
+ $("schsub").textContent="· "+per;$("eut").textContent="Enrolled units · "+per;
+ $("schn").textContent=cl.length+(cl.length===1?" class":" classes");
+ const timed=cl.filter(c=>c.s&&c.e&&c.days&&c.days.length),nod=cl.filter(c=>!(c.days&&c.days.length)).length;
+ $("schhint").textContent=!cl.length?"No classes yet. Tap “Add a class”.":nod?`${nod} class${nod===1?" has":"es have"} no days set yet. Tap a class below, tick its days, and it will appear in the weekly timetable.`:`${cl.filter(c=>!isDone(c)).length} ongoing (in color), ${cl.filter(isDone).length} finished (grey). Tap a class to edit it, or use its button to mark it done.`;
+ if(!timed.length)$("wkw").innerHTML="";
+ else{
+  const PH=64,sh=Math.floor(Math.min(...timed.map(c=>mins(c.s)))/60),eh=Math.ceil(Math.max(...timed.map(c=>mins(c.e)))/60),H=(eh-sh)*PH;
+  const hrs=Array.from({length:eh-sh+1},(_,i)=>sh+i);
+  const lines=hrs.map(h=>`<div class="hl" style="top:${(h-sh)*PH}px"></div>`).join("");
+  const cols=DAYS.map(([k])=>`<div class="dc" style="height:${H}px">${lines}${cl.map((c,i)=>(c.days||[]).includes(k)&&c.s&&c.e?`<button class="ev" data-ce="${c.id}" style="background:${isDone(c)?"#8b8b94":COL(i)};${isDone(c)?"opacity:.4;":""}top:${(mins(c.s)-sh*60)/60*PH}px;height:${Math.max(24,(mins(c.e)-mins(c.s))/60*PH-2)}px" title="${esc(c.desc)}"><b>${esc(c.code)}</b><span class="ds">${esc(c.desc)}</span>${t12(c.s)}–${t12(c.e)}${c.room?" · "+esc(c.room):""}</button>`:"").join("")}</div>`).join("");
+  $("wkw").innerHTML=`<div class="wk"><div class="hd"></div>${DAYS.map(d=>`<div class="hd">${d[1]}</div>`).join("")}<div style="position:relative;height:${H}px">${hrs.map(h=>`<span class="hr" style="position:absolute;left:0;right:0;top:${(h-sh)*PH-7}px">${t12(String(h).padStart(2,"0")+":00").replace(":00","")}</span>`).join("")}</div>${cols}</div>`}
+ const ord=cl.map((c,i)=>({c,i})).sort((a,b)=>(isDone(a.c)-isDone(b.c))||(a.c.s||"99:99").localeCompare(b.c.s||"99:99"));
+ $("cls").innerHTML=ord.map(({c,i})=>`<div class="cl${isDone(c)?" dn":""}" data-ce="${c.id}" style="cursor:pointer"><div class="sw" style="background:${isDone(c)?"#8b8b94":COL(i)}"></div><div class="tm">${t12(c.s)}<small>to ${t12(c.e)}</small></div><div class="bd"><b>${esc(c.code)} · ${esc(c.desc)}${isDone(c)?"":'<span class="nw">Now</span>'}</b><div class="mt2">${c.room?"Room "+esc(c.room)+" · ":""}${c.u} units · ${esc(c.term)}${c.sec?" · Section "+esc(c.sec):""}</div><div>${(c.days&&c.days.length)?DAYS.map(d=>`<span class="dp${c.days.includes(d[0])?" on":""}">${d[1]}</span>`).join(""):`<span class="dp">Days not set${c.dc?" · portal code "+esc(c.dc):""}</span>`}</div><button class="dnb" data-dn="${c.id}">${isDone(c)?"↩ Mark as ongoing":"✓ Mark as done"}</button></div></div>`).join("")||'<div class="lbl">Nothing here yet.</div>';
+ /* enrolled units */
+ const tot=nu(cl.reduce((a,c)=>a+(+c.u||0),0)),codes=new Set(cl.map(c=>c.code));
+ const prog=D.flatMap(x=>x[1]).filter(s=>stOf(s)==="prog"),tp=prog.reduce((a,s)=>a+s[2],0);
+ $("euv").textContent=tot+" units";const cu=nu(cl.filter(c=>!isDone(c)).reduce((a,c)=>a+(+c.u||0),0)),fu=nu(tot-cu);$("eus").textContent=`${cl.length} class${cl.length===1?"":"es"} this semester · ${cu} units still ongoing · ${fu} units already finished`;
+ const miss=prog.filter(s=>!codes.has(s[0])).map(s=>s[0]),extra=cl.filter(c=>find(c.code)&&stOf(find(c.code))!=="prog").map(c=>c.code);
+ $("euc").textContent=tot===tp&&!miss.length&&!extra.length?`✅ Matches the ${prog.length} subjects marked “Enrolled · in progress” in your tracker (${tp} units).`:`⚠ Your tracker has ${prog.length} subjects (${tp} units) marked “Enrolled · in progress”.${miss.length?" Not on your schedule: "+miss.join(", ")+".":""}${extra.length?" On your schedule but not marked in progress: "+extra.join(", ")+".":""}`;
+ $("eul").innerHTML=cl.map(c=>`<div class="eu"><span><b>${esc(c.code)}</b> ${esc(c.desc)}</span><span>${c.u}</span></div>`).join("")+`<div class="eu"><b>Total</b><b>${tot}</b></div>`;
+ const g={};cl.forEach(c=>{const t=c.term||"Sem";(g[t]=g[t]||{u:0,n:0});g[t].u+=+c.u||0;g[t].n++});
+ $("eut2").innerHTML=Object.keys(g).map(t=>`<div class="eu"><span>${esc(t)}${t==="Sem"?" <span class=\"lbl\">(runs the whole semester)</span>":""}</span><span>${nu(g[t].u)} units · ${g[t].n} class${g[t].n===1?"":"es"}</span></div>`).join("")||'<div class="lbl">No classes yet.</div>';
+ document.querySelectorAll("[data-ce]").forEach(e=>e.onclick=()=>openC(e.dataset.ce));
+ drawWp();
+ document.querySelectorAll("[data-dn]").forEach(e=>e.onclick=ev=>{ev.stopPropagation();const c=CL().find(x=>x.id===e.dataset.dn);if(c){c.done=!isDone(c);save();render()}});
+}
+const t12s=h=>{let[a,m]=h.split(":").map(Number);a=a%12||12;return a+":"+String(m).padStart(2,"0")};
+function drawWp(){
+ const cv=$("wp");if(!cv||!cv.getContext)return;const x=cv.getContext("2d");if(!x)return;
+ const W=1080,HH=2340;cv.width=W;cv.height=HH;
+ const lt=$("wpt").value==="light",fin=$("wpf").checked;
+ const bg=lt?"#f4f2ee":"#141416",tx=lt?"#1d1d1f":"#ececee",mu=lt?"#6b6b72":"#9a9aa3",ln=lt?"#d9d5cc":"#33333a",gr="#8b8b94";
+ const F=(w,s)=>`${w} ${s}px system-ui,-apple-system,"Segoe UI",sans-serif`;
+ const fit=(t,w)=>{if(x.measureText(t).width<=w)return t;while(t.length>1&&x.measureText(t+"…").width>w)t=t.slice(0,-1);return t+"…"};
+ const wrap=(t,w,max)=>{const ws=String(t).split(" "),out=[];let l="";for(const q of ws){const n=l?l+" "+q:q;if(x.measureText(n).width<=w)l=n;else{if(l)out.push(l);l=q}}if(l)out.push(l);if(out.length>max){out.length=max;out[max-1]=fit(out[max-1]+"…",w)}return out.map(s=>fit(s,w))};
+ x.fillStyle=bg;x.fillRect(0,0,W,HH);
+ const cl=CL(),sel=cl.map((c,i)=>({c,i})).filter(o=>fin||!isDone(o.c)),per=`${S.sm==="2"?"2nd":"1st"} semester · S.Y. ${S.sy}`;
+ x.textBaseline="alphabetic";x.textAlign="left";
+ x.fillStyle=tx;x.font=F(700,56);x.fillText("Class schedule",60,620);
+ x.fillStyle=mu;x.font=F(400,30);x.fillText(per,60,668);
+ const timed=sel.filter(o=>o.c.s&&o.c.e&&o.c.days&&o.c.days.length),gx=60,gw=960,tc=64,dw=(gw-tc)/6,gy=720;
+ let gb=gy+60;
+ if(!timed.length){x.fillStyle=mu;x.font=F(400,32);x.fillText("No classes to show yet.",60,gy+80);gb=gy+120}
+ else{
+  const sh=Math.floor(Math.min(...timed.map(o=>mins(o.c.s)))/60),eh=Math.ceil(Math.max(...timed.map(o=>mins(o.c.e)))/60),PH=Math.min(130,1000/(eh-sh)),top=gy+56;
+  x.font=F(600,24);x.textAlign="center";x.fillStyle=mu;DAYS.forEach((d,i)=>x.fillText(d[1],gx+tc+dw*i+dw/2,gy+36));
+  x.textAlign="right";x.font=F(400,20);
+  for(let h=sh;h<=eh;h++){const y=top+(h-sh)*PH;x.fillStyle=ln;x.fillRect(gx+tc,y,gw-tc,1);x.fillStyle=mu;x.fillText((h%12||12)+(h>=12?"p":"a"),gx+tc-10,y+7)}
+  for(let i=0;i<=6;i++)x.fillRect(gx+tc+dw*i,top,1,(eh-sh)*PH);
+  timed.forEach(o=>{const c=o.c,dn=isDone(c);(c.days||[]).forEach(k=>{const di=DAYS.findIndex(d=>d[0]===k);if(di<0)return;
+   const bx=gx+tc+dw*di+3,by=top+(mins(c.s)-sh*60)/60*PH+2,bw=dw-6,bh=Math.max(34,(mins(c.e)-mins(c.s))/60*PH-4);
+   x.save();x.globalAlpha=dn?.4:1;x.fillStyle=dn?gr:COL(o.i);x.beginPath();if(x.roundRect)x.roundRect(bx,by,bw,bh,12);else x.rect(bx,by,bw,bh);x.fill();x.clip();
+   x.textAlign="left";x.fillStyle="#fff";x.font=F(700,24);x.fillText(fit(c.code,bw-14),bx+8,by+28);
+   let yy=by+28;const tl=bh>=96?26:0,nl=Math.max(0,Math.min(4,Math.floor((bh-40-tl)/21)));
+   if(nl){x.font=F(600,17);wrap(c.desc,bw-14,nl).forEach(l=>{yy+=21;x.fillText(l,bx+8,yy)})}
+   if(bh>=96){x.font=F(400,18);yy+=24;x.fillText(`${t12s(c.s)}–${t12s(c.e)}`,bx+8,yy);if(c.room&&yy+22<=by+bh){x.fillText(fit(c.room,bw-14),bx+8,yy+21)}}
+   x.restore()})});
+  gb=top+(eh-sh)*PH+40}
+ x.textAlign="left";let y=gb+50;
+ sel.sort((a,b)=>(isDone(a.c)-isDone(b.c))||(a.c.s||"99:99").localeCompare(b.c.s||"99:99"));
+ for(const o of sel){if(y>HH-170)break;const c=o.c,dn=isDone(c);x.globalAlpha=dn?.5:1;
+  x.fillStyle=dn?gr:COL(o.i);x.fillRect(60,y-22,12,56);
+  x.fillStyle=tx;x.font=F(700,28);x.fillText(fit(`${c.code}  ${c.desc}`,820),90,y);
+  x.textAlign="right";x.fillStyle=mu;x.font=F(400,26);x.fillText(c.u+" units",1020,y);x.textAlign="left";
+  x.font=F(400,23);x.fillText(fit(`${(c.days&&c.days.length)?c.days.join(" · "):(c.dc||"")}  ${c.s?t12(c.s)+" – "+t12(c.e):""}${c.room?"  ·  "+c.room:""}`,930),90,y+32);
+  x.globalAlpha=1;y+=84}
+ const tu=nu(sel.filter(o=>!isDone(o.c)).reduce((a,o)=>a+(+o.c.u||0),0));
+ if(y<=HH-90){x.fillStyle=mu;x.font=F(400,24);x.fillText(`${tu} units ongoing`,60,Math.min(y+10,HH-60))}
+}
+$("wpt").onchange=$("wpf").onchange=drawWp;
+$("wpd").onclick=()=>{drawWp();$("wp").toBlob(b=>{if(!b){alert("Could not create the image.");return}const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="class-schedule-"+(S.sy||"")+".png";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)},"image/png")};
+$("dl").innerHTML=D.flatMap(x=>x[1]).map(s=>`<option value="${s[0]}">${esc(dsc(s[1]))}</option>`).join("");
+const DCL={"M-SA":"M-Sa","M-SA1":"M-Sa1","M-SA2":"M-Sa2"};
+const dcKey=c=>{const k=(c.dc||"").toUpperCase();if(DC[k])return k;const d=(c.days||[]).join();return Object.keys(DC).find(x=>DC[x].join()===d)||""};
+let EC=null;
+function subjOpts(cur){
+ const used=new Set(CL().filter(c=>c.id!==EC).map(c=>c.code));
+ let any=false;
+ const h=D.map(([n,l])=>{
+  const o=l.filter(s=>s[0]===cur||(stOf(s)!=="done"&&!used.has(s[0]))).map(s=>{
+   const lk=s[0]!==cur&&lkOf(s[0],stOf(s));any=true;
+   return `<option value="${esc(s[0])}"${lk?" disabled":""}${s[0]===cur?" selected":""}>${lk?"🔒 ":""}${esc(s[0])} · ${esc(dsc(s[1]))} (${s[2]} unit${s[2]===1?"":"s"})</option>`}).join("");
+  return o?`<optgroup label="${esc(n)}">${o}</optgroup>`:""}).join("");
+ return `<option value="">– Choose a subject –</option>`+h+(any?"":"")}
+function pickSubj(){const s=find($("f_desc").value);$("f_code").value=s?s[0]:"";$("f_units").value=s?s[2]:""}
+$("f_desc").onchange=pickSubj;
+function openC(id){
+ const c=id?CL().find(x=>x.id===id):null;EC=c?c.id:null;
+ $("cmt").textContent=c?"Edit class":"Add a class";$("cdel").hidden=!c;
+ const v=c||{sec:"",code:"",desc:"",u:"",term:"Sem",days:[],dc:"",s:"",e:"",room:""};
+ $("f_sec").value=v.sec;$("f_desc").innerHTML=subjOpts(v.code);$("f_desc").value=find(v.code)?v.code:"";$("f_code").value=v.code;$("f_units").value=v.u;$("f_term").value=v.term;$("f_dc").value=dcKey(v);$("f_s").value=v.s;$("f_e").value=v.e;$("f_room").value=v.room;
+ $("f_done").checked=c?isDone(c):false;
+ $("cov").classList.add("on")}
+$("addc").onclick=()=>openC(null);
+$("ccx").onclick=()=>$("cov").classList.remove("on");
+$("cdel").onclick=()=>{if(EC&&confirm("Delete this class from your schedule?")){S.cls=CL().filter(x=>x.id!==EC);$("cov").classList.remove("on");save();render()}};
+$("csv").onclick=()=>{
+ const sj=find($("f_desc").value),code=sj?sj[0]:"",desc=sj?dsc(sj[1]):"",u=sj?sj[2]:NaN,s=$("f_s").value,e=$("f_e").value;
+ if(!sj){alert("Please choose a subject from the list.");return}
+ if((s&&!e)||(!s&&e)||(s&&e&&mins(e)<=mins(s))){alert("Please enter a start time and an end time that is later than the start.");return}
+ const o={id:EC||"c"+Date.now(),sec:$("f_sec").value.trim(),code,desc,u,term:$("f_term").value,days:DC[$("f_dc").value]?DC[$("f_dc").value].slice():[],dc:DCL[$("f_dc").value]||"",s,e,room:$("f_room").value.trim(),done:$("f_done").checked};
+ const cl=CL(),i=cl.findIndex(x=>x.id===o.id);if(i>=0)cl[i]=o;else cl.push(o);
+ $("cov").classList.remove("on");save();render()};
+let TB="sch";try{TB=localStorage.getItem("gwa-tab")||"sch"}catch(e){}
+function tab(t){if(!["sch","eu","pg"].includes(t))t="sch";TB=t;try{localStorage.setItem("gwa-tab",t)}catch(e){}
+ document.querySelectorAll(".pn").forEach(p=>p.hidden=p.id!=="tab-"+t);document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t))}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>tab(b.dataset.tab));
+tab(TB);
+const L=[
+["You did it, future engineer!",g=>`Every plate, every sleepless night, every failed trial run — it all led here. Your GWA of ${g}  is the proof of how far you climbed.`],
+["Ready to build the world",g=>`Joeshua, you started with calculus and ended designing structures. The things you’ll build will stand long after the exams are forgotten.`],
+["A letter from this little tracker",g=>`I watched every subject turn green, one by one. 70 down, none to go. Be proud: the grades were temporary, the skills are yours for life.`],
+["Congratulations, Engr. in the making!",g=>`Steel, concrete, soil, water — you’ve learned to make them all work together. Take a breath, thank the people who carried you, and go build something great.`],
+["Foundation complete ✔",g=>`Like any good structure, you were built layer by layer, with patience and a lot of reinforcement. Now it’s time to rise. You did a good job.`]];
+function celebrate(gw){
+ const x=L[Math.floor(Math.random()*L.length)];
+ $("mt").textContent=x[0];
+ $("mb").innerHTML=`<p>${x[1](gw?gw.toFixed(2):"—")}</p><p><b>You’re ready to graduate. Well done! 🎉</b></p>`;
+ $("ov").classList.add("on");
+ const c=["#e8657a","#4cc38a","#eba53f","#5aa9e6","#c77dff"];
+ for(let i=0;i<48;i++){const e=document.createElement("i");e.className="cf";e.style.cssText=`left:${Math.random()*100}%;background:${c[i%5]};animation-delay:${Math.random()*1.2}s`;document.body.appendChild(e);setTimeout(()=>e.remove(),5000)}
+}
+$("psv").onclick=()=>{const c=$("pov").dataset.c;S.pre[c]=[...document.querySelectorAll("#pb input:checked")].map(i=>i.value);$("pov").classList.remove("on");save();render()};
+$("pcx").onclick=()=>$("pov").classList.remove("on");
+$("mc").onclick=()=>$("ov").classList.remove("on");
+const find=c=>D.flatMap(x=>x[1]).find(s=>s[0]===c);
+const Q=["One more down. Keep stacking them up.","Strong foundations are built one subject at a time.","That’s another beam in place. Keep building.","Progress isn’t loud, but look how far you’ve come.","Good work. Rest a little, then take on the next one.","Every completed subject is a load you no longer carry.","You’re closer to your license than you were yesterday.","Steady, patient work is how every great structure gets finished.","You earned this one. Be proud of it."];
+let tt;function toast(c){$("tq").innerHTML=`✅ <b>${c}</b> completed!<br><span>${Q[Math.floor(Math.random()*Q.length)]}</span>`;$("tq").classList.add("on");clearTimeout(tt);tt=setTimeout(()=>$("tq").classList.remove("on"),5000)}
+$("lt").onclick=()=>{const t=document.getElementById("gwa").textContent;celebrate(parseFloat(t))};
+$("as").innerHTML=opts(S.as);$("ysy").onchange=e=>{S.sy=e.target.value;save();render()};$("ytm").onchange=e=>{S.tm=e.target.value;save()};$("ysm").onchange=e=>{S.sm=e.target.value;save();render()};
+$("as").onchange=e=>{S.as=e.target.value;save();render()};
+$("rs").onclick=()=>{if(confirm("Clear all your edits?")){const t=S.theme;S={g:{},st:{},ex:false,as:"3",theme:t,cel:false};save();$("as").innerHTML=opts(S.as);render()}};
+theme();render();cloud();
+addEventListener("online",cloud);document.addEventListener("visibilitychange",()=>{if(!document.hidden)cloud()});
+if("serviceWorker"in navigator&&location.protocol.indexOf("http")===0)navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script></body></html>
