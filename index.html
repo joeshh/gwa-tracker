@@ -44,6 +44,28 @@ td.t{white-space:normal;min-width:180px}th{font-size:12px;color:var(--mu);font-w
 .cf{position:fixed;top:-14px;width:8px;height:12px;animation:fall 3.2s linear forwards;z-index:21}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 .tq{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);opacity:0;pointer-events:none;background:var(--card);border:1px solid var(--ok);border-radius:14px;padding:12px 16px;max-width:min(92vw,420px);text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.25);transition:.3s;z-index:15}.tq.on{opacity:1;transform:translate(-50%,0)}.tq span{color:var(--mu);font-size:13px}
+.tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;position:sticky;top:0;z-index:10;background:var(--bg);padding:6px 0}
+.tabs button{background:var(--card);color:var(--mu);border:1px solid var(--ln);border-radius:20px;padding:8px 14px;white-space:nowrap}
+.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.pn[hidden]{display:none}
+input[type=text],input[type=number],input[type=time],input:not([type]){font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:6px 8px;width:100%}
+.fm{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left;margin:10px 0}.fm label{font-size:12px;color:var(--mu);display:block}.fm .w{grid-column:1/-1}
+.dys{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}.dys label{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--ln);border-radius:20px;padding:4px 10px;font-size:13px;color:var(--tx);cursor:pointer}
+.wk{display:grid;grid-template-columns:44px repeat(6,minmax(118px,1fr));min-width:780px;font-size:12px}
+.wk .hd{text-align:center;font-weight:600;color:var(--mu);padding:4px 0;border-bottom:1px solid var(--ln)}
+.wk .hr{color:var(--mu);font-size:11px;text-align:right;padding-right:6px;border-top:1px solid var(--ln);position:relative;top:-7px;height:0}
+.wk .dc{position:relative;border-left:1px solid var(--ln)}
+.wk .hl{position:absolute;left:0;right:0;border-top:1px solid var(--ln)}
+.ev{position:absolute;left:2px;right:2px;border-radius:8px;padding:3px 5px;overflow:hidden;color:#fff;font-size:11px;line-height:1.25;cursor:pointer;border:0;text-align:left}
+.ev b{display:block;font-size:12px}.ev .ds{display:block;font-size:11px;font-weight:600;opacity:.95;margin-bottom:1px}
+.cl{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--ln);border-radius:12px;padding:10px;margin:8px 0}
+.cl .tm{min-width:92px;font-weight:700;font-size:13px}.cl .tm small{display:block;font-weight:400;color:var(--mu)}
+.cl .sw{width:6px;align-self:stretch;border-radius:4px;flex:none}
+.cl .bd{flex:1}.cl .bd b{display:block}.cl .mt2{font-size:12px;color:var(--mu);margin-top:2px}
+.dp{display:inline-block;font-size:11px;border:1px solid var(--ln);border-radius:12px;padding:1px 8px;margin:2px 3px 0 0;color:var(--mu)}
+.dp.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.cl.dn{opacity:.5}.cl.dn .tm,.cl.dn .bd b{text-decoration:line-through}.dnb{font:inherit;font-size:12px;background:none;color:var(--mu);border:1px solid var(--ln);border-radius:14px;padding:3px 10px;margin-top:6px}.nw{display:inline-block;font-size:11px;background:var(--ok);color:#fff;border-radius:10px;padding:1px 8px;margin-left:6px}
+.eu{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--ln);font-size:14px}.eu:first-child{border-top:0}
 </style></head><body><main>
 
 <div class="card hero"><div>
@@ -53,6 +75,30 @@ td.t{white-space:normal;min-width:180px}th{font-size:12px;color:var(--mu);font-w
 <div class="row" style="margin-top:10px;gap:12px;flex-wrap:wrap"><label class="lbl">School year <select id="ysy"></select></label><label class="lbl">Term <select id="ytm"><option value="1">1st term</option><option value="2">2nd term</option></select></label><label class="lbl">Semester <select id="ysm"><option value="1">1st semester</option><option value="2">2nd semester</option></select></label></div>
 </div><div class="row"><span class="lbl" id="sy"></span><button class="ic" id="th" title="Switch light/dark mode">🌙</button></div></div>
 
+<div class="tabs" role="tablist"><button data-tab="sch" class="on">📅 Class schedule</button><button data-tab="eu">🎓 Enrolled units</button><button data-tab="pg">📊 Progress &amp; grades</button></div>
+
+<div class="pn" id="tab-sch">
+<div class="card"><h2>Class schedule <span class="lbl" id="schsub"></span></h2>
+<div class="row"><button id="addc">＋ Add a class</button><span class="lbl" id="schn"></span></div>
+<div class="lbl" id="schhint" style="margin:4px 0 8px"></div>
+<div class="tw" id="wkw"></div></div>
+<div class="card"><h2>My classes</h2><div id="cls"></div></div>
+<div class="card"><h2>Class schedule wallpaper</h2>
+<div class="lbl" style="margin-bottom:8px">A phone wallpaper (1080 × 2340) made from your current schedule. The preview updates every time you edit a class; tap Download to save the latest one. It is made on your device, so it also works offline.</div>
+<div class="row"><label class="lbl">Style <select id="wpt"><option value="dark">Dark</option><option value="light">Light</option></select></label><label class="lbl"><input type="checkbox" id="wpf"> Include finished classes (faded)</label></div>
+<div class="row"><button id="wpd">⬇ Download wallpaper (PNG)</button></div>
+<canvas id="wp" style="width:100%;max-width:300px;border:1px solid var(--ln);border-radius:14px;display:block;margin-top:8px"></canvas></div>
+</div>
+
+<div class="pn" id="tab-eu" hidden>
+<div class="card"><h2 id="eut"></h2>
+<div class="big" id="euv">–</div><div class="lbl" id="eus"></div>
+<div class="lbl" id="euc" style="margin-top:8px"></div></div>
+<div class="card"><h2>Units by subject</h2><div id="eul"></div></div>
+<div class="card"><h2>Units by term</h2><div id="eut2"></div></div>
+</div>
+
+<div class="pn" id="tab-pg" hidden>
 <div class="card"><h2>Subject progress</h2>
 <div class="lbl" style="margin:-4px 0 8px">4.0 is the highest grade · 2.0 is the lowest passing grade · 1.0 is a failed grade</div>
 <div class="bar lg"><i id="b1"></i><i id="b2" style="background:var(--pen)"></i></div>
@@ -79,7 +125,24 @@ td.t{white-space:normal;min-width:180px}th{font-size:12px;color:var(--mu);font-w
 <div class="card"><h2>Backup &amp; cloud sync</h2><div class="row"><button class="g" onclick="setupSync()">☁ Set up cloud sync</button><button class="g" onclick="exportData()">⬇ Export backup</button><button class="g" onclick="document.getElementById('imp').click()">⬆ Import backup</button><input type="file" id="imp" accept=".json,application/json" hidden onchange="importData(this.files[0]);this.value=''"></div><div class="lbl" style="margin-top:8px">Your data is always saved on this device and works offline. With cloud sync on, it is also copied to a private GitHub Gist and loads on your other devices.</div></div>
 <div class="row"><button class="g" id="rs">Reset all my edits</button></div>
 <div class="lbl">Set a subject’s status when you enroll, then enter its grade when released. Choosing a grade marks it Completed automatically. Edits are saved on this device automatically.</div>
+</div>
 </main>
+
+<div class="ov" id="cov"><div class="modal" style="text-align:left"><h2 id="cmt">Add a class</h2>
+<div class="fm">
+<div><label>Section code<input id="f_sec" placeholder="e.g. 2419" inputmode="numeric"></label></div>
+<div><label>Subject code<input id="f_code" list="dl" placeholder="e.g. BCE 411"></label><datalist id="dl"></datalist></div>
+<div class="w"><label>Description<input id="f_desc" placeholder="Subject name"></label></div>
+<div><label>Units<input id="f_units" type="number" min="0" step="0.5"></label></div>
+<div><label>Term<select id="f_term" style="width:100%"><option>Sem</option><option>1st Term</option><option>2nd Term</option></select></label></div>
+<div class="w"><label>Days (tick the days this class meets)</label><div class="dys" id="f_days"></div></div>
+<div class="w"><label>Day code from the portal (optional)<input id="f_dc" placeholder="M-SA1 = Mon–Wed, M-SA2 = Thu–Sat, M-Sa = Mon–Fri"></label></div>
+<div><label>Start time<input id="f_s" type="time"></label></div>
+<div><label>End time<input id="f_e" type="time"></label></div>
+<div class="w"><label style="color:var(--tx)"><input id="f_done" type="checkbox" style="width:auto"> Finished (grey it out)</label></div>
+<div class="w"><label>Room<input id="f_room" placeholder="e.g. BE 334"></label></div>
+</div>
+<div class="row" style="justify-content:space-between"><button class="g" id="cdel" style="color:#d64545">Delete</button><span class="row"><button class="g" id="ccx">Cancel</button><button id="csv">Save</button></span></div></div></div>
 
 <div class="ov" id="pov"><div class="modal" style="text-align:left"><h2 id="pt2"></h2><div class="lbl">Tick the subjects that must be passed first. A subject you haven’t taken stays locked until they are all Completed.</div><div id="pb"></div><div class="row" style="justify-content:flex-end"><button class="g" id="pcx">Cancel</button><button id="psv">Save</button></div></div></div>
 <div class="tq" id="tq"></div>
@@ -187,8 +250,127 @@ document.querySelectorAll("[data-pe]").forEach(e=>e.onclick=()=>editPre(e.datase
  document.querySelectorAll("[data-rp]").forEach(e=>e.onclick=()=>{const c=e.dataset.rp;S.rt[c]=(S.rt[c]||0)+1;save();render()});
  document.querySelectorAll("[data-rm]").forEach(e=>e.onclick=()=>{const c=e.dataset.rm;S.rt[c]=(S.rt[c]||0)-1;if(S.rt[c]<=0)delete S.rt[c];save();render()});
  document.querySelectorAll("details").forEach(d=>d.ontoggle=()=>{OPEN[d.dataset.n]=d.open});
+ renderSch();
  if(all&&!S.cel){S.cel=true;save();if(UA)celebrate(gw)}else if(!all&&S.cel){S.cel=false;save()}UA=false;
 }
+/* ---- Class schedule + enrolled units ---- */
+const DAYS=[["M","Mon"],["T","Tue"],["W","Wed"],["Th","Thu"],["F","Fri"],["Sa","Sat"]];
+const SEED=[
+{id:"s1",sec:"2419",code:"BCE 411",desc:"Principles of Steel Design",u:4,term:"Sem",days:[],dc:"M-SA1",s:"13:30",e:"15:30",room:"BE 422"},
+{id:"s2",sec:"2359",code:"BCE 415",desc:"CE Project 1",u:3,term:"Sem",days:[],dc:"M-Sa",s:"15:30",e:"17:30",room:""},
+{id:"s3",sec:"2353",code:"BCES 3",desc:"Reinforced Concrete Design",u:3,term:"1st Term",days:[],dc:"M-SA2",s:"08:00",e:"10:00",room:"BE 332"},
+{id:"s4",sec:"2378",code:"BCE 422",desc:"Construction Methods and Project Management",u:4,term:"1st Term",days:[],dc:"M-SA1",s:"10:00",e:"12:00",room:"BE 334"},
+{id:"s5",sec:"5962",code:"BCES 1",desc:"Computer Software in Structural Analysis",u:3,term:"2nd Term",days:[],dc:"M-Sa",s:"19:30",e:"21:30",room:"BE 334"}];
+const DC={"M-SA1":["M","T","W"],"M-SA2":["Th","F","Sa"],"M-SA":["M","T","W","Th","F"]};
+const CL=()=>{if(!Array.isArray(S.cls))S.cls=JSON.parse(JSON.stringify(SEED));S.cls.forEach(c=>{if(!(c.days&&c.days.length)&&DC[(c.dc||"").toUpperCase()])c.days=DC[c.dc.toUpperCase()].slice()});return S.cls};
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const dsc=s=>String(s).replace(/&amp;/g,"&");
+const t12=h=>{if(!h)return"–";let[a,m]=h.split(":").map(Number);const p=a>=12?"PM":"AM";a=a%12||12;return a+":"+String(m).padStart(2,"0")+" "+p};
+const mins=h=>{const[a,m]=h.split(":").map(Number);return a*60+m};
+const isDone=c=>c.done===undefined?c.term==="1st Term":!!c.done;
+const COL=i=>`hsl(${(i*57+350)%360} 55% 36%)`;
+const nu=x=>Math.round(x*100)/100;
+function renderSch(){
+ const cl=CL(),per=`${S.sm==="2"?"2nd":"1st"} semester · S.Y. ${S.sy}`;
+ $("schsub").textContent="· "+per;$("eut").textContent="Enrolled units · "+per;
+ $("schn").textContent=cl.length+(cl.length===1?" class":" classes");
+ const timed=cl.filter(c=>c.s&&c.e&&c.days&&c.days.length),nod=cl.filter(c=>!(c.days&&c.days.length)).length;
+ $("schhint").textContent=!cl.length?"No classes yet. Tap “Add a class”.":nod?`${nod} class${nod===1?" has":"es have"} no days set yet. Tap a class below, tick its days, and it will appear in the weekly timetable.`:`${cl.filter(c=>!isDone(c)).length} ongoing (in color), ${cl.filter(isDone).length} finished (grey). Tap a class to edit it, or use its button to mark it done.`;
+ if(!timed.length)$("wkw").innerHTML="";
+ else{
+  const PH=64,sh=Math.floor(Math.min(...timed.map(c=>mins(c.s)))/60),eh=Math.ceil(Math.max(...timed.map(c=>mins(c.e)))/60),H=(eh-sh)*PH;
+  const hrs=Array.from({length:eh-sh+1},(_,i)=>sh+i);
+  const lines=hrs.map(h=>`<div class="hl" style="top:${(h-sh)*PH}px"></div>`).join("");
+  const cols=DAYS.map(([k])=>`<div class="dc" style="height:${H}px">${lines}${cl.map((c,i)=>(c.days||[]).includes(k)&&c.s&&c.e?`<button class="ev" data-ce="${c.id}" style="background:${isDone(c)?"#8b8b94":COL(i)};${isDone(c)?"opacity:.4;":""}top:${(mins(c.s)-sh*60)/60*PH}px;height:${Math.max(24,(mins(c.e)-mins(c.s))/60*PH-2)}px" title="${esc(c.desc)}"><b>${esc(c.code)}</b><span class="ds">${esc(c.desc)}</span>${t12(c.s)}–${t12(c.e)}${c.room?" · "+esc(c.room):""}</button>`:"").join("")}</div>`).join("");
+  $("wkw").innerHTML=`<div class="wk"><div class="hd"></div>${DAYS.map(d=>`<div class="hd">${d[1]}</div>`).join("")}<div style="position:relative;height:${H}px">${hrs.map(h=>`<span class="hr" style="position:absolute;left:0;right:0;top:${(h-sh)*PH-7}px">${t12(String(h).padStart(2,"0")+":00").replace(":00","")}</span>`).join("")}</div>${cols}</div>`}
+ const ord=cl.map((c,i)=>({c,i})).sort((a,b)=>(isDone(a.c)-isDone(b.c))||(a.c.s||"99:99").localeCompare(b.c.s||"99:99"));
+ $("cls").innerHTML=ord.map(({c,i})=>`<div class="cl${isDone(c)?" dn":""}" data-ce="${c.id}" style="cursor:pointer"><div class="sw" style="background:${isDone(c)?"#8b8b94":COL(i)}"></div><div class="tm">${t12(c.s)}<small>to ${t12(c.e)}</small></div><div class="bd"><b>${esc(c.code)} · ${esc(c.desc)}${isDone(c)?"":'<span class="nw">Now</span>'}</b><div class="mt2">${c.room?"Room "+esc(c.room)+" · ":""}${c.u} units · ${esc(c.term)}${c.sec?" · Section "+esc(c.sec):""}</div><div>${(c.days&&c.days.length)?DAYS.map(d=>`<span class="dp${c.days.includes(d[0])?" on":""}">${d[1]}</span>`).join(""):`<span class="dp">Days not set${c.dc?" · portal code "+esc(c.dc):""}</span>`}</div><button class="dnb" data-dn="${c.id}">${isDone(c)?"↩ Mark as ongoing":"✓ Mark as done"}</button></div></div>`).join("")||'<div class="lbl">Nothing here yet.</div>';
+ /* enrolled units */
+ const tot=nu(cl.reduce((a,c)=>a+(+c.u||0),0)),codes=new Set(cl.map(c=>c.code));
+ const prog=D.flatMap(x=>x[1]).filter(s=>stOf(s)==="prog"),tp=prog.reduce((a,s)=>a+s[2],0);
+ $("euv").textContent=tot+" units";const cu=nu(cl.filter(c=>!isDone(c)).reduce((a,c)=>a+(+c.u||0),0)),fu=nu(tot-cu);$("eus").textContent=`${cl.length} class${cl.length===1?"":"es"} this semester · ${cu} units still ongoing · ${fu} units already finished`;
+ const miss=prog.filter(s=>!codes.has(s[0])).map(s=>s[0]),extra=cl.filter(c=>find(c.code)&&stOf(find(c.code))!=="prog").map(c=>c.code);
+ $("euc").textContent=tot===tp&&!miss.length&&!extra.length?`✅ Matches the ${prog.length} subjects marked “Enrolled · in progress” in your tracker (${tp} units).`:`⚠ Your tracker has ${prog.length} subjects (${tp} units) marked “Enrolled · in progress”.${miss.length?" Not on your schedule: "+miss.join(", ")+".":""}${extra.length?" On your schedule but not marked in progress: "+extra.join(", ")+".":""}`;
+ $("eul").innerHTML=cl.map(c=>`<div class="eu"><span><b>${esc(c.code)}</b> ${esc(c.desc)}</span><span>${c.u}</span></div>`).join("")+`<div class="eu"><b>Total</b><b>${tot}</b></div>`;
+ const g={};cl.forEach(c=>{const t=c.term||"Sem";(g[t]=g[t]||{u:0,n:0});g[t].u+=+c.u||0;g[t].n++});
+ $("eut2").innerHTML=Object.keys(g).map(t=>`<div class="eu"><span>${esc(t)}${t==="Sem"?" <span class=\"lbl\">(runs the whole semester)</span>":""}</span><span>${nu(g[t].u)} units · ${g[t].n} class${g[t].n===1?"":"es"}</span></div>`).join("")||'<div class="lbl">No classes yet.</div>';
+ document.querySelectorAll("[data-ce]").forEach(e=>e.onclick=()=>openC(e.dataset.ce));
+ drawWp();
+ document.querySelectorAll("[data-dn]").forEach(e=>e.onclick=ev=>{ev.stopPropagation();const c=CL().find(x=>x.id===e.dataset.dn);if(c){c.done=!isDone(c);save();render()}});
+}
+const t12s=h=>{let[a,m]=h.split(":").map(Number);a=a%12||12;return a+":"+String(m).padStart(2,"0")};
+function drawWp(){
+ const cv=$("wp");if(!cv||!cv.getContext)return;const x=cv.getContext("2d");if(!x)return;
+ const W=1080,HH=2340;cv.width=W;cv.height=HH;
+ const lt=$("wpt").value==="light",fin=$("wpf").checked;
+ const bg=lt?"#f4f2ee":"#141416",tx=lt?"#1d1d1f":"#ececee",mu=lt?"#6b6b72":"#9a9aa3",ln=lt?"#d9d5cc":"#33333a",gr="#8b8b94";
+ const F=(w,s)=>`${w} ${s}px system-ui,-apple-system,"Segoe UI",sans-serif`;
+ const fit=(t,w)=>{if(x.measureText(t).width<=w)return t;while(t.length>1&&x.measureText(t+"…").width>w)t=t.slice(0,-1);return t+"…"};
+ const wrap=(t,w,max)=>{const ws=String(t).split(" "),out=[];let l="";for(const q of ws){const n=l?l+" "+q:q;if(x.measureText(n).width<=w)l=n;else{if(l)out.push(l);l=q}}if(l)out.push(l);if(out.length>max){out.length=max;out[max-1]=fit(out[max-1]+"…",w)}return out.map(s=>fit(s,w))};
+ x.fillStyle=bg;x.fillRect(0,0,W,HH);
+ const cl=CL(),sel=cl.map((c,i)=>({c,i})).filter(o=>fin||!isDone(o.c)),per=`${S.sm==="2"?"2nd":"1st"} semester · S.Y. ${S.sy}`;
+ x.textBaseline="alphabetic";x.textAlign="left";
+ x.fillStyle=tx;x.font=F(700,56);x.fillText("Class schedule",60,620);
+ x.fillStyle=mu;x.font=F(400,30);x.fillText(per,60,668);
+ const timed=sel.filter(o=>o.c.s&&o.c.e&&o.c.days&&o.c.days.length),gx=60,gw=960,tc=64,dw=(gw-tc)/6,gy=720;
+ let gb=gy+60;
+ if(!timed.length){x.fillStyle=mu;x.font=F(400,32);x.fillText("No classes to show yet.",60,gy+80);gb=gy+120}
+ else{
+  const sh=Math.floor(Math.min(...timed.map(o=>mins(o.c.s)))/60),eh=Math.ceil(Math.max(...timed.map(o=>mins(o.c.e)))/60),PH=Math.min(130,1000/(eh-sh)),top=gy+56;
+  x.font=F(600,24);x.textAlign="center";x.fillStyle=mu;DAYS.forEach((d,i)=>x.fillText(d[1],gx+tc+dw*i+dw/2,gy+36));
+  x.textAlign="right";x.font=F(400,20);
+  for(let h=sh;h<=eh;h++){const y=top+(h-sh)*PH;x.fillStyle=ln;x.fillRect(gx+tc,y,gw-tc,1);x.fillStyle=mu;x.fillText((h%12||12)+(h>=12?"p":"a"),gx+tc-10,y+7)}
+  for(let i=0;i<=6;i++)x.fillRect(gx+tc+dw*i,top,1,(eh-sh)*PH);
+  timed.forEach(o=>{const c=o.c,dn=isDone(c);(c.days||[]).forEach(k=>{const di=DAYS.findIndex(d=>d[0]===k);if(di<0)return;
+   const bx=gx+tc+dw*di+3,by=top+(mins(c.s)-sh*60)/60*PH+2,bw=dw-6,bh=Math.max(34,(mins(c.e)-mins(c.s))/60*PH-4);
+   x.save();x.globalAlpha=dn?.4:1;x.fillStyle=dn?gr:COL(o.i);x.beginPath();if(x.roundRect)x.roundRect(bx,by,bw,bh,12);else x.rect(bx,by,bw,bh);x.fill();x.clip();
+   x.textAlign="left";x.fillStyle="#fff";x.font=F(700,24);x.fillText(fit(c.code,bw-14),bx+8,by+28);
+   let yy=by+28;const tl=bh>=96?26:0,nl=Math.max(0,Math.min(4,Math.floor((bh-40-tl)/21)));
+   if(nl){x.font=F(600,17);wrap(c.desc,bw-14,nl).forEach(l=>{yy+=21;x.fillText(l,bx+8,yy)})}
+   if(bh>=96){x.font=F(400,18);yy+=24;x.fillText(`${t12s(c.s)}–${t12s(c.e)}`,bx+8,yy);if(c.room&&yy+22<=by+bh){x.fillText(fit(c.room,bw-14),bx+8,yy+21)}}
+   x.restore()})});
+  gb=top+(eh-sh)*PH+40}
+ x.textAlign="left";let y=gb+50;
+ sel.sort((a,b)=>(isDone(a.c)-isDone(b.c))||(a.c.s||"99:99").localeCompare(b.c.s||"99:99"));
+ for(const o of sel){if(y>HH-170)break;const c=o.c,dn=isDone(c);x.globalAlpha=dn?.5:1;
+  x.fillStyle=dn?gr:COL(o.i);x.fillRect(60,y-22,12,56);
+  x.fillStyle=tx;x.font=F(700,28);x.fillText(fit(`${c.code}  ${c.desc}`,820),90,y);
+  x.textAlign="right";x.fillStyle=mu;x.font=F(400,26);x.fillText(c.u+" units",1020,y);x.textAlign="left";
+  x.font=F(400,23);x.fillText(fit(`${(c.days&&c.days.length)?c.days.join(" · "):(c.dc||"")}  ${c.s?t12(c.s)+" – "+t12(c.e):""}${c.room?"  ·  "+c.room:""}`,930),90,y+32);
+  x.globalAlpha=1;y+=84}
+ const tu=nu(sel.filter(o=>!isDone(o.c)).reduce((a,o)=>a+(+o.c.u||0),0));
+ if(y<=HH-90){x.fillStyle=mu;x.font=F(400,24);x.fillText(`${tu} units ongoing`,60,Math.min(y+10,HH-60))}
+}
+$("wpt").onchange=$("wpf").onchange=drawWp;
+$("wpd").onclick=()=>{drawWp();$("wp").toBlob(b=>{if(!b){alert("Could not create the image.");return}const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="class-schedule-"+(S.sy||"")+".png";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)},"image/png")};
+$("dl").innerHTML=D.flatMap(x=>x[1]).map(s=>`<option value="${s[0]}">${esc(dsc(s[1]))}</option>`).join("");
+$("f_days").innerHTML=DAYS.map(d=>`<label><input type="checkbox" value="${d[0]}"> ${d[1]}</label>`).join("");
+let EC=null;
+function openC(id){
+ const c=id?CL().find(x=>x.id===id):null;EC=c?c.id:null;
+ $("cmt").textContent=c?"Edit class":"Add a class";$("cdel").hidden=!c;
+ const v=c||{sec:"",code:"",desc:"",u:"",term:"Sem",days:[],dc:"",s:"",e:"",room:""};
+ $("f_sec").value=v.sec;$("f_code").value=v.code;$("f_desc").value=v.desc;$("f_units").value=v.u;$("f_term").value=v.term;$("f_dc").value=v.dc;$("f_s").value=v.s;$("f_e").value=v.e;$("f_room").value=v.room;
+ document.querySelectorAll("#f_days input").forEach(i=>i.checked=(v.days||[]).includes(i.value));$("f_done").checked=c?isDone(c):false;
+ $("cov").classList.add("on")}
+$("addc").onclick=()=>openC(null);
+$("f_code").oninput=()=>{const s=find($("f_code").value.trim().toUpperCase());if(s){if(!$("f_desc").value)$("f_desc").value=dsc(s[1]);if(!$("f_units").value)$("f_units").value=s[2]}};
+$("f_dc").oninput=()=>{const m=DC[$("f_dc").value.trim().toUpperCase()];if(m&&!document.querySelector("#f_days input:checked"))document.querySelectorAll("#f_days input").forEach(i=>i.checked=m.includes(i.value))};
+$("ccx").onclick=()=>$("cov").classList.remove("on");
+$("cdel").onclick=()=>{if(EC&&confirm("Delete this class from your schedule?")){S.cls=CL().filter(x=>x.id!==EC);$("cov").classList.remove("on");save();render()}};
+$("csv").onclick=()=>{
+ const code=$("f_code").value.trim().toUpperCase(),desc=$("f_desc").value.trim(),u=parseFloat($("f_units").value),s=$("f_s").value,e=$("f_e").value;
+ if(!code&&!desc){alert("Please enter a subject code or description.");return}
+ if(!(u>=0)){alert("Please enter the units.");return}
+ if((s&&!e)||(!s&&e)||(s&&e&&mins(e)<=mins(s))){alert("Please enter a start time and an end time that is later than the start.");return}
+ const o={id:EC||"c"+Date.now(),sec:$("f_sec").value.trim(),code,desc:desc||(find(code)?dsc(find(code)[1]):""),u,term:$("f_term").value,days:[...document.querySelectorAll("#f_days input:checked")].map(i=>i.value),dc:$("f_dc").value.trim(),s,e,room:$("f_room").value.trim(),done:$("f_done").checked};
+ const cl=CL(),i=cl.findIndex(x=>x.id===o.id);if(i>=0)cl[i]=o;else cl.push(o);
+ $("cov").classList.remove("on");save();render()};
+let TB="sch";try{TB=localStorage.getItem("gwa-tab")||"sch"}catch(e){}
+function tab(t){if(!["sch","eu","pg"].includes(t))t="sch";TB=t;try{localStorage.setItem("gwa-tab",t)}catch(e){}
+ document.querySelectorAll(".pn").forEach(p=>p.hidden=p.id!=="tab-"+t);document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t))}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>tab(b.dataset.tab));
+tab(TB);
 const L=[
 ["You did it, future engineer!",g=>`Every plate, every sleepless night, every failed trial run — it all led here. Your GWA of ${g}  is the proof of how far you climbed.`],
 ["Ready to build the world",g=>`Joeshua, you started with calculus and ended designing structures. The things you’ll build will stand long after the exams are forgotten.`],
@@ -210,7 +392,7 @@ const find=c=>D.flatMap(x=>x[1]).find(s=>s[0]===c);
 const Q=["One more down. Keep stacking them up.","Strong foundations are built one subject at a time.","That’s another beam in place. Keep building.","Progress isn’t loud, but look how far you’ve come.","Good work. Rest a little, then take on the next one.","Every completed subject is a load you no longer carry.","You’re closer to your license than you were yesterday.","Steady, patient work is how every great structure gets finished.","You earned this one. Be proud of it."];
 let tt;function toast(c){$("tq").innerHTML=`✅ <b>${c}</b> completed!<br><span>${Q[Math.floor(Math.random()*Q.length)]}</span>`;$("tq").classList.add("on");clearTimeout(tt);tt=setTimeout(()=>$("tq").classList.remove("on"),5000)}
 $("lt").onclick=()=>{const t=document.getElementById("gwa").textContent;celebrate(parseFloat(t))};
-$("as").innerHTML=opts(S.as);$("ysy").onchange=e=>{S.sy=e.target.value;save()};$("ytm").onchange=e=>{S.tm=e.target.value;save()};$("ysm").onchange=e=>{S.sm=e.target.value;save()};
+$("as").innerHTML=opts(S.as);$("ysy").onchange=e=>{S.sy=e.target.value;save();render()};$("ytm").onchange=e=>{S.tm=e.target.value;save()};$("ysm").onchange=e=>{S.sm=e.target.value;save();render()};
 $("as").onchange=e=>{S.as=e.target.value;save();render()};
 $("rs").onclick=()=>{if(confirm("Clear all your edits?")){const t=S.theme;S={g:{},st:{},ex:false,as:"3",theme:t,cel:false};save();$("as").innerHTML=opts(S.as);render()}};
 theme();render();cloud();
