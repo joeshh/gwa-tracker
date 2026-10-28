@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BSCE GWA Counter &amp; Degree Checklist</title>
+<style>
+:root{--bg:#f4f2ee;--card:#fff;--tx:#1d1d1f;--mu:#6b6b72;--ac:#9b1c2e;--ok:#1f7a4d;--ln:#e6e3dd;--pen:#c27a00;--sh:0 1px 3px rgba(0,0,0,.06);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141416;--card:#1f1f23;--tx:#ececee;--mu:#9a9aa3;--ac:#e8657a;--ok:#4cc38a;--ln:#33333a;--pen:#eba53f;--sh:none;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141416;--card:#1f1f23;--tx:#ececee;--mu:#9a9aa3;--ac:#e8657a;--ok:#4cc38a;--ln:#33333a;--pen:#eba53f;--sh:none;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;transition:background .2s}
+main{max-width:920px;margin:0 auto;padding:16px}
+h2{font-size:15px;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:14px;box-shadow:var(--sh);margin-bottom:12px}
+.hero{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-top:4px solid var(--ac)}
+.hero h1{font-size:20px;margin:0 0 2px}.lbl{font-size:12px;color:var(--mu)}
+.info{display:flex;flex-wrap:wrap;gap:6px 28px;margin-top:8px}.info b{display:block;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.grid .card{margin:0}.big{font-size:28px;font-weight:700;color:var(--ac);line-height:1.2}
+.bar{height:8px;background:var(--ln);border-radius:6px;overflow:hidden;display:flex}.bar i{display:block;height:100%;background:var(--ok);transition:width .4s}
+.bar.lg{height:14px}
+.meter{position:relative;height:16px;background:var(--ln);border-radius:8px;margin:22px 0 8px}
+.meter .f{position:absolute;inset:0 auto 0 0;border-radius:8px;background:linear-gradient(90deg,var(--pen),var(--ok));transition:width .4s}
+.tick{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--tx)}
+.tick span{position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-size:11px;white-space:nowrap;color:var(--tx)}
+.tick.p{background:var(--ac);opacity:.7;top:0;bottom:0}.tick.p span{top:auto;bottom:-17px}
+.scale{display:flex;justify-content:space-between;font-size:11px;color:var(--mu);margin-top:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:6px 0}
+select,button{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:5px 8px}
+button{background:var(--ac);color:#fff;border:0;padding:7px 14px;cursor:pointer}button.g{background:transparent;color:var(--mu);border:1px solid var(--ln)}
+button.ic{background:var(--card);color:var(--tx);border:1px solid var(--ln);padding:6px 10px}
+details{background:var(--card);border:1px solid var(--ln);border-radius:14px;margin-bottom:10px;box-shadow:var(--sh);overflow:hidden}
+summary{cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;gap:8px;align-items:baseline;list-style:none}
+summary::-webkit-details-marker{display:none}summary b{color:var(--ac)}summary span{font-size:12px;color:var(--mu)}
+details>.bar{margin:0 14px 8px}.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:7px 10px;border-top:1px solid var(--ln);white-space:nowrap}
+td.t{white-space:normal;min-width:180px}th{font-size:12px;color:var(--mu);font-weight:600}
+.sel.done{color:var(--ok);border-color:var(--ok)}.sel.prog{color:var(--pen);border-color:var(--pen)}
+.chip{display:inline-block;font-size:12px;border:1px solid var(--ln);border-radius:20px;padding:2px 10px;margin:3px 4px 3px 0}
+.chip.prog{border-color:var(--pen);color:var(--pen)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}.ov.on{display:flex}
+.modal{background:var(--card);border-radius:18px;max-width:480px;max-height:88vh;overflow:auto;padding:26px;text-align:center;border-top:5px solid var(--ok)}
+.modal h2{font-size:22px;margin-bottom:10px}.modal p{text-align:left;margin:8px 0}.em{font-size:44px}
+.cf{position:fixed;top:-14px;width:8px;height:12px;animation:fall 3.2s linear forwards;z-index:21}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.tq{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);opacity:0;pointer-events:none;background:var(--card);border:1px solid var(--ok);border-radius:14px;padding:12px 16px;max-width:min(92vw,420px);text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.25);transition:.3s;z-index:15}.tq.on{opacity:1;transform:translate(-50%,0)}.tq span{color:var(--mu);font-size:13px}
+</style></head><body><main>
+
+<div class="card hero"><div>
+<h1>BSCE GWA Counter &amp; Degree Checklist</h1>
+<div class="lbl">University of Mindanao – Matina · 4.0 is the highest grade</div>
+<div class="info"><div><span class="lbl">Student’s Name</span><b>Dapar, Joeshua</b></div><div><span class="lbl">Account Number</span><b>530917</b></div><div><span class="lbl">Program/Course</span><b>4th Year Bachelor of Science in Civil Engineering Structural</b></div></div>
+</div><div class="row"><span class="lbl" id="sy"></span><button class="ic" id="th" title="Switch light/dark mode">🌙</button></div></div>
+
+<div class="card"><h2>Subject progress</h2>
+<div class="bar lg"><i id="b1"></i><i id="b2" style="background:var(--pen)"></i></div>
+<div class="lbl" id="sp" style="margin-top:8px"></div>
+<div class="lbl"><span style="color:var(--ok)">■</span> completed &nbsp;<span style="color:var(--pen)">■</span> in progress</div>
+<div class="row"><button id="lt" hidden>🎓 Read my graduation letter</button></div></div>
+
+<div class="grid">
+<div class="card"><div class="lbl">Current GWA</div><div class="big" id="gwa">–</div><div class="lbl" id="gwan"></div></div>
+<div class="card"><div class="lbl">Units earned</div><div class="big" id="ue">–</div><div class="lbl" id="pt"></div></div>
+<div class="card"><div class="lbl">Subjects left</div><div class="big" id="sl">–</div><div class="lbl" id="ul"></div></div>
+<div class="card"><div class="lbl">Projected GWA</div><div class="big" id="pj">–</div><div class="lbl">if pending subjects get the assumed grade</div></div>
+</div>
+
+<div class="card"><h2>Target GWA: 3.00</h2>
+<div class="meter"><div class="f" id="mf"></div><div class="tick" style="left:66.67%"><span>Target 3.00</span></div><div class="tick p" id="mp"><span>Projected</span></div></div>
+<div class="scale"><span>1.0</span><span>2.0</span><span>3.0</span><span>4.0</span></div>
+<div id="tgt" style="margin-top:10px;font-weight:600"></div><div class="lbl" id="need" style="font-size:13px;margin-top:2px"></div>
+<div class="row" style="margin-top:10px"><label class="lbl">Assume pending grade: <select id="as"></select></label></div></div>
+
+<div class="card"><h2>Still needed to graduate</h2><div id="rem"></div></div>
+
+<div id="secs"></div>
+<div class="card"><h2>Backup &amp; cloud sync</h2><div class="row"><button class="g" onclick="setupSync()">☁ Set up cloud sync</button><button class="g" onclick="exportData()">⬇ Export backup</button><button class="g" onclick="document.getElementById('imp').click()">⬆ Import backup</button><input type="file" id="imp" accept=".json,application/json" hidden onchange="importData(this.files[0]);this.value=''"></div><div class="lbl" style="margin-top:8px">Your data is always saved on this device and works offline. With cloud sync on, it is also copied to a private GitHub Gist and loads on your other devices.</div></div>
+<div class="row"><button class="g" id="rs">Reset all my edits</button></div>
+<div class="lbl">Set a subject’s status when you enroll, then enter its grade when released. Choosing a grade marks it Completed automatically. Edits are saved on this device automatically.</div>
+</main>
+
+<div class="tq" id="tq"></div>
+<div class="ov" id="ov"><div class="modal"><div class="em">🎓</div><h2 id="mt"></h2><div id="mb"></div><div class="row" style="justify-content:center"><button id="mc">Close</button></div></div></div>
+
+<script>
+const D=[
+["1st Year / 1st Sem",[["GE 5","Science, Technology and Society",3,3.5],["GPE 1","Movement Enhancement",2,3.5],["GE 1","Understanding the Self",3,3.5],["BCHE 111","Chemistry for Engineers",4,2.5],["GE 2","Purposive Communication",6,3.5],["BCE 111","CE Orientation",2,3.5],["GE 4","Mathematics in the Modern World",3,2],["CEE 100","Math Plus",3,3.5]]],
+["1st Year / 2nd Sem",[["GE 3","The Contemporary World",3,3],["DRAW 101","Engineering Drawing and Plans",2,2],["GE 15","Environmental Science",3,2.5],["GE 8","Readings in Philippine History",3,3.5],["UGE 1","Reading Comprehension",6,2.5],["CEE 101","Engineering Calculus 1",5,2.5],["GPE 2","Fitness Exercises",2,3.5],["EDP 101","Computer Fundamentals and Programming",2,2]]],
+["1st Year / Summer",[["CEE 102","Physics 1 for Engineers",4,3],["CEE 103","Engineering Calculus 2",5,2]]],
+["2nd Year / 1st Sem",[["CEE 108","Engineering Management",3,2],["GE 6","Rizal’s Life and Works",3,2.5],["GPE 3","Physical Activities (Health &amp; Fitness)",2,4],["DRAW 102","Computer Aided Drafting",2,2.5],["GE 20","Reading Visual Arts",3,3],["CEE 109","Engineering Economics",3,2],["BCE 211","Fundamentals of Surveying",5,2.5],["CEE 117","Statics of Rigid Bodies",3,3]]],
+["2nd Year / 2nd Sem",[["GE 7","Art Appreciation",3,4],["BCE 222","Mechanics of Deformable Bodies",5,2],["GPE 4","Physical Activities (Health &amp; Fitness)",2,4],["CEE 118","Dynamics of Rigid Bodies",3,3],["BCE 223","Construction Materials and Testing",3,2.5],["BCE 221","Geology for Civil Engineers",3,3.5],["CEE 104","Differential Equations",3,2.5],["CEE 105","Engineering Data Analysis",3,2.5]]],
+["3rd Year / 1st Sem",[["NSTP 1","National Service Training Program 1",3,3.5],["BCE 313","Hydrology",3,2.5],["BCE 311","Structural Theory",4,2.5],["BCE 314","Hydraulics",5,3],["UGE 2","Technical Writing in the Discipline",3,3],["BCE 315","Numerical Solutions to CE Problems",3,3],["BCE 312","Highway and Railroad Engineering",3,3]]],
+["3rd Year / 2nd Sem",[["CEE 115","Technopreneurship",3,2.5],["BCE 324","Engineering Utilities 1",3,2],["NSTP 2","National Service Training Program 2",3,4],["BCE 325","Engineering Utilities 2",3,2.5],["BCE 322","Geotechnical Engineering 1 (Soil Mechanics)",4,2.5],["BCE 321","Building Systems Design",3,2.5],["BCE 323","Principles of Reinforced/Prestressed Concrete",5,2]]],
+["3rd Year / Summer",[["BCE 326","CE Law, Ethics and Contracts",3,3],["GE 11","The Entrepreneurial Minds",3,4],["BCE 327","Field Trip and Seminar",2,3.5]]],
+["4th Year / 1st Sem",[["BCE 413","Quantity Surveying",3,3.5],["BCES 1","Computer Software in Structural Analysis",3,null],["BCE 412","Principles of Transportation Engineering",3,3.5],["BCE 415","CE Project 1",3,null],["BCE 411","Principles of Steel Design",4,null],["GE 9","Ethics (Disciplinal)",3,3],["BCES 3","Reinforced Concrete Design",3,null]]],
+["4th Year / 2nd Sem",[["BCES 4","Design of Steel Structures",3,null],["CEE 112","Basic Occupational Safety and Health",3,null],["BCET 6","Bridge Engineering",3,null],["BCES 2","Earthquake Engineering",3,3],["BCES 6","Foundation and Retaining Wall Design",3,null],["BCE 421","CE Project 2",3,null],["BCE 422","Construction Methods and Project Management",4,null]]],
+["4th Year / Summer",[["BCE 423","On-the-Job Training (320 hours)",2,null]]],
+["5th Year / 1st Sem",[["CAED 500C","Career and Personality Development",3,null],["BCE 601","CA-Mathematics, Surveying and Transportation Eng’g",4,null],["BCE 602","CA-Hydraulics and Geotechnical Engineering",3,null],["BCE 603","CA-Structural Engineering and Construction",5,null]]]
+];
+const GR=[4,3.5,3,2.5,2,1.5,1],TG=3,INP=["BCES 1","BCE 415","BCE 411","BCES 3","BCE 422"];
+const ST=[["none","Not yet taken"],["prog","Enrolled · in progress"],["done","Completed"]];
+const PE=c=>/^(GPE|NSTP)/.test(c);
+let S={g:{},st:{},ex:false,as:"3",theme:null,cel:false},OPEN={};
+try{Object.assign(S,JSON.parse(localStorage.getItem("gwa-v1")||"{}"))}catch(e){}
+if(!S.st)S.st={};if(!S.g)S.g={};
+let pt;
+const sync=t=>{const e=document.getElementById("sy");if(e)e.textContent=t};
+const save=()=>{S.u=Date.now();try{localStorage.setItem("gwa-v1",JSON.stringify(S))}catch(e){}push()};
+const SK="gwa-sync";let SY={};try{SY=JSON.parse(localStorage.getItem(SK)||"{}")}catch(e){}
+let UA=false;
+const GH=(p,o)=>fetch("https://api.github.com"+p,Object.assign({},o,{headers:{Authorization:"Bearer "+SY.t,Accept:"application/vnd.github+json","Content-Type":"application/json"}})).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()});
+const payload=()=>{const d=JSON.parse(JSON.stringify(S));delete d.theme;return d};
+function push(){if(!SY.id)return;clearTimeout(pt);sync("Syncing…");pt=setTimeout(()=>GH("/gists/"+SY.id,{method:"PATCH",body:JSON.stringify({files:{"gwa.json":{content:JSON.stringify(payload())}}})}).then(()=>sync("☁ Synced")).catch(()=>sync(navigator.onLine?"Sync error: saved on this device":"Offline: saved on this device, will sync later")),600)}
+function adopt(d){const t=S.theme;S=Object.assign({g:{},st:{},ex:false,as:"3",cel:false},d,{theme:t});try{localStorage.setItem("gwa-v1",JSON.stringify(S))}catch(e){}$("as").innerHTML=opts(S.as);render()}
+async function cloud(){
+ if(!SY.t){sync("Saved on this device only");return}
+ try{
+  if(!SY.id){const l=await GH("/gists?per_page=100");const g=l.find(x=>x.description==="gwa-tracker-data");
+   SY.id=g?g.id:(await GH("/gists",{method:"POST",body:JSON.stringify({description:"gwa-tracker-data",public:false,files:{"gwa.json":{content:JSON.stringify(payload())}}})})).id;
+   localStorage.setItem(SK,JSON.stringify(SY))}
+  const g=await GH("/gists/"+SY.id),f=g.files&&g.files["gwa.json"],d=f?JSON.parse(f.content):null;
+  if(d&&(d.u||0)>(S.u||0)){adopt(d);sync("☁ Synced")}else if(d&&(d.u||0)<(S.u||0))push();else sync("☁ Synced")
+ }catch(e){sync(navigator.onLine?"Sync error: check your token":"Offline: saved on this device")}}
+function setupSync(){const t=prompt("Paste your GitHub token (classic token with only the “gist” permission). Leave empty to turn cloud sync off.",SY.t||"");
+ if(t===null)return;SY=t.trim()?{t:t.trim()}:{};localStorage.setItem(SK,JSON.stringify(SY));cloud()}
+function exportData(){const b=new Blob([JSON.stringify(payload(),null,1)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="gwa-backup-"+new Date().toISOString().slice(0,10)+".json";a.click()}
+function importData(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(typeof d!=="object"||!d.g||!d.st)throw 0;d.u=Date.now();d.cel=false;adopt(d);save()}catch(e){alert("That file isn’t a valid backup.")}};r.readAsText(f)}
+const $=i=>document.getElementById(i);
+const gradeOf=s=>s[0] in S.g?(S.g[s[0]]===""?null:+S.g[s[0]]):s[3];
+const stOf=s=>S.st[s[0]]||(gradeOf(s)!=null?"done":INP.includes(s[0])?"prog":"none");
+const opts=(sel,blank)=>(blank?'<option value="">–</option>':'')+GR.map(g=>`<option value="${g}"${String(g)===String(sel)?' selected':''}>${g.toFixed(1)}</option>`).join("");
+const NT=D.reduce((a,x)=>a+x[1].length,0);
+
+function theme(){const r=document.documentElement;if(S.theme)r.dataset.theme=S.theme;
+ const d=S.theme?S.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;$("th").textContent=d?"☀️":"🌙"}
+$("th").onclick=()=>{const d=S.theme?S.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;S.theme=d?"light":"dark";save();theme()};
+
+function render(){
+ let sum=0,gu=0,pu=0,earned=0,tu=0,nd=0,np=0,nn=0;const rem=[];
+ $("secs").innerHTML=D.map(([n,l])=>{
+  let su=0,sd=0,sc=0;
+  const rows=l.map(s=>{const g=gradeOf(s),st=stOf(s),u=s[2],cnt=true;tu+=u;su+=u;
+   if(st==="done"){earned+=u;sd+=u;sc++;nd++}else if(st==="prog")np++;else nn++;
+   if(st==="done"&&g!=null){if(cnt){sum+=u*g;gu+=u}}else if(cnt)pu+=u;
+   if(st!=="done")rem.push(`<span class="chip ${st}"><b>${s[0]}</b> ${s[1]} · ${u}u</span>`);
+   return `<tr><td><select class="sel ${st}" data-s="${s[0]}">${ST.map(o=>`<option value="${o[0]}"${o[0]===st?' selected':''}>${o[1]}</option>`).join("")}</select></td><td><b>${s[0]}</b></td><td class="t">${s[1]}</td><td>${u}</td><td><select data-c="${s[0]}">${opts(g,true)}</select></td></tr>`}).join("");
+  const open=n in OPEN?OPEN[n]:sc<l.length;
+  return `<details data-n="${n}"${open?' open':''}><summary><b>${n}</b><span>${sc}/${l.length} subjects · ${sd}/${su} units</span></summary><div class="bar"><i style="width:${sd/su*100}%"></i></div><div class="tw"><table><tr><th>Status</th><th>Code</th><th>Subject</th><th>Units</th><th>Grade</th></tr>${rows}</table></div></details>`}).join("");
+ const gw=gu?sum/gu:0,a=+S.as,pj=(sum+a*pu)/(gu+pu||1);
+ $("gwa").textContent=gu?gw.toFixed(3):"–";$("gwan").textContent=`${gu} graded units counted`;
+ $("ue").textContent=earned;$("pt").textContent=`of ${tu} units (${(earned/tu*100).toFixed(0)}%)`;
+ $("sl").textContent=NT-nd;$("ul").textContent=`${np} in progress · ${nn} not yet taken`;
+ $("pj").textContent=gu+pu?pj.toFixed(3):"–";
+ $("b1").style.width=nd/NT*100+"%";$("b2").style.width=np/NT*100+"%";
+ $("sp").textContent=`${nd} of ${NT} subjects completed (${(nd/NT*100).toFixed(0)}%) · ${np} in progress · ${nn} not yet taken · ${tu-earned} units to go`;
+ const pos=g=>Math.max(0,Math.min(100,(g-1)/3*100));
+ $("mf").style.width=pos(gw)+"%";$("mp").style.left=pos(pj)+"%";
+ const df=gw-TG;
+ $("tgt").textContent=!gu?"":df>=0?`🎯 Target reached: ${df.toFixed(3)} above 3.00`:`${(-df).toFixed(3)} below the 3.00 target (${(gw/TG*100).toFixed(0)}% of the way)`;
+ const need=(TG*(gu+pu)-sum)/pu;
+ $("need").textContent=!pu?"No pending units left.":need>4?`3.00 can’t be reached with the remaining ${pu} units (would need ${need.toFixed(2)} average).`:need<=1?`A 3.00 GWA is already secured.`:`To finish at 3.00, average about ${need.toFixed(2)} across the remaining ${pu} units.`;
+ $("rem").innerHTML=rem.join("")||"Nothing left — all subjects completed!";
+
+ const all=nd===NT;$("lt").hidden=!all;
+ document.querySelectorAll("select[data-c]").forEach(e=>e.onchange=()=>{UA=true;const c=e.dataset.c;if(e.value!==""&&stOf(find(c))!=="done")toast(c);S.g[c]=e.value;if(e.value!=="")S.st[c]="done";save();render()});
+ document.querySelectorAll("select[data-s]").forEach(e=>e.onchange=()=>{UA=true;const c=e.dataset.s;if(e.value==="done"&&stOf(find(c))!=="done")toast(c);S.st[c]=e.value;save();render()});
+ document.querySelectorAll("details").forEach(d=>d.ontoggle=()=>{OPEN[d.dataset.n]=d.open});
+ if(all&&!S.cel){S.cel=true;save();if(UA)celebrate(gw)}else if(!all&&S.cel){S.cel=false;save()}UA=false;
+}
+const L=[
+["You did it, future engineer!",g=>`Every plate, every sleepless night, every failed trial run — it all led here. Your GWA of ${g}  is the proof of how far you climbed.`],
+["Ready to build the world",g=>`Joeshua, you started with calculus and ended designing structures. The things you’ll build will stand long after the exams are forgotten.`],
+["A letter from this little tracker",g=>`I watched every subject turn green, one by one. 70 down, none to go. Be proud: the grades were temporary, the skills are yours for life.`],
+["Congratulations, Engr. in the making!",g=>`Steel, concrete, soil, water — you’ve learned to make them all work together. Take a breath, thank the people who carried you, and go build something great.`],
+["Foundation complete ✔",g=>`Like any good structure, you were built layer by layer, with patience and a lot of reinforcement. Now it’s time to rise. You did a good job.`]];
+function celebrate(gw){
+ const x=L[Math.floor(Math.random()*L.length)];
+ $("mt").textContent=x[0];
+ $("mb").innerHTML=`<p>${x[1](gw?gw.toFixed(2):"—")}</p><p><b>You’re ready to graduate. Well done! 🎉</b></p>`;
+ $("ov").classList.add("on");
+ const c=["#e8657a","#4cc38a","#eba53f","#5aa9e6","#c77dff"];
+ for(let i=0;i<48;i++){const e=document.createElement("i");e.className="cf";e.style.cssText=`left:${Math.random()*100}%;background:${c[i%5]};animation-delay:${Math.random()*1.2}s`;document.body.appendChild(e);setTimeout(()=>e.remove(),5000)}
+}
+$("mc").onclick=()=>$("ov").classList.remove("on");
+const find=c=>D.flatMap(x=>x[1]).find(s=>s[0]===c);
+const Q=["One more down. Keep stacking them up.","Strong foundations are built one subject at a time.","That’s another beam in place. Keep building.","Progress isn’t loud, but look how far you’ve come.","Good work. Rest a little, then take on the next one.","Every completed subject is a load you no longer carry.","You’re closer to your license than you were yesterday.","Steady, patient work is how every great structure gets finished.","You earned this one. Be proud of it."];
+let tt;function toast(c){$("tq").innerHTML=`✅ <b>${c}</b> completed!<br><span>${Q[Math.floor(Math.random()*Q.length)]}</span>`;$("tq").classList.add("on");clearTimeout(tt);tt=setTimeout(()=>$("tq").classList.remove("on"),5000)}
+$("lt").onclick=()=>{const t=document.getElementById("gwa").textContent;celebrate(parseFloat(t))};
+$("as").innerHTML=opts(S.as);$("as").onchange=e=>{S.as=e.target.value;save();render()};
+$("rs").onclick=()=>{if(confirm("Clear all your edits?")){const t=S.theme;S={g:{},st:{},ex:false,as:"3",theme:t,cel:false};save();$("as").innerHTML=opts(S.as);render()}};
+theme();render();cloud();
+addEventListener("online",cloud);document.addEventListener("visibilitychange",()=>{if(!document.hidden)cloud()});
+if("serviceWorker"in navigator&&location.protocol.indexOf("http")===0)navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script></body></html>
