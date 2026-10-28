@@ -34,8 +34,10 @@ details>.bar{margin:0 14px 8px}.tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:7px 10px;border-top:1px solid var(--ln);white-space:nowrap}
 td.t{white-space:normal;min-width:180px}th{font-size:12px;color:var(--mu);font-weight:600}
 .sel.done{color:var(--ok);border-color:var(--ok)}.sel.prog{color:var(--pen);border-color:var(--pen)}
+.rt{font-size:12px;color:var(--pen);margin-top:3px}.rt button,.rt0{font:inherit;font-size:12px;line-height:1;color:var(--mu);background:none;border:1px solid var(--ln);border-radius:6px;padding:2px 7px;margin-left:4px;cursor:pointer}.rt0{margin:0 0 0 6px;opacity:.6}.rt0:hover,.rt button:hover{opacity:1;color:var(--tx)}
+#pb{max-height:48vh;overflow:auto;margin:8px 0;border:1px solid var(--ln);border-radius:10px;padding:6px 10px}.pl{display:block;padding:5px 0;font-size:13px}.lk{font-size:12px;color:#d64545;margin-top:3px}.rt2{font-size:12px;color:var(--mu);margin-top:3px}
 .chip{display:inline-block;font-size:12px;border:1px solid var(--ln);border-radius:20px;padding:2px 10px;margin:3px 4px 3px 0}
-.chip.prog{border-color:var(--pen);color:var(--pen)}
+.chip.prog{border-color:var(--pen);color:var(--pen)}.sel.fail,.chip.fail{color:#d64545;border-color:#d64545}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}.ov.on{display:flex}
 .modal{background:var(--card);border-radius:18px;max-width:480px;max-height:88vh;overflow:auto;padding:26px;text-align:center;border-top:5px solid var(--ok)}
 .modal h2{font-size:22px;margin-bottom:10px}.modal p{text-align:left;margin:8px 0}.em{font-size:44px}
@@ -46,11 +48,13 @@ td.t{white-space:normal;min-width:180px}th{font-size:12px;color:var(--mu);font-w
 
 <div class="card hero"><div>
 <h1>BSCE GWA Counter &amp; Degree Checklist</h1>
-<div class="lbl">University of Mindanao – Matina · 4.0 is the highest grade</div>
-<div class="info"><div><span class="lbl">Student’s Name</span><b>Dapar, Joeshua</b></div><div><span class="lbl">Account Number</span><b>530917</b></div><div><span class="lbl">Program/Course</span><b>4th Year Bachelor of Science in Civil Engineering Structural</b></div></div>
+<div class="lbl">University of Mindanao – Matina Campus</div>
+<div class="info"><div><span class="lbl">Student’s Name</span><b>Joeshua M. Dapar</b></div><div><span class="lbl">Account Number</span><b>530917</b></div><div><span class="lbl">Program/Course</span><b id="pg">4th Year Bachelor of Science in Civil Engineering – Major in Structural</b></div></div>
+<div class="row" style="margin-top:10px;gap:12px;flex-wrap:wrap"><label class="lbl">School year <select id="ysy"></select></label><label class="lbl">Term <select id="ytm"><option value="1">1st term</option><option value="2">2nd term</option></select></label><label class="lbl">Semester <select id="ysm"><option value="1">1st semester</option><option value="2">2nd semester</option></select></label></div>
 </div><div class="row"><span class="lbl" id="sy"></span><button class="ic" id="th" title="Switch light/dark mode">🌙</button></div></div>
 
 <div class="card"><h2>Subject progress</h2>
+<div class="lbl" style="margin:-4px 0 8px">4.0 is the highest grade · 2.0 is the lowest passing grade · 1.0 is a failed grade</div>
 <div class="bar lg"><i id="b1"></i><i id="b2" style="background:var(--pen)"></i></div>
 <div class="lbl" id="sp" style="margin-top:8px"></div>
 <div class="lbl"><span style="color:var(--ok)">■</span> completed &nbsp;<span style="color:var(--pen)">■</span> in progress</div>
@@ -77,6 +81,7 @@ td.t{white-space:normal;min-width:180px}th{font-size:12px;color:var(--mu);font-w
 <div class="lbl">Set a subject’s status when you enroll, then enter its grade when released. Choosing a grade marks it Completed automatically. Edits are saved on this device automatically.</div>
 </main>
 
+<div class="ov" id="pov"><div class="modal" style="text-align:left"><h2 id="pt2"></h2><div class="lbl">Tick the subjects that must be passed first. A subject you haven’t taken stays locked until they are all Completed.</div><div id="pb"></div><div class="row" style="justify-content:flex-end"><button class="g" id="pcx">Cancel</button><button id="psv">Save</button></div></div></div>
 <div class="tq" id="tq"></div>
 <div class="ov" id="ov"><div class="modal"><div class="em">🎓</div><h2 id="mt"></h2><div id="mb"></div><div class="row" style="justify-content:center"><button id="mc">Close</button></div></div></div>
 
@@ -95,8 +100,8 @@ const D=[
 ["4th Year / Summer",[["BCE 423","On-the-Job Training (320 hours)",2,null]]],
 ["5th Year / 1st Sem",[["CAED 500C","Career and Personality Development",3,null],["BCE 601","CA-Mathematics, Surveying and Transportation Eng’g",4,null],["BCE 602","CA-Hydraulics and Geotechnical Engineering",3,null],["BCE 603","CA-Structural Engineering and Construction",5,null]]]
 ];
-const GR=[4,3.5,3,2.5,2,1.5,1],TG=3,INP=["BCES 1","BCE 415","BCE 411","BCES 3","BCE 422"];
-const ST=[["none","Not yet taken"],["prog","Enrolled · in progress"],["done","Completed"]];
+const GR=[4,3.5,3,2.5,2,1],TG=3,INP=["BCES 1","BCE 415","BCE 411","BCES 3","BCE 422"];
+const ST=[["none","Not yet taken"],["prog","Enrolled · in progress"],["done","Completed"],["fail","Failed · retake"]];
 const PE=c=>/^(GPE|NSTP)/.test(c);
 let S={g:{},st:{},ex:false,as:"3",theme:null,cel:false},OPEN={};
 try{Object.assign(S,JSON.parse(localStorage.getItem("gwa-v1")||"{}"))}catch(e){}
@@ -125,32 +130,48 @@ function exportData(){const b=new Blob([JSON.stringify(payload(),null,1)],{type:
 function importData(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(typeof d!=="object"||!d.g||!d.st)throw 0;d.u=Date.now();d.cel=false;adopt(d);save()}catch(e){alert("That file isn’t a valid backup.")}};r.readAsText(f)}
 const $=i=>document.getElementById(i);
 const gradeOf=s=>s[0] in S.g?(S.g[s[0]]===""?null:+S.g[s[0]]):s[3];
-const stOf=s=>S.st[s[0]]||(gradeOf(s)!=null?"done":INP.includes(s[0])?"prog":"none");
-const opts=(sel,blank)=>(blank?'<option value="">–</option>':'')+GR.map(g=>`<option value="${g}"${String(g)===String(sel)?' selected':''}>${g.toFixed(1)}</option>`).join("");
+const stOf=s=>gradeOf(s)===1?"fail":S.st[s[0]]||(gradeOf(s)!=null?"done":INP.includes(s[0])?"prog":"none");
+const opts=(sel,blank)=>(blank?'<option value="">–</option>':'')+GR.map(g=>`<option value="${g}"${String(g)===String(sel)?' selected':''}>${g.toFixed(1)}${g===1?" (failed)":""}</option>`).join("");
 const NT=D.reduce((a,x)=>a+x[1].length,0);
 
 function theme(){const r=document.documentElement;if(S.theme)r.dataset.theme=S.theme;
  const d=S.theme?S.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;$("th").textContent=d?"☀️":"🌙"}
 $("th").onclick=()=>{const d=S.theme?S.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;S.theme=d?"light":"dark";save();theme()};
 
+const PRE={"UGE 1":["GE 2"],"CEE 101":["CEE 100"],"GPE 2":["GPE 1"],"CEE 102":["CEE 101"],"CEE 103":["CEE 102"],"CEE 108":["UGE 1"],"GPE 3":["GPE 2"],"DRAW 102":["DRAW 101"],"CEE 109":["CEE 102","CEE 101"],"BCE 211":["DRAW 101"],"CEE 117":["CEE 102","CEE 103"],"BCE 222":["CEE 117"],"GPE 4":["GPE 3"],"CEE 118":["CEE 117"],"BCE 223":["BCE 222"],"BCE 221":["BCHE 111"],"CEE 104":["CEE 103"],"CEE 105":["CEE 109"],"BCE 313":["BCE 221"],"BCE 311":["BCE 222"],"BCE 314":["BCE 222"],"UGE 2":["UGE 1"],"BCE 315":["CEE 104"],"BCE 312":["BCE 211"],"CEE 115":["CEE 108"],"BCE 324":["CEE 102"],"NSTP 2":["NSTP 1"],"BCE 325":["CEE 102"],"BCE 322":["BCE 221","BCE 222"],"BCE 321":["DRAW 102"],"BCE 323":["BCE 311"],"BCE 326":["BCE 323"],"GE 11":["BCE 323"],"BCE 327":["BCE 323","BCE 222"],"BCE 413":["BCE 321"],"BCES 1":["BCES 3"],"BCE 412":["BCE 312"],"BCE 415":["BCE 327"],"BCE 411":["BCE 323"],"BCES 3":["BCE 323"],"BCES 4":["BCE 411"],"CEE 112":["BCE 422"],"BCET 6":["BCES 3","BCES 4"],"BCES 2":["BCE 321"],"BCES 6":["BCE 322","BCE 323"],"BCE 421":["BCE 415"],"BCE 422":["BCE 326","BCE 321","CEE 108"],"BCE 423":["BCE 422","BCE 323","BCE 411","BCE 413"],"CAED 500C":["5th Year Standing"],"BCE 601":["5th Year Standing","BCE 421","BCE 411"],"BCE 602":["5th Year Standing","BCE 421","BCE 411"],"BCE 603":["5th Year Standing","BCE 421","BCE 411"]};let PS=new Set();
+const pre=c=>S.pre[c]||PRE[c]||[];
+const CO={"CEE 112":["BCE 422"]};
+const met=(c,x)=>PS.has(x)||((CO[c]||[]).includes(x)&&stOf(find(x))==="prog");
+const lkOf=(c,st)=>st==="none"&&pre(c).some(x=>!met(c,x));
+const pH=(c,st)=>{const p=pre(c);if(!p.length)return`<button class="rt0" data-pe="${c}" title="Set prerequisites">⚙</button>`;const lk=lkOf(c,st);return`<div class="${lk?"lk":"rt2"}">${lk?"🔒 Locked. Pass first: ":"Prerequisites: "}<br>${p.map(x=>{const f=find(x),d=PS.has(x),w=!d&&met(c,x);return`<span title="${x}" style="${d?"color:var(--ok)":w?"color:var(--pen)":""}">${d?"✅":w?"🟨":"⬜"} ${f?f[1]:x}${w?" (in progress is allowed)":""}</span>`}).join("<br>")}<button class="rt0" data-pe="${c}" title="Edit prerequisites">⚙</button></div>`};
+function editPre(c){const cur=new Set(pre(c));$("pb").innerHTML=[["5th Year Standing","(all 1st to 4th year subjects Completed)"]].concat(D.flatMap(x=>x[1])).filter(x=>x[0]!==c).map(x=>`<label class="pl"><input type="checkbox" value="${x[0]}"${cur.has(x[0])?" checked":""}> <b>${x[0]}</b> ${x[1]}</label>`).join("");$("pt2").textContent="Prerequisites for "+c;$("pov").dataset.c=c;$("pov").classList.add("on")}
+const rtH=c=>{const n=S.rt[c]||0;return n?`<div class="rt">↻ Retaken ${n}× <button data-rm="${c}" title="Remove one retake">−</button><button data-rp="${c}" title="Add one retake">+</button></div>`:`<button class="rt0" data-rp="${c}" title="Record a retake of this subject">↻</button>`};
 function render(){
- let sum=0,gu=0,pu=0,earned=0,tu=0,nd=0,np=0,nn=0;const rem=[];
+ if(!S.sy){S.sy="2026-2027";S.tm="1";S.sm="1"}
+ const ys=$("ysy");if(!ys.dataset.b){ys.innerHTML=Array.from({length:15},(_,i)=>`<option>${2020+i}-${2021+i}</option>`).join("");ys.dataset.b=1}
+ ys.value=S.sy;$("ytm").value=S.tm;$("ysm").value=S.sm;
+ if(!S.rt)S.rt={};if(!S.pre)S.pre={};
+ PS=new Set(D.flatMap(x=>x[1]).filter(x=>stOf(x)==="done").map(x=>x[0]));
+ if(D.every(([n,l])=>parseInt(n)>=5||l.every(y=>PS.has(y[0]))))PS.add("5th Year Standing");
+ let sum=0,gu=0,pu=0,earned=0,tu=0,nd=0,np=0,nn=0,nf=0,cy=0;const rem=[];
  $("secs").innerHTML=D.map(([n,l])=>{
   let su=0,sd=0,sc=0;
   const rows=l.map(s=>{const g=gradeOf(s),st=stOf(s),u=s[2],cnt=true;tu+=u;su+=u;
-   if(st==="done"){earned+=u;sd+=u;sc++;nd++}else if(st==="prog")np++;else nn++;
-   if(st==="done"&&g!=null){if(cnt){sum+=u*g;gu+=u}}else if(cnt)pu+=u;
+   if(st==="done"){earned+=u;sd+=u;sc++;nd++}else if(st==="prog")np++;else if(st==="fail")nf++;else nn++;
+   if((st==="done"||st==="fail")&&g!=null){if(cnt){sum+=u*g;gu+=u}}else if(cnt)pu+=u;
    if(st!=="done")rem.push(`<span class="chip ${st}"><b>${s[0]}</b> ${s[1]} · ${u}u</span>`);
-   return `<tr><td><select class="sel ${st}" data-s="${s[0]}">${ST.map(o=>`<option value="${o[0]}"${o[0]===st?' selected':''}>${o[1]}</option>`).join("")}</select></td><td><b>${s[0]}</b></td><td class="t">${s[1]}</td><td>${u}</td><td><select data-c="${s[0]}">${opts(g,true)}</select></td></tr>`}).join("");
+   return `<tr><td><select class="sel ${st}" data-s="${s[0]}"${lkOf(s[0],st)?" disabled":""}>${ST.map(o=>`<option value="${o[0]}"${o[0]===st?' selected':''}>${o[1]}</option>`).join("")}</select></td><td><b>${s[0]}</b></td><td class="t">${s[1]}${rtH(s[0])}${pH(s[0],st)}</td><td>${u}</td><td><select data-c="${s[0]}"${lkOf(s[0],st)?" disabled":""}>${opts(g,true)}</select></td></tr>`}).join("");
+  if(!cy&&sc<l.length)cy=parseInt(n);
   const open=n in OPEN?OPEN[n]:sc<l.length;
   return `<details data-n="${n}"${open?' open':''}><summary><b>${n}</b><span>${sc}/${l.length} subjects · ${sd}/${su} units</span></summary><div class="bar"><i style="width:${sd/su*100}%"></i></div><div class="tw"><table><tr><th>Status</th><th>Code</th><th>Subject</th><th>Units</th><th>Grade</th></tr>${rows}</table></div></details>`}).join("");
+ $("pg").textContent=(nd===NT?"A graduate of":["1st","2nd","3rd","4th","5th"][(cy||5)-1]+" Year")+" Bachelor of Science in Civil Engineering – Major in Structural";
  const gw=gu?sum/gu:0,a=+S.as,pj=(sum+a*pu)/(gu+pu||1);
  $("gwa").textContent=gu?gw.toFixed(3):"–";$("gwan").textContent=`${gu} graded units counted`;
  $("ue").textContent=earned;$("pt").textContent=`of ${tu} units (${(earned/tu*100).toFixed(0)}%)`;
- $("sl").textContent=NT-nd;$("ul").textContent=`${np} in progress · ${nn} not yet taken`;
+ $("sl").textContent=NT-nd;$("ul").textContent=`${np} in progress · ${nn} not yet taken${nf?` · ${nf} failed`:""}`;
  $("pj").textContent=gu+pu?pj.toFixed(3):"–";
  $("b1").style.width=nd/NT*100+"%";$("b2").style.width=np/NT*100+"%";
- $("sp").textContent=`${nd} of ${NT} subjects completed (${(nd/NT*100).toFixed(0)}%) · ${np} in progress · ${nn} not yet taken · ${tu-earned} units to go`;
+ $("sp").textContent=`${nd} of ${NT} subjects completed (${(nd/NT*100).toFixed(0)}%) · ${np} in progress · ${nn} not yet taken${nf?` · ${nf} failed`:""} · ${tu-earned} units to go`;
  const pos=g=>Math.max(0,Math.min(100,(g-1)/3*100));
  $("mf").style.width=pos(gw)+"%";$("mp").style.left=pos(pj)+"%";
  const df=gw-TG;
@@ -160,8 +181,11 @@ function render(){
  $("rem").innerHTML=rem.join("")||"Nothing left — all subjects completed!";
 
  const all=nd===NT;$("lt").hidden=!all;
- document.querySelectorAll("select[data-c]").forEach(e=>e.onchange=()=>{UA=true;const c=e.dataset.c;if(e.value!==""&&stOf(find(c))!=="done")toast(c);S.g[c]=e.value;if(e.value!=="")S.st[c]="done";save();render()});
- document.querySelectorAll("select[data-s]").forEach(e=>e.onchange=()=>{UA=true;const c=e.dataset.s;if(e.value==="done"&&stOf(find(c))!=="done")toast(c);S.st[c]=e.value;save();render()});
+ document.querySelectorAll("select[data-c]").forEach(e=>e.onchange=()=>{UA=true;const c=e.dataset.c;if(e.value!==""&&e.value!=="1"&&stOf(find(c))!=="done")toast(c);S.g[c]=e.value;S.st[c]=e.value===""?"none":e.value==="1"?"fail":"done";save();render()});
+ document.querySelectorAll("select[data-s]").forEach(e=>e.onchange=()=>{UA=true;const c=e.dataset.s;if(e.value==="done"&&stOf(find(c))!=="done")toast(c);S.st[c]=e.value;if(e.value==="none"||e.value==="prog"||(e.value!=="fail"&&gradeOf(find(c))===1))S.g[c]="";if(e.value==="fail")S.g[c]="1";save();render()});
+document.querySelectorAll("[data-pe]").forEach(e=>e.onclick=()=>editPre(e.dataset.pe));
+ document.querySelectorAll("[data-rp]").forEach(e=>e.onclick=()=>{const c=e.dataset.rp;S.rt[c]=(S.rt[c]||0)+1;save();render()});
+ document.querySelectorAll("[data-rm]").forEach(e=>e.onclick=()=>{const c=e.dataset.rm;S.rt[c]=(S.rt[c]||0)-1;if(S.rt[c]<=0)delete S.rt[c];save();render()});
  document.querySelectorAll("details").forEach(d=>d.ontoggle=()=>{OPEN[d.dataset.n]=d.open});
  if(all&&!S.cel){S.cel=true;save();if(UA)celebrate(gw)}else if(!all&&S.cel){S.cel=false;save()}UA=false;
 }
@@ -179,12 +203,15 @@ function celebrate(gw){
  const c=["#e8657a","#4cc38a","#eba53f","#5aa9e6","#c77dff"];
  for(let i=0;i<48;i++){const e=document.createElement("i");e.className="cf";e.style.cssText=`left:${Math.random()*100}%;background:${c[i%5]};animation-delay:${Math.random()*1.2}s`;document.body.appendChild(e);setTimeout(()=>e.remove(),5000)}
 }
+$("psv").onclick=()=>{const c=$("pov").dataset.c;S.pre[c]=[...document.querySelectorAll("#pb input:checked")].map(i=>i.value);$("pov").classList.remove("on");save();render()};
+$("pcx").onclick=()=>$("pov").classList.remove("on");
 $("mc").onclick=()=>$("ov").classList.remove("on");
 const find=c=>D.flatMap(x=>x[1]).find(s=>s[0]===c);
 const Q=["One more down. Keep stacking them up.","Strong foundations are built one subject at a time.","That’s another beam in place. Keep building.","Progress isn’t loud, but look how far you’ve come.","Good work. Rest a little, then take on the next one.","Every completed subject is a load you no longer carry.","You’re closer to your license than you were yesterday.","Steady, patient work is how every great structure gets finished.","You earned this one. Be proud of it."];
 let tt;function toast(c){$("tq").innerHTML=`✅ <b>${c}</b> completed!<br><span>${Q[Math.floor(Math.random()*Q.length)]}</span>`;$("tq").classList.add("on");clearTimeout(tt);tt=setTimeout(()=>$("tq").classList.remove("on"),5000)}
 $("lt").onclick=()=>{const t=document.getElementById("gwa").textContent;celebrate(parseFloat(t))};
-$("as").innerHTML=opts(S.as);$("as").onchange=e=>{S.as=e.target.value;save();render()};
+$("as").innerHTML=opts(S.as);$("ysy").onchange=e=>{S.sy=e.target.value;save()};$("ytm").onchange=e=>{S.tm=e.target.value;save()};$("ysm").onchange=e=>{S.sm=e.target.value;save()};
+$("as").onchange=e=>{S.as=e.target.value;save();render()};
 $("rs").onclick=()=>{if(confirm("Clear all your edits?")){const t=S.theme;S={g:{},st:{},ex:false,as:"3",theme:t,cel:false};save();$("as").innerHTML=opts(S.as);render()}};
 theme();render();cloud();
 addEventListener("online",cloud);document.addEventListener("visibilitychange",()=>{if(!document.hidden)cloud()});
