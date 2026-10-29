@@ -544,7 +544,7 @@ function paintWp(cv,full){
  const fit=(t,w)=>{if(x.measureText(t).width<=w)return t;while(t.length>1&&x.measureText(t+"…").width>w)t=t.slice(0,-1);return t+"…"};
  const wrap=(t,w,max)=>{const ws=String(t).split(" "),out=[];let l="";for(const q of ws){const n=l?l+" "+q:q;if(x.measureText(n).width<=w)l=n;else{if(l)out.push(l);l=q}}if(l)out.push(l);if(out.length>max){out.length=max;out[max-1]=fit(out[max-1]+"…",w)}return out.map(s=>fit(s,w))};
  x.fillStyle=bg;x.fillRect(0,0,DW,DH);
- const cl=CL(),sel=cl.map((c,i)=>({c,i})).filter(o=>fin||o.c.done!==true),per=`${S.sm==="2"?"2nd semester":S.sm==="3"?"Summer":"1st semester"} · S.Y. ${S.sy}`;
+ const cl=CL(),sel=cl.map((c,i)=>({c,i})).filter(o=>fin||!isDone(o.c)),per=`${S.sm==="2"?"2nd semester":S.sm==="3"?"Summer":"1st semester"} · S.Y. ${S.sy}`;
  x.textBaseline="alphabetic";x.textAlign="left";
  const fr=clk?(ph?.265:land?.14:.15):(ph?.09:land?.085:.06),ty=Math.round(DH*fr),bp=land?110:170;
  const gx=land?70:60,gw=land?1150:960,tc=64,dw=(gw-tc)/6,gy=ty+100;
@@ -560,7 +560,7 @@ function paintWp(cv,full){
   x.textAlign="right";x.font=F(400,20);
   for(let h=sh;h<=eh;h++){const y=top+(h-sh)*PH;x.fillStyle=ln;x.fillRect(gx+tc,y,gw-tc,1);x.fillStyle=mu;x.fillText((h%12||12)+(h>=12?"p":"a"),gx+tc-10,y+7)}
   for(let i=0;i<=6;i++)x.fillRect(gx+tc+dw*i,top,1,hrs*PH);
-  timed.forEach(o=>{const c=o.c,dn=c.done===true;(c.days||[]).forEach(kk=>{const di=DAYS.findIndex(d=>d[0]===kk);if(di<0)return;
+  timed.forEach(o=>{const c=o.c,dn=isDone(c);(c.days||[]).forEach(kk=>{const di=DAYS.findIndex(d=>d[0]===kk);if(di<0)return;
    const sp=timed.some(p=>p.c!==c&&(p.c.days||[]).includes(kk)&&c.term!==p.c.term&&c.term!=="Sem"&&p.c.term!=="Sem"&&mins(c.s)<mins(p.c.e)&&mins(p.c.s)<mins(c.e)),bw0=sp?(dw-9)/2:dw-6,bx=gx+tc+dw*di+3+(sp&&c.term==="2nd Term"?bw0+3:0),by=top+(mins(c.s)-sh*60)/60*PH+2,bw=bw0,bh=Math.max(34,(mins(c.e)-mins(c.s))/60*PH-4);
    x.save();x.globalAlpha=dn?.4:1;x.fillStyle=dn?gr:COL(o.i);x.beginPath();if(x.roundRect)x.roundRect(bx,by,bw,bh,12);else x.rect(bx,by,bw,bh);x.fill();x.clip();
    x.textAlign="left";x.fillStyle="#fff";x.font=F(700,24);const tg=c.term==="1st Term"?"1T":c.term==="2nd Term"?"2T":"";x.fillText(fit(c.code,bw-14-(tg?36:0)),bx+8,by+28);if(tg){x.textAlign="right";x.font=F(700,17);x.fillText(tg,bx+bw-8,by+27);x.textAlign="left"}
@@ -573,7 +573,7 @@ function paintWp(cv,full){
  const tu=nu(sel.reduce((a,o)=>a+(+o.c.u||0),0)),TT=c=>c.term==="1st Term"||c.term==="2nd Term"?c.term:"Whole semester",dl=c=>`${c.sec?"Sec "+c.sec+"  ·  ":""}${TT(c)}  ·  ${(c.days&&c.days.length)?c.days.join(" · "):(c.dc||"")}  ${c.s?t12(c.s)+" – "+t12(c.e):""}${c.room?"  ·  "+c.room:""}`;
  if(!land){
   let y=gb+50;
-  for(const o of sel){if(y>DH-bp)break;const c=o.c,dn=c.done===true;x.globalAlpha=dn?.5:1;
+  for(const o of sel){if(y>DH-bp)break;const c=o.c,dn=isDone(c);x.globalAlpha=dn?.5:1;
    x.fillStyle=dn?gr:COL(o.i);x.fillRect(60,y-22,12,56);
    x.fillStyle=tx;x.font=F(700,28);x.fillText(fit(`${c.code}  ${c.desc}`,820),90,y);
    x.textAlign="right";x.fillStyle=mu;x.font=F(400,26);x.fillText(c.u+" units",1020,y);x.textAlign="left";
@@ -584,7 +584,7 @@ function paintWp(cv,full){
   const lx=gx+gw+70,lr=DW-70;
   x.fillStyle=mu;x.font=F(600,24);x.fillText("SUBJECTS",lx,gy+36);
   let y=gy+100;
-  for(const o of sel){if(y>DH-bp-40)break;const c=o.c,dn=c.done===true;x.globalAlpha=dn?.5:1;
+  for(const o of sel){if(y>DH-bp-40)break;const c=o.c,dn=isDone(c);x.globalAlpha=dn?.5:1;
    x.fillStyle=dn?gr:COL(o.i);x.fillRect(lx,y-26,12,94);
    x.fillStyle=tx;x.font=F(700,30);x.textAlign="left";x.fillText(fit(c.code,300),lx+28,y);
    x.textAlign="right";x.fillStyle=mu;x.font=F(400,26);x.fillText(c.u+" units",lr,y);x.textAlign="left";
