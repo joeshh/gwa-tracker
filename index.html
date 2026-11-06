@@ -94,7 +94,8 @@ input[type=date]{font:inherit;color:var(--tx);background:var(--bg);border:1px so
 <div class="card"><h2>Deadlines</h2><div id="ov_d"></div></div>
 <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2 id="pr_t" style="margin:0">Today’s priorities</h2><input type="date" id="pr_d" style="width:auto"></div>
 <div id="pr_c"></div><div id="pr_l"></div><div class="lbl" id="pr_s" style="margin:4px 0"></div>
-<div class="row"><input id="pr_i" placeholder="Add a priority…" maxlength="80" style="flex:1"><button id="pr_a">Add</button></div>
+<div class="row"><input id="pr_i" placeholder="Add a priority…" maxlength="80" style="flex:1"></div>
+<div class="row"><input type="time" id="pr_tm" style="width:auto" title="Time (optional)"><input id="pr_n" placeholder="Notes (optional)" maxlength="200" style="flex:1"><button id="pr_a">Add</button></div>
 <div class="lbl" style="margin-top:8px">Tip: keep it short and realistic. Pick 3 to 5 things you can truly finish.</div></div>
 <div class="row"><button class="qb" id="ov_qd">＋ Deadline</button><button class="qb" id="ov_qa">＋ Absence</button></div>
 <div class="card"><h2 id="ov_t">Today</h2><div id="ov_c"></div><div class="lbl" style="margin-top:8px">Free time today</div><div id="ov_f"></div></div>
@@ -106,12 +107,14 @@ input[type=date]{font:inherit;color:var(--tx);background:var(--bg);border:1px so
 </div>
 
 <div class="pn" id="tab-sch">
-<div class="card"><div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><h2 id="cal_t" style="margin:0;flex:1">Calendar</h2><button class="ic" data-cm="-1">‹</button><button class="ic" data-cm="0">Today</button><button class="ic" data-cm="1">›</button></div><div class="cg" id="cal_g"></div><div id="cal_d" style="margin-top:10px"></div></div>
-<div class="card"><h2>Class schedule <span class="lbl" id="schsub"></span></h2>
+<div class="card"><div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><h2 id="cal_t" style="margin:0;flex:1">Calendar</h2><button class="ic" data-cm="-1">‹</button><button class="ic" data-cm="0">Today</button><button class="ic" data-cm="1">›</button></div><div class="cg" id="cal_g"></div><div id="cal_d" style="margin-top:10px"></div>
+<div class="row" style="margin-top:8px"><button class="qb" id="cp_b">＋ Add priority</button></div>
+<div id="cp_f" hidden style="margin-top:8px"><div class="fm"><div class="w"><label>Priority<input id="cp_t" maxlength="80" placeholder="What do you need to do?"></label></div><div><label>Time (optional)<input type="time" id="cp_tm"></label></div><div class="w"><label>Notes (optional)<input id="cp_n" maxlength="200" placeholder="Details, room, link…"></label></div></div><div class="row"><button id="cp_a">Add</button><button class="ic" id="cp_x" style="width:auto;padding:0 12px">Cancel</button></div></div></div>
+<details id="dd_sch" open><summary><b>Class schedule</b><span id="schsub"></span></summary><div style="padding:0 14px 14px">
 <div class="row"><button id="addc">＋ Add a class</button><span class="lbl" id="schn"></span></div>
 <div class="lbl" id="schhint" style="margin:4px 0 8px"></div>
-<div class="tw" id="wkw"></div></div>
-<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2 style="margin:0">My classes</h2><button class="qb" id="hfb">Hide finished</button></div><div id="cls" style="margin-top:8px"></div></div>
+<div class="tw" id="wkw"></div></div></details>
+<details id="dd_cls" open><summary><b>My classes</b><span>tap to open</span></summary><div style="padding:0 14px 14px"><div class="row"><button class="qb" id="hfb">Hide finished</button></div><div id="cls" style="margin-top:8px"></div></div></details>
 
 <details><summary><b>Class schedule wallpaper (HD)</b><span>tap to open</span></summary><div style="padding:0 14px 14px">
 <div class="lbl" style="margin-bottom:8px">Pick your Apple device and the picture is made at that screen’s exact native resolution, so it is sharp and fits without cropping or stretching. The preview updates every time you edit a class. It is made on your device, so it also works offline.</div>
@@ -223,6 +226,7 @@ let pt;
 const sync=t=>{const e=document.getElementById("sy");if(e)e.textContent=t};
 const save=()=>{S.u=Date.now();try{localStorage.setItem("gwa-v1",JSON.stringify(S))}catch(e){}push()};
 const NTK="gwa-nt";let NF={};try{NF=JSON.parse(localStorage.getItem(NTK)||"{}")}catch(e){}
+let SD=false,pT;
 const ntSave=()=>{try{localStorage.setItem(NTK,JSON.stringify(NF))}catch(e){}};
 const SK="gwa-sync";let SY={};try{SY=JSON.parse(localStorage.getItem(SK)||"{}")}catch(e){}
 let UA=false;
@@ -272,11 +276,11 @@ function render(){
  if(!S.rt)S.rt={};if(!S.pre)S.pre={};
  PS=new Set(D.flatMap(x=>x[1]).filter(x=>stOf(x)==="done").map(x=>x[0]));
  if(D.every(([n,l])=>parseInt(n)>=5||l.every(y=>PS.has(y[0]))))PS.add("5th Year Standing");
- let sum=0,gu=0,pu=0,earned=0,tu=0,nd=0,np=0,nn=0,nf=0,cy=0;const rem=[];
+ let sum=0,gu=0,pu=0,earned=0,tu=0,nd=0,np=0,nn=0,nf=0,ni=0,cy=0;const rem=[];
  $("secs").innerHTML=D.map(([n,l])=>{
   let su=0,sd=0,sc=0;
   const rows=l.map(s=>{const g=gradeOf(s),st=stOf(s),u=s[2],cnt=true;tu+=u;su+=u;
-   if(st==="done"){earned+=u;sd+=u;sc++;nd++}else if(st==="prog")np++;else if(st==="fail")nf++;else nn++;
+   if(st==="done"){earned+=u;sd+=u;sc++;nd++}else if(st==="prog")np++;else if(st==="fail")nf++;else if(st==="inc")ni++;else nn++;
    if((st==="done"||st==="fail")&&g!=null){if(cnt){sum+=u*g;gu+=u}}else if(cnt)pu+=u;
    if(st!=="done")rem.push(`<span class="chip ${st}"><b>${s[0]}</b> ${s[1]} · ${u}u</span>`);
    return `<tr><td><select class="sel ${st}" data-s="${s[0]}"${lkOf(s[0],st)?" disabled":""}>${ST.map(o=>`<option value="${o[0]}"${o[0]===st?' selected':''}>${o[1]}</option>`).join("")}</select></td><td><b>${s[0]}</b></td><td class="t">${s[1]}${rtH(s[0])}${pH(s[0],st)}</td><td>${u}</td><td><select data-c="${s[0]}"${lkOf(s[0],st)?" disabled":""}>${opts(g,true,true)}</select></td></tr>`}).join("");
@@ -287,10 +291,10 @@ function render(){
  const gw=gu?sum/gu:0,a=+S.as,pj=(sum+a*pu)/(gu+pu||1);
  $("gwa").textContent=gu?gw.toFixed(3):"–";$("gwan").textContent=`${gu} graded units counted`;
  $("ue").textContent=earned;$("pt").textContent=`of ${tu} units (${(earned/tu*100).toFixed(0)}%)`;
- $("sl").textContent=NT-nd;$("ul").textContent=`${np} in progress · ${nn} not yet taken${nf?` · ${nf} failed`:""}`;
+ $("sl").textContent=NT-nd;$("ul").textContent=`${np} in progress · ${nn} not yet taken${nf?` · ${nf} failed`:""}${ni?` · ${ni} incomplete`:""}`;
  $("pj").textContent=gu+pu?pj.toFixed(3):"–";
  $("b1").style.width=nd/NT*100+"%";$("b2").style.width=np/NT*100+"%";
- $("sp").textContent=`${nd} of ${NT} subjects completed (${(nd/NT*100).toFixed(0)}%) · ${np} in progress · ${nn} not yet taken${nf?` · ${nf} failed`:""} · ${tu-earned} units to go`;
+ $("sp").textContent=`${nd} of ${NT} subjects completed (${(nd/NT*100).toFixed(0)}%) · ${np} in progress · ${nn} not yet taken${nf?` · ${nf} failed`:""}${ni?` · ${ni} incomplete`:""} · ${tu-earned} units to go`;
  const pos=g=>Math.max(0,Math.min(100,(g-1)/3*100));
  $("mf").style.width=pos(gw)+"%";$("mp").style.left=pos(pj)+"%";
  const df=gw-TG;
@@ -341,7 +345,7 @@ function renderSch(){
   const PH=64,sh=Math.floor(Math.min(...timed.map(c=>mins(c.s)))/60),eh=Math.ceil(Math.max(...timed.map(c=>mins(c.e)))/60),H=(eh-sh)*PH;
   const hrs=Array.from({length:eh-sh+1},(_,i)=>sh+i);
   const lines=hrs.map(h=>`<div class="hl" style="top:${(h-sh)*PH}px"></div>`).join("");
-  const cols=DAYS.map(([k])=>`<div class="dc" style="height:${H}px">${lines}${cl.map((c,i)=>inTm(c)&&(c.days||[]).includes(k)&&c.s&&c.e&&!(S.hf&&isDone(c))?`<button class="ev" data-ce="${c.id}" style="background:${isDone(c)?"#8b8b94":COL(i)};${isDone(c)?"opacity:.4;":""}top:${(mins(c.s)-sh*60)/60*PH}px;height:${Math.max(24,(mins(c.e)-mins(c.s))/60*PH-2)}px" title="${esc(c.desc)}"><b>${esc(c.code)}</b><span class="ds">${esc(c.desc)}</span>${t12(c.s)}–${t12(c.e)}${c.room?" · "+esc(c.room):""}</button>`:"").join("")}</div>`).join("");
+  const cols=DAYS.map(([k])=>`<div class="dc" style="height:${H}px">${lines}${cl.map((c,i)=>inTm(c)&&(c.days||[]).includes(k)&&c.s&&c.e&&!(S.hf&&isDone(c))?`<button class="ev" data-ce="${c.id}" style="background:${isDone(c)?"#8b8b94":COL(i)};${isDone(c)?"opacity:.4;":""}top:${(mins(c.s)-sh*60)/60*PH}px;height:${Math.max(24,(mins(c.e)-mins(c.s))/60*PH-2)}px" title="${esc(c.desc)}"><b>${esc(c.code)}</b><span class="ds">${esc(c.desc)}</span>${t12(c.s)}–${t12(c.e)}${c.room?" · "+esc(c.room):""}${c.sec?" · Sec "+esc(c.sec):""}</button>`:"").join("")}</div>`).join("");
   $("wkw").innerHTML=`<div class="wk"><div class="hd"></div>${DAYS.map(d=>`<div class="hd">${d[1]}</div>`).join("")}<div style="position:relative;height:${H}px">${hrs.map(h=>`<span class="hr" style="position:absolute;left:0;right:0;top:${(h-sh)*PH-7}px">${t12(String(h).padStart(2,"0")+":00").replace(":00","")}</span>`).join("")}</div>${cols}</div>`}
  $("hfb").textContent=S.hf?"Show finished":"Hide finished";$("hfb").classList.toggle("on",!!S.hf);
  const ord=cl.map((c,i)=>({c,i})).filter(o=>inTm(o.c)&&!(S.hf&&isDone(o.c))).sort((a,b)=>(isDone(a.c)-isDone(b.c))||(a.c.s||"99:99").localeCompare(b.c.s||"99:99"));
@@ -429,7 +433,7 @@ function renderOv(){
  if(1260-cur>=30)gaps.push([cur,1260]);
  $("ov_f").innerHTML=gaps.map(g=>`<span class="chip">${t12(HM(g[0]))} – ${t12(HM(g[1]))} · ${DUR(g[1]-g[0])}</span>`).join("")||'<span class="lbl">No free time left today.</span>';
  const rc=x=>x&&x.dAt&&Date.now()-x.dAt<30000,tk=[];
- Object.keys(S.pri||{}).forEach(k=>S.pri[k].forEach(x=>{if(!x.d||rc(x)){const d=Math.round((new Date(k+"T00:00")-t0)/864e5);if(d>=1)tk.push({e:{type:"Task",code:"",title:x.t,date:k,time:"",pass:"",done:x.d,id:"p:"+k+":"+x.id},d})}}));
+ Object.keys(S.pri||{}).forEach(k=>S.pri[k].forEach(x=>{if(!x.d||rc(x)){const d=Math.round((new Date(k+"T00:00")-t0)/864e5);if(d>=1)tk.push({e:{type:"Task",code:"",title:x.t,date:k,time:x.tm||"",pass:x.n?"📝 "+x.n:"",done:x.d,id:"p:"+k+":"+x.id},d})}}));
  const ex=(S.exams||[]).filter(e=>!e.done||rc(e)).map(e=>({e:{...e,id:"d:"+e.id},d:Math.round((new Date(e.date+"T00:00")-t0)/864e5)})).concat(tk).sort((a,b)=>(!!a.e.done-!!b.e.done)||a.d-b.d),soon=ex.filter(o=>o.d<=14),later=ex.length-soon.length;
  $("ov_d").innerHTML=soon.map(({e,d})=>{const lab=d<0?(-d)+" day"+(d===-1?"":"s")+" overdue":d===0?"Today":d===1?"Tomorrow":"in "+d+" days";return `<div class="eu od${e.done?" dn":""}" data-od="${e.id}" style="cursor:pointer;gap:10px;align-items:flex-start"><span class="ckb">${e.done?"☑":"☐"}</span><span style="flex:1"><b>${esc(e.type)}${e.code?" · "+esc(e.code):""}</b>${e.title?" · "+esc(e.title):""}<br><span class="lbl">${new Date(e.date+"T00:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}${e.time?" · "+t12(e.time):""}${e.pass?" · "+esc(e.pass):""}</span></span><span style="${!e.done&&d<=2?"color:#d64545;font-weight:600":""}">${e.done?"done":lab}</span></div>`}).join("")||'<div class="lbl">No deadlines in the next 2 weeks.</div>';
  for(let i=0;i<=7;i++){const dt=new Date(t0);dt.setDate(t0.getDate()+i);const hh=PHH[YMD(dt)];if(hh)$("ov_d").innerHTML+=`<div class="eu"><span>🇵🇭 ${esc(hh[0])} <span class="lbl">· ${PHT[hh[1]]}</span></span><span class="lbl">${i===0?"today":i===1?"tomorrow":"in "+i+" days"}</span></div>`;const sn=S.sy==="2026-2027"?SCH[YMD(dt)]:"";if(sn)$("ov_d").innerHTML+=`<div class="eu"><span>🏫 ${sn}</span><span class="lbl">${i===0?"today":i===1?"tomorrow":"in "+i+" days"}</span></div>`}
@@ -470,7 +474,7 @@ function renderGt(){let cs=0,cg=0;const P=[];
 function dueList(){const now=new Date(),t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()),out=[];
  const dl=k=>Math.round((new Date(k+"T00:00")-t0)/864e5);
  (S.exams||[]).forEach(e=>{if(e.done)return;const d=dl(e.date);if(d<=1&&d>=-7)out.push({id:"d:"+e.id,d,time:e.time||"",t:(e.type||"Deadline")+(e.code?" · "+e.code:"")+(e.title?" · "+e.title:"")})});
- Object.keys(S.pri||{}).forEach(k=>{const d=dl(k);if(d<0||d>1)return;S.pri[k].forEach(x=>{if(!x.d)out.push({id:"p:"+k+":"+x.id,d,time:"",t:"Priority · "+x.t})})});
+ Object.keys(S.pri||{}).forEach(k=>{const d=dl(k);if(d<0||d>1)return;S.pri[k].forEach(x=>{if(!x.d)out.push({id:"p:"+k+":"+x.id,d,time:x.tm||"",t:"Priority · "+x.t})})});
  return out.sort((a,b)=>a.d-b.d||(a.time||"99").localeCompare(b.time||"99"))}
 const dueLab=d=>d<0?(-d)+" day"+(d===-1?"":"s")+" overdue":d===0?"Today":"Tomorrow";
 function ntState(){const h=$("nt_h"),b=$("nt_b");if(!b)return;const ok=typeof Notification!=="undefined";
@@ -500,7 +504,7 @@ function buildRem(){const st=new Date().toISOString().replace(/[-:]|\.\d{3}/g,""
   else{L.push("DTSTART;VALUE=DATE:"+n8(k),"SUMMARY:"+e2(sum),"DESCRIPTION:"+e2(desc));if(!task)al("-PT15H");al("PT8H")}
   L.push("END:VEVENT");n++};
  (S.exams||[]).filter(e=>!e.done&&e.date>=t).forEach(e=>ev(e.id,e.date,e.time,e.type+(e.code?" · "+e.code:"")+(e.title?" · "+e.title:""),e.pass||"",false));
- Object.keys(S.pri||{}).filter(k=>k>=t).forEach(k=>S.pri[k].filter(x=>!x.d).forEach(x=>ev(x.id,k,"","Priority: "+x.t,"Planned task",true)));
+ Object.keys(S.pri||{}).filter(k=>k>=t).forEach(k=>S.pri[k].filter(x=>!x.d).forEach(x=>ev(x.id,k,x.tm||"","Priority: "+x.t,x.n||"Planned task",true)));
  if(!n){alert("Nothing to remind you about yet. Add a deadline or a priority first.");return null}
  L.push("END:VCALENDAR");return new Blob([L.map(fold).join("\r\n")+"\r\n"],{type:"text/calendar"})}
 $("rem_b").onclick=async()=>{const b=buildRem();if(!b)return;const name="class-tracker-reminders.ics";let f=null;try{f=new File([b],name,{type:"text/calendar"})}catch(e){}
@@ -512,7 +516,7 @@ const PHT={R:"Regular holiday",S:"Special non-working day",W:"Special working da
 const SCH={"2026-08-10":"Classes start","2026-08-28":"1st Exam","2026-09-11":"2nd Exam","2026-09-25":"3rd Exam","2026-10-08":"Finals","2026-10-09":"Finals","2026-10-13":"2nd Term starts","2026-10-30":"1st Exam","2026-11-13":"2nd Exam","2026-11-27":"3rd Exam","2026-12-18":"Finals","2026-12-19":"Finals","2027-01-11":"Classes start","2027-01-29":"1st Exam","2027-02-12":"2nd Exam","2027-02-26":"3rd Exam","2027-03-11":"Finals","2027-03-12":"Finals","2027-03-16":"2nd Term starts","2027-04-02":"1st Exam","2027-04-16":"2nd Exam","2027-04-30":"3rd Exam","2027-05-13":"Finals","2027-05-14":"Finals","2027-06-18":"Prelim Exam","2027-07-02":"Midterm Exam","2027-07-15":"Final Exam","2027-07-16":"Final Exam"};
 const EVC={Exam:"#d64545",Quiz:"#e8913a",Assignment:"#3b7dd8","Final requirement":"#8e5bd0",Deadline:"#b0446a"};
 let CV=new Date(new Date().getFullYear(),new Date().getMonth(),1),CS=YMD(new Date()),PD=YMD(new Date());
-function evsOn(k){return[...(S.exams||[]).filter(e=>e.date===k).map(e=>({t:(e.code?e.code+" ":"")+(e.title||e.type),c:EVC[e.type]||"#b0446a",done:e.done,ck:"d:"+e.id})),...((S.pri||{})[k]||[]).map(x=>({t:x.t,c:"#2e9e6b",done:x.d,ck:"p:"+k+":"+x.id})),...(PHH[k]?[{t:PHH[k][0],h:PHT[PHH[k][1]],c:"#b8860b"}]:[]),...(SCH[k]&&S.sy==="2026-2027"?[{t:SCH[k],c:"#8b8b94"}]:[])]}
+function evsOn(k){return[...(S.exams||[]).filter(e=>e.date===k).map(e=>({t:(e.code?e.code+" ":"")+(e.title||e.type),c:EVC[e.type]||"#b0446a",done:e.done,ck:"d:"+e.id})),...((S.pri||{})[k]||[]).map(x=>({t:x.t,h:[x.tm?"🕒 "+t12(x.tm):"",x.n?"📝 "+x.n:""].filter(Boolean).join(" · "),c:"#2e9e6b",done:x.d,ck:"p:"+k+":"+x.id})),...(PHH[k]?[{t:PHH[k][0],h:"🇵🇭 "+PHT[PHH[k][1]],c:"#b8860b"}]:[]),...(SCH[k]&&S.sy==="2026-2027"?[{t:SCH[k],c:"#8b8b94"}]:[])]}
 function renderCal(){if(!$("cal_g"))return;
  const y=CV.getFullYear(),m=CV.getMonth(),td=YMD(new Date()),f=new Date(y,m,1).getDay(),n=new Date(y,m+1,0).getDate();
  $("cal_t").textContent=CV.toLocaleDateString(undefined,{month:"long",year:"numeric"});
@@ -520,24 +524,34 @@ function renderCal(){if(!$("cal_g"))return;
  for(let d=1;d<=n;d++){const k=y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0"),ev=evsOn(k);
   h+=`<div data-cd="${k}" class="${k===td?"td ":""}${k===CS?"sl":""}"><span class="cn">${d}</span>${ev.slice(0,2).map(e=>`<div class="ch" style="background:${e.c}${e.done?";opacity:.45;text-decoration:line-through":""}">${esc(e.t)}</div>`).join("")}${ev.length>2?`<div class="cmo">+${ev.length-2} more</div>`:""}</div>`}
  $("cal_g").innerHTML=h;const ev=evsOn(CS);
- $("cal_d").innerHTML=`<b>${new Date(CS+"T00:00").toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})}</b>`+(ev.map(e=>`<div class="cl${e.done?" dn":""}">${e.ck?`<input type="checkbox" data-ck="${e.ck}"${e.done?" checked":""} style="width:auto;margin-top:3px">`:'<span style="width:18px"></span>'}<div class="sw" style="background:${e.c}"></div><div class="bd">${esc(e.t)}${e.h?`<div class="lbl">🇵🇭 ${e.h}</div>`:""}</div></div>`).join("")||'<div class="lbl" style="margin-top:4px">Nothing planned.</div>')}
+ $("cal_d").innerHTML=`<b>${new Date(CS+"T00:00").toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})}</b>`+(ev.map(e=>`<div class="cl${e.done?" dn":""}">${e.ck?`<input type="checkbox" data-ck="${e.ck}"${e.done?" checked":""} style="width:auto;margin-top:3px">`:'<span style="width:18px"></span>'}<div class="sw" style="background:${e.c}"></div><div class="bd">${esc(e.t)}${e.h?`<div class="lbl">${esc(e.h)}</div>`:""}</div></div>`).join("")||'<div class="lbl" style="margin-top:4px">Nothing planned.</div>');cpLab()}
 $("cal_t").parentNode.onclick=ev=>{const t=ev.target.closest("[data-cm]");if(!t)return;const v=+t.dataset.cm;CV=v?new Date(CV.getFullYear(),CV.getMonth()+v,1):new Date(new Date().getFullYear(),new Date().getMonth(),1);if(!v)CS=YMD(new Date());renderCal()};
 $("cal_g").onclick=ev=>{const t=ev.target.closest("[data-cd]");if(t){CS=t.dataset.cd;renderCal()}};
 $("cal_d").onchange=ev=>{const c=ev.target.dataset.ck;if(!c)return;const q=c.split(":");
- if(q[0]==="d"){const e=(S.exams||[]).find(x=>x.id===q[1]);if(e)e.done=ev.target.checked}else{const x=((S.pri||{})[q[1]]||[]).find(z=>z.id===q[2]);if(x)x.d=ev.target.checked}
+ if(q[0]==="d"){const e=(S.exams||[]).find(x=>x.id===q[1]);if(e)e.done=ev.target.checked}else{const x=((S.pri||{})[q[1]]||[]).find(z=>z.id===q[2]);if(x){x.d=ev.target.checked;if(x.d)x.dAt=Date.now();else delete x.dAt}}
  save();renderStudy()};
-function renderPri(){if(!$("pr_l"))return;const t=YMD(new Date()),L=(S.pri||{})[PD]||[],dn=L.filter(x=>x.d).length;$("pr_d").value=PD;{const old=[];Object.keys(S.pri||{}).forEach(k=>{if(k<t)(S.pri[k]||[]).forEach(x=>{if(!x.d)old.push(x)})});$("pr_c").innerHTML=old.length?`<div class="eu"><span>↪ ${old.length} unfinished from earlier days</span><button id="pr_mv">Move to today</button></div>`:""}
+function renderPri(){if(!$("pr_l"))return;const t=YMD(new Date()),L=((S.pri||{})[PD]||[]).slice().sort((a,b)=>(a.tm||"99:99").localeCompare(b.tm||"99:99")),dn=L.filter(x=>x.d).length,nw=Date.now(),VL=L.filter(x=>!x.d||SD||(x.dAt&&nw-x.dAt<10000));$("pr_d").value=PD;clearTimeout(pT);{const f=L.filter(x=>x.d&&x.dAt&&nw-x.dAt<10000);if(f.length&&!SD)pT=setTimeout(renderPri,Math.min(...f.map(x=>10000-(nw-x.dAt)))+60)}{const old=[];Object.keys(S.pri||{}).forEach(k=>{if(k<t)(S.pri[k]||[]).forEach(x=>{if(!x.d)old.push(x)})});$("pr_c").innerHTML=old.length?`<div class="eu"><span>↪ ${old.length} unfinished from earlier days</span><button id="pr_mv">Move to today</button></div>`:""}
  $("pr_t").textContent=PD===t?"Today’s priorities":"Priorities · "+new Date(PD+"T00:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});
- $("pr_l").innerHTML=L.map(x=>`<div class="cl${x.d?" dn":""}"><input type="checkbox" data-pk="${x.id}"${x.d?" checked":""} style="width:auto;margin-top:3px"><div class="bd">${esc(x.t)}<div class="mt2">Planned for ${PD===t?"today":PD===YMD(new Date(Date.now()+864e5))?"tomorrow":new Date(PD+"T00:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}</div></div><button class="dnb" data-px="${x.id}" title="Delete">✕</button></div>`).join("")||'<div class="lbl">Nothing planned yet.</div>';
- $("pr_s").textContent=L.length?dn+" of "+L.length+" done"+(L.length>5?" · that’s a lot, try to keep it to 5":""):""}
+ $("pr_l").innerHTML=VL.map(x=>`<div class="cl${x.d?" dn":""}"><input type="checkbox" data-pk="${x.id}"${x.d?" checked":""} style="width:auto;margin-top:3px"><div class="bd">${esc(x.t)}${x.tm?` <span class="lbl">🕒 ${t12(x.tm)}</span>`:""}${x.n?`<div class="mt2">📝 ${esc(x.n)}</div>`:""}<div class="mt2">Planned for ${PD===t?"today":PD===YMD(new Date(Date.now()+864e5))?"tomorrow":new Date(PD+"T00:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}</div></div><button class="dnb" data-px="${x.id}" title="Delete">✕</button></div>`).join("")||(L.length?'<div class="lbl">All done 🎉</div>':'<div class="lbl">Nothing planned yet.</div>');
+ $("pr_s").innerHTML=L.length?dn+" of "+L.length+" done"+(L.length>5?" · that’s a lot, try to keep it to 5":"")+(dn?` · <a href="#" id="pr_sh">${SD?"Hide":"Show"} done</a>`:""):""}
+$("pr_s").onclick=ev=>{if(ev.target.id==="pr_sh"){ev.preventDefault();SD=!SD;renderPri()}};
 $("pr_c").onclick=ev=>{if(!ev.target.closest("#pr_mv"))return;const t=YMD(new Date());Object.keys(S.pri).forEach(k=>{if(k<t){const keep=[];S.pri[k].forEach(x=>{if(x.d)keep.push(x);else(S.pri[t]=S.pri[t]||[]).push(x)});S.pri[k]=keep}});PD=t;priUp()};
 const priUp=()=>{save();renderPri();renderCal();renderOv()};
 $("pr_d").onchange=()=>{PD=$("pr_d").value||YMD(new Date());renderPri()};
-const priAdd=()=>{const v=$("pr_i").value.trim();if(!v)return;if(!S.pri)S.pri={};(S.pri[PD]=S.pri[PD]||[]).push({id:"p"+Date.now(),t:v,d:false});$("pr_i").value="";priUp()};
-$("pr_a").onclick=priAdd;$("pr_i").onkeydown=e=>{if(e.key==="Enter")priAdd()};
-$("pr_l").onchange=ev=>{const id=ev.target.dataset.pk;const x=((S.pri||{})[PD]||[]).find(z=>z.id===id);if(x){x.d=ev.target.checked;priUp()}};
+const priAdd=()=>{const v=$("pr_i").value.trim();if(!v)return;if(!S.pri)S.pri={};(S.pri[PD]=S.pri[PD]||[]).push({id:"p"+Date.now(),t:v,tm:$("pr_tm").value||"",n:$("pr_n").value.trim(),d:false});$("pr_i").value="";$("pr_tm").value="";$("pr_n").value="";priUp()};
+$("pr_a").onclick=priAdd;$("pr_i").onkeydown=e=>{if(e.key==="Enter")priAdd()};$("pr_n").onkeydown=e=>{if(e.key==="Enter")priAdd()};
+$("pr_l").onchange=ev=>{const id=ev.target.dataset.pk;const x=((S.pri||{})[PD]||[]).find(z=>z.id===id);if(x){x.d=ev.target.checked;if(x.d)x.dAt=Date.now();else delete x.dAt;priUp()}};
 $("pr_l").onclick=ev=>{const t=ev.target.closest("[data-px]");if(t){S.pri[PD]=(S.pri[PD]||[]).filter(z=>z.id!==t.dataset.px);priUp()}};
 $("hfb").onclick=()=>{S.hf=!S.hf;save();render()};
+function cpLab(){const b=$("cp_b");if(b)b.textContent="＋ Add priority · "+new Date(CS+"T00:00").toLocaleDateString(undefined,{month:"short",day:"numeric"})}
+$("cp_b").onclick=()=>{$("cp_f").hidden=!$("cp_f").hidden;if(!$("cp_f").hidden)$("cp_t").focus()};
+$("cp_x").onclick=()=>{$("cp_f").hidden=true};
+const cpAdd=()=>{const v=$("cp_t").value.trim();if(!v){$("cp_t").focus();return}if(!S.pri)S.pri={};(S.pri[CS]=S.pri[CS]||[]).push({id:"p"+Date.now(),t:v,tm:$("cp_tm").value||"",n:$("cp_n").value.trim(),d:false});$("cp_t").value="";$("cp_tm").value="";$("cp_n").value="";$("cp_f").hidden=true;priUp()};
+$("cp_a").onclick=cpAdd;$("cp_t").onkeydown=e=>{if(e.key==="Enter")cpAdd()};$("cp_n").onkeydown=e=>{if(e.key==="Enter")cpAdd()};
+{let DD={};try{DD=JSON.parse(localStorage.getItem("gwa-dd")||"{}")}catch(e){}
+["dd_sch","dd_cls"].forEach(i=>{const d=$(i);if(d&&DD[i]===false)d.open=false});
+document.addEventListener("toggle",ev=>{const d=ev.target;if(d&&(d.id==="dd_sch"||d.id==="dd_cls")){DD[d.id]=d.open;try{localStorage.setItem("gwa-dd",JSON.stringify(DD))}catch(e){}}},true)}
+
 const QS=["Small steps every day still get you to the finish line.","You don’t have to be perfect. You just have to keep going.","Future you is counting on what you do today.","Hard now, proud later.","One more page, one more problem, one step closer.","Progress is progress, no matter how small.","Rest if you must, but don’t quit.","Every engineer you admire once struggled with the same subjects.","Discipline carries you on the days motivation doesn’t.","Stay curious. Stay consistent. Stay kind to yourself.","A bad grade is feedback, not a verdict.","Build your future the way you build a structure: one solid layer at a time.","You’ve survived every tough day so far. Keep that record going.","Show up today. That’s already half the work.","Done is better than perfect. Start the plate, then finish the plate.","Don’t wait for the perfect time. Start with the time you have.","You’re closer to graduation than you were yesterday.","Study now, celebrate later.","Little by little, the load gets lighter.","Focus on the next task, not the whole mountain.","Take a break, drink some water, then get back to it.","You’ve handled harder things than this."];
 let QI=Math.floor(Math.random()*QS.length);const showQ=()=>{$("ov_q").textContent="“"+QS[QI]+"”"};showQ();
 $("ov_qn").onclick=()=>{let n;do{n=Math.floor(Math.random()*QS.length)}while(n===QI);QI=n;showQ()};
