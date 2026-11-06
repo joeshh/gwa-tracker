@@ -137,6 +137,14 @@ input[type=date]{font:inherit;color:var(--tx);background:var(--bg);border:1px so
 <div class="row"><button id="x_add">＋ Add</button></div><div id="xl" style="margin-top:8px"></div></div>
 <div class="card"><h2>Course requirements</h2><div class="lbl" style="margin-bottom:6px">List what each subject needs (plates, projects, final requirement) and tick them off so you never get a 7.2.</div><div id="rq_l"></div></div>
 <div class="card"><h2>Phone reminders</h2><div class="lbl" style="margin-bottom:6px">Sends your open deadlines and planned tasks to your Calendar with alerts the day before and on the day. Run it again after adding more; it updates instead of duplicating.</div><div class="row"><button id="rem_b">📲 Add reminders to my phone</button></div><div class="lbl" id="rem_h" style="margin-top:4px"></div><div class="lbl" style="margin:10px 0 6px">Also get a notification when you open the tracker and something is due today or tomorrow. It only fires while the app is open; the calendar reminders above cover the times it is closed.</div><div class="row"><button id="nt_b">🔔 Alerts: Off</button></div><div class="lbl" id="nt_h" style="margin-top:4px"></div></div>
+<details id="dd_push"><summary><b>Push notifications when the app is closed</b><span>tap to open</span></summary><div style="padding:0 14px 14px">
+<div class="lbl" style="margin-bottom:8px">A free GitHub job checks your deadlines and priorities every 15 minutes and sends a real push through the free ntfy app: a morning summary at 7 AM, a heads-up at 8 PM for tomorrow, and a reminder 1 hour before anything with a time. One-time setup, about 10 minutes. Full steps are in push-setup.md.</div>
+<div class="lbl" id="pn_s" style="margin-bottom:8px"></div>
+<div class="row"><button id="pn_c">Create my notification topic</button><button class="g" id="pn_t">Send test notification</button></div>
+<div class="row"><button class="g" id="pn_ct">Copy topic</button><button class="g" id="pn_cg">Copy Gist ID</button></div>
+<div class="lbl" id="pn_h" style="margin-top:4px"></div>
+<div class="lbl" style="margin-top:8px">1. Install the free <b>ntfy</b> app, tap “+”, and subscribe to your topic (keep the default server ntfy.sh).<br>2. In your GitHub repo, add a secret named <b>GIST_ID</b> with the Gist ID above.<br>3. Add <b>remind.mjs</b> to the repo and create <b>.github/workflows/remind.yml</b>.<br>4. Tap “Send test notification” to check it reaches your phone.</div>
+</div></details>
 <div class="card"><h2>Absences</h2><div class="lbl" style="margin-bottom:6px">Tap + each time you miss a class. The limit is 5 absences per subject. You get a pre-warning at 2 absences and a warning once you go over 2.</div><div id="aw"></div><div id="al"></div></div>
 </div>
 
@@ -174,7 +182,7 @@ input[type=date]{font:inherit;color:var(--tx);background:var(--bg);border:1px so
 <div class="card"><h2>Still needed to graduate</h2><div id="rem"></div></div>
 
 <div id="secs"></div>
-<div class="card"><h2>Backup &amp; cloud sync</h2><div class="row"><button class="g" onclick="setupSync()">☁ Set up cloud sync</button><button class="g" onclick="exportData()">⬇ Export backup</button><button class="g" onclick="document.getElementById('imp').click()">⬆ Import backup</button><input type="file" id="imp" accept=".json,application/json" hidden onchange="importData(this.files[0]);this.value=''"></div><div class="lbl" style="margin-top:8px">Your data is always saved on this device and works offline. With cloud sync on, it is also copied to a private GitHub Gist and loads on your other devices.</div></div>
+<div class="card"><h2>Backup &amp; cloud sync</h2><div class="row"><button class="g" onclick="setupSync()">☁ Set up cloud sync</button><button class="g" onclick="exportData()">⬇ Export backup</button><button class="g" onclick="document.getElementById('imp').click()">⬆ Import backup</button><button class="g" id="bk_b" hidden onclick="restoreBak()"></button><input type="file" id="imp" accept=".json,application/json" hidden onchange="importData(this.files[0]);this.value=''"></div><div class="lbl" style="margin-top:8px">Your data is always saved on this device and works offline. With cloud sync on, it is also copied to a private GitHub Gist and loads on your other devices.</div></div>
 <div class="row"><button class="g" id="rs">Reset all my edits</button></div>
 <div class="lbl">Set a subject’s status when you enroll, then enter its grade when released. Choosing a grade marks it Completed automatically. Edits are saved on this device automatically.</div>
 </div>
@@ -197,6 +205,7 @@ input[type=date]{font:inherit;color:var(--tx);background:var(--bg);border:1px so
 <div class="row" style="justify-content:space-between"><button class="g" id="cdel" style="color:#d64545">Delete</button><span class="row"><button class="g" id="ccx">Cancel</button><button id="csv">Save</button></span></div></div></div>
 
 <div class="ov" id="pov"><div class="modal" style="text-align:left"><h2 id="pt2"></h2><div class="lbl">Tick the subjects that must be passed first. A subject you haven’t taken stays locked until they are all Completed.</div><div id="pb"></div><div class="row" style="justify-content:flex-end"><button class="g" id="pcx">Cancel</button><button id="psv">Save</button></div></div></div>
+<div class="ov" id="cfov"><div class="modal" style="text-align:left"><h2>⚠ Sync conflict</h2><div class="lbl" id="cf_t" style="margin-bottom:10px"></div><div class="row" style="flex-direction:column;align-items:stretch"><button id="cf_c" onclick="useCloud()">Use the cloud version</button><button id="cf_l" onclick="keepLocal()">Keep this device’s version</button></div><div class="lbl" style="margin-top:10px">Whichever you don’t pick is saved as a backup. You can bring it back with “Restore the version I replaced” in the Grades tab.</div></div></div>
 <div class="ov" id="qov"><div class="modal" style="text-align:left"><h2 id="q_t"></h2><div id="q_b"></div><div class="row" style="justify-content:flex-end"><button class="g" id="q_x">Close</button><button id="q_s">Add</button></div></div></div>
 <div class="tq" id="tq"></div>
 <div class="ov" id="ov"><div class="modal"><div class="em">🎓</div><h2 id="mt"></h2><div id="mb"></div><div class="row" style="justify-content:center"><button id="mc">Close</button></div></div></div>
@@ -225,15 +234,32 @@ if(!S.st)S.st={};if(!S.g)S.g={};
 let pt;
 const sync=t=>{const e=document.getElementById("sy");if(e)e.textContent=t};
 const save=()=>{S.u=Date.now();try{localStorage.setItem("gwa-v1",JSON.stringify(S))}catch(e){}push()};
+const KEYS="gwa-v1";
 const NTK="gwa-nt";let NF={};try{NF=JSON.parse(localStorage.getItem(NTK)||"{}")}catch(e){}
-let SD=false,pT;
+let SD=false,pT,SC=false;
 const ntSave=()=>{try{localStorage.setItem(NTK,JSON.stringify(NF))}catch(e){}};
 const SK="gwa-sync";let SY={};try{SY=JSON.parse(localStorage.getItem(SK)||"{}")}catch(e){}
 let UA=false;
-const GH=(p,o)=>fetch("https://api.github.com"+p,Object.assign({},o,{headers:{Authorization:"Bearer "+SY.t,Accept:"application/vnd.github+json","Content-Type":"application/json"}})).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()});
+const GH=(p,o)=>fetch("https://api.github.com"+p,Object.assign({cache:"no-store"},o,{headers:{Authorization:"Bearer "+SY.t,Accept:"application/vnd.github+json","Content-Type":"application/json"}})).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()});
 const payload=()=>{const d=JSON.parse(JSON.stringify(S));delete d.theme;return d};
-function push(){if(!SY.id)return;clearTimeout(pt);sync("Syncing…");pt=setTimeout(()=>GH("/gists/"+SY.id,{method:"PATCH",body:JSON.stringify({files:{"gwa.json":{content:JSON.stringify(payload())}}})}).then(()=>sync("☁ Synced")).catch(()=>sync(navigator.onLine?"Sync error: saved on this device":"Offline: saved on this device, will sync later")),600)}
-function adopt(d){const t=S.theme;S=Object.assign({g:{},st:{},ex:false,as:"3",cel:false},d,{theme:t});try{localStorage.setItem("gwa-v1",JSON.stringify(S))}catch(e){}$("as").innerHTML=opts(S.as);render()}
+const hm=t=>new Date(t).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"}),BK=SK.replace("sync","bak");let CFD=null;
+function okSync(u){SY.lu=u;SY.last=Date.now();try{localStorage.setItem(SK,JSON.stringify(SY))}catch(e){}sync("☁ Synced · "+hm(SY.last));try{pnUi()}catch(e){}}
+function bak(d,why){try{localStorage.setItem(BK,JSON.stringify({t:Date.now(),why,data:d}))}catch(e){}bakUi()}
+function bakUi(){const b=$("bk_b");if(!b)return;let x=null;try{x=JSON.parse(localStorage.getItem(BK)||"null")}catch(e){}b.hidden=!x;if(x)b.textContent="↩ Restore the version I replaced ("+new Date(x.t).toLocaleString(undefined,{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})+")"}
+function restoreBak(){let x=null;try{x=JSON.parse(localStorage.getItem(BK)||"null")}catch(e){}if(!x||!x.data)return;
+ if(!confirm("Bring back the version saved on "+new Date(x.t).toLocaleString()+"? What you have now is kept as a backup you can switch back to."))return;
+ const cur=payload(),d=x.data;d.u=Date.now();bak(cur,"swap");adopt(d);save()}
+function conflict(d){CFD=d;const f=t=>t?new Date(t).toLocaleString(undefined,{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}):"unknown";
+ $("cf_t").innerHTML="This device and the cloud were both changed since the last sync.<br><b>This device:</b> edited "+f(S.u)+"<br><b>Cloud:</b> edited "+f(d.u);$("cfov").classList.add("on");sync("⚠ Sync needs your choice")}
+function cfClose(){$("cfov").classList.remove("on")}
+function useCloud(){if(!CFD)return;bak(payload(),"local");const d=CFD;CFD=null;cfClose();adopt(d);okSync(d.u||0)}
+function keepLocal(){if(!CFD)return;bak(CFD,"cloud");CFD=null;cfClose();S.u=Date.now();try{localStorage.setItem(KEYS,JSON.stringify(S))}catch(e){}push(true)}
+function push(force){if(!SY.id)return;clearTimeout(pt);sync("Syncing…");pt=setTimeout(async()=>{const u=S.u,body=JSON.stringify(payload());
+ try{
+  if(!force&&SY.lu){const g=await GH("/gists/"+SY.id),f=g.files&&g.files["gwa.json"],d=f?JSON.parse(f.content):null;if(d&&(d.u||0)>SY.lu&&(d.u||0)!==u){conflict(d);return}}
+  await GH("/gists/"+SY.id,{method:"PATCH",body:JSON.stringify({files:{"gwa.json":{content:body}}})});okSync(u)
+ }catch(e){sync(navigator.onLine?"Sync error: saved on this device":"Offline: saved on this device, will sync later")}},600)}
+function adopt(d){const t=S.theme;S=Object.assign({g:{},st:{},ex:false,as:"3",cel:false},d,{theme:t});try{localStorage.setItem(KEYS,JSON.stringify(S))}catch(e){}$("as").innerHTML=opts(S.as);render()}
 async function cloud(){
  if(!SY.t){sync("Saved on this device only");return}
  try{
@@ -241,7 +267,15 @@ async function cloud(){
    SY.id=g?g.id:(await GH("/gists",{method:"POST",body:JSON.stringify({description:"gwa-tracker-data",public:false,files:{"gwa.json":{content:JSON.stringify(payload())}}})})).id;
    localStorage.setItem(SK,JSON.stringify(SY))}
   const g=await GH("/gists/"+SY.id),f=g.files&&g.files["gwa.json"],d=f?JSON.parse(f.content):null;
-  if(d&&(d.u||0)>(S.u||0)){adopt(d);sync("☁ Synced")}else if(d&&(d.u||0)<(S.u||0))push();else sync("☁ Synced")
+  if(!d){push(true);return}
+  const ru=d.u||0,lu=S.u||0,base=SY.lu;
+  if(ru===lu){okSync(ru);return}
+  if(base!=null){const lc=lu>base,rc=ru>base;
+   if(lc&&rc){conflict(d);return}
+   if(rc){bak(payload(),"local");adopt(d);okSync(ru);return}
+   if(lc){push();return}
+   okSync(base);return}
+  if(ru>lu){bak(payload(),"local");adopt(d);okSync(ru)}else{bak(d,"cloud");push(true)}
  }catch(e){sync(navigator.onLine?"Sync error: check your token":"Offline: saved on this device")}}
 function setupSync(){const t=prompt("Paste your GitHub token (classic token with only the “gist” permission). Leave empty to turn cloud sync off.",SY.t||"");
  if(t===null)return;SY=t.trim()?{t:t.trim()}:{};localStorage.setItem(SK,JSON.stringify(SY));cloud()}
@@ -396,6 +430,7 @@ $("wpv").innerHTML=["iPhone","iPad","MacBook"].map(g=>`<optgroup label="${g==="M
  if(dv==null||!DEVS[+dv])dv=ios?di("iPhone 17 Pro /"):ipad?di("iPad Air 11"):di("MacBook Air 13-inch (M2");
  $("wpv").value=dv;if(dor==="l"||dor==="p")$("wpo").value=dor}
 const AL=5,AW=2;
+const absLog=c=>(c.absLog||[]).slice().sort((a,b)=>b.d.localeCompare(a.d)).map(x=>`<div class="mt2">📅 ${new Date(x.d+"T00:00").toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})}${x.r?" · "+esc(x.r):""} <button class="dnb" data-adl="${c.id}:${x.id}" title="Remove" style="padding:0 8px;margin:0 0 0 4px">✕</button></div>`).join("");
 function absInfo(c){const a=c.abs||0,l=AL-a;
  if(a>AL)return["bad","⚠ Over the limit by "+(a-AL)];if(a===AL)return["bad","⚠ Limit reached: no more absences allowed"];
  if(a>AW)return["warn","⚠ Warning: only "+l+" more absence"+(l===1?"":"s")+" allowed"];
@@ -417,17 +452,17 @@ function renderStudy0(){
  const t0=new Date();t0.setHours(0,0,0,0);
  const ex=S.exams.slice().sort((a,b)=>(!!a.done-!!b.done)||(a.date+(a.time||"")).localeCompare(b.date+(b.time||"")));
  $("xl").innerHTML=ex.map(e=>{const d=Math.round((new Date(e.date+"T00:00")-t0)/864e5),lab=d===0?"Today":d===1?"Tomorrow":d>1?"in "+d+" days":(-d)+" day"+(d===-1?"":"s")+" overdue",hot=!e.done&&d<=2;
-  return `<div class="cl${e.done?" dn":""}"><input type="checkbox" data-xd="${e.id}"${e.done?" checked":""} style="width:auto;margin-top:3px"><div class="bd"><b>${esc(e.type)}${e.code?" · "+esc(e.code):""}${e.title?" · "+esc(e.title):""}</b><div class="mt2">${new Date(e.date+"T00:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}${e.time?" · "+t12(e.time):""}${e.pass?" · "+esc(e.pass):""} · <span style="${hot?"color:#d64545;font-weight:600":""}">${e.done?"done":lab}</span></div></div><button class="dnb" data-xx="${e.id}" title="Delete">✕</button></div>`}).join("")||'<div class="lbl">Nothing added yet.</div>';
+  return `<div class="cl${e.done?" dn":""}"><input type="checkbox" data-xd="${e.id}"${e.done?" checked":""} style="width:auto;margin-top:3px"><div class="bd"><b>${esc(e.type)}${e.code?" · "+esc(e.code):""}${e.title?" · "+esc(e.title):""}</b><div class="mt2">${new Date(e.date+"T00:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}${e.time?" · "+t12(e.time):""}${e.pass?" · "+esc(e.pass):""} · <span style="${hot?"color:#d64545;font-weight:600":""}">${e.done?"done":lab}</span></div></div><button class="dnb" data-ed="d:${e.id}" title="Edit">✎</button> <button class="dnb" data-xx="${e.id}" title="Delete">✕</button></div>`}).join("")||'<div class="lbl">Nothing added yet.</div>';
  $("aw").innerHTML=absBanner(cl);
- $("al").innerHTML=cl.map(c=>{const a=c.abs||0,[l,m]=absInfo(c);return `<div class="cl"><div class="bd"><b>${esc(c.code)} · ${esc(dsc(c.desc))}</b><div class="mt2" style="${absStyle(l)}">${m}</div></div><div class="row" style="margin:0;flex-wrap:nowrap"><button class="ic" data-am="${c.id}">−</button><b style="min-width:44px;text-align:center;${a>AW?"color:#d64545":a===AW?"color:var(--pen)":""}">${a} / ${AL}</b><button class="ic" data-ap="${c.id}">+</button></div></div>`}).join("")||'<div class="lbl">No ongoing classes.</div>'}
+ $("al").innerHTML=cl.map(c=>{const a=c.abs||0,[l,m]=absInfo(c);return `<div class="cl"><div class="bd"><b>${esc(c.code)} · ${esc(dsc(c.desc))}</b><div class="mt2" style="${absStyle(l)}">${m}</div>${absLog(c)}</div><div class="row" style="margin:0;flex-wrap:nowrap"><button class="ic" data-am="${c.id}">−</button><b style="min-width:44px;text-align:center;${a>AW?"color:#d64545":a===AW?"color:var(--pen)":""}">${a} / ${AL}</b><button class="ic" data-ap="${c.id}">+</button></div></div>`}).join("")||'<div class="lbl">No ongoing classes.</div>'}
 const YMD=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"),HM=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0"),DUR=m=>(m>=60?Math.floor(m/60)+"h ":"")+(m%60?m%60+"m":"");
 function renderOv(){
  const now=new Date(),t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()),cl=CL(),act=cl.filter(c=>!isDone(c));
  const dk=["","M","T","W","Th","F","Sa"][now.getDay()],tm=S.tm==="2"?"2nd Term":"1st Term",nm=now.getHours()*60+now.getMinutes(),inT=c=>c.term==="Sem"||c.term===tm;
  $("hsm").textContent=S.sm==="3"?"Summer "+String(S.sy||"").slice(5):(S.sm==="2"?"Second":"First")+" Semester "+String(S.sy||"").replace(/^(\d{4})-\d{2}(\d{2})$/,"$1-$2");
  $("ov_t").textContent="Today · "+now.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});
- const td=act.filter(c=>dk&&c.s&&c.e&&(c.days||[]).includes(dk)&&inT(c)).sort((a,b)=>a.s.localeCompare(b.s)),nx=td.find(c=>mins(c.e)>nm);
- $("ov_c").innerHTML=td.map(c=>{const st=mins(c.e)<=nm?"Finished":mins(c.s)<=nm?"Now":c===nx?"Next":"";return `<div class="cl${st==="Finished"?" dn":""}"><div class="tm">${t12(c.s)}<small>to ${t12(c.e)}</small></div><div class="bd"><b>${esc(c.code)} · ${esc(dsc(c.desc))}${st&&st!=="Finished"?`<span class="nw">${st}</span>`:""}</b><div class="mt2">${c.room?"Room "+esc(c.room):"No room set"}${c.link?` · <a href="${esc(c.link)}" target="_blank" rel="noopener">🔗 Link</a>`:""}</div>${c.note?`<div class="mt2">📝 ${esc(c.note)}</div>`:""}</div></div>`}).join("")||`<div class="lbl">${dk?"No classes today. 🎉":"No classes on Sundays."}</div>`;
+ const hl=PHH[YMD(now)],hol=!!hl&&hl[1]!=="W"&&!SC,hb=hl?`<div class="eu" style="margin-bottom:6px"><span>🇵🇭 <b>${esc(hl[0])}</b> · ${PHT[hl[1]]}${hl[1]==="W"?" · classes still hold":(SC?" · showing classes anyway":" · no classes today")}</span>${hl[1]!=="W"?`<button class="ic" id="ov_sc" style="width:auto;padding:0 10px">${SC?"Hide classes":"Show classes"}</button>`:""}</div>`:"",td=hol?[]:act.filter(c=>dk&&c.s&&c.e&&(c.days||[]).includes(dk)&&inT(c)).sort((a,b)=>a.s.localeCompare(b.s)),nx=td.find(c=>mins(c.e)>nm);
+ $("ov_c").innerHTML=hb+td.map(c=>{const st=mins(c.e)<=nm?"Finished":mins(c.s)<=nm?"Now":c===nx?"Next":"";return `<div class="cl${st==="Finished"?" dn":""}"><div class="tm">${t12(c.s)}<small>to ${t12(c.e)}</small></div><div class="bd"><b>${esc(c.code)} · ${esc(dsc(c.desc))}${st&&st!=="Finished"?`<span class="nw">${st}</span>`:""}</b><div class="mt2">${c.room?"Room "+esc(c.room):"No room set"}${c.link?` · <a href="${esc(c.link)}" target="_blank" rel="noopener">🔗 Link</a>`:""}</div>${c.note?`<div class="mt2">📝 ${esc(c.note)}</div>`:""}</div></div>`}).join("")||(hol?"":`<div class="lbl">${dk?"No classes today. 🎉":"No classes on Sundays."}</div>`);
  let cur=Math.max(420,nm);const gaps=[];
  td.forEach(c=>{const a=mins(c.s),e=mins(c.e);if(a-cur>=30)gaps.push([cur,a]);cur=Math.max(cur,e)});
  if(1260-cur>=30)gaps.push([cur,1260]);
@@ -449,9 +484,30 @@ function renderOv(){
  const P2=new Set([...PS,...all.filter(q=>stOf(q)==="prog").map(q=>q[0])]);if(D.every(([n,l])=>parseInt(n)>=5||l.every(y=>P2.has(y[0]))))P2.add("5th Year Standing");
  const un=all.filter(q=>stOf(q)==="none"&&lkOf(q[0],"none")&&pre(q[0]).every(x=>P2.has(x)));
  renderPri();renderCal();renderTg();renderGt();
- $("ov_u").innerHTML=un.slice(0,8).map(q=>`<span class="chip"><b>${esc(q[0])}</b> ${esc(dsc(q[1]))}</span>`).join("")+(un.length>8?`<div class="lbl">+ ${un.length-8} more</div>`:"");$("ov_uc").style.display=un.length?"":"none";chkAlerts()}
+ $("ov_u").innerHTML=un.slice(0,8).map(q=>`<span class="chip"><b>${esc(q[0])}</b> ${esc(dsc(q[1]))}</span>`).join("")+(un.length>8?`<div class="lbl">+ ${un.length-8} more</div>`:"");$("ov_uc").style.display=un.length?"":"none";chkAlerts();pnUi()}
+$("ov_c").onclick=ev=>{if(ev.target.id==="ov_sc"){SC=!SC;renderOv()}};
+let QE="";
+function editItem(ck){const k=ck.split(":");QE=ck;const cl=CL().filter(c=>!isDone(c));let h="";
+ if(k[0]==="d"){const e=(S.exams||[]).find(x=>x.id===k[1]);if(!e)return;
+  const so=cl.map(c=>`<option value="${esc(c.code)}">${esc(c.code)} · ${esc(dsc(c.desc))}</option>`).join("")+(e.code&&!cl.some(c=>c.code===e.code)?`<option value="${esc(e.code)}">${esc(e.code)}</option>`:"")+'<option value="">General</option>';
+  const ty=["Exam","Quiz","Assignment","Final requirement","Deadline"].map(t=>`<option${t===e.type?" selected":""}>${t}</option>`).join(""),ps=["Face-to-face","Online (BBL)"].map(t=>`<option${t===e.pass?" selected":""}>${t}</option>`).join("");
+  $("q_t").textContent="Edit deadline";
+  h=`<div class="fm"><div class="w"><label>Subject<select id="e_sub" style="width:100%">${so}</select></label></div><div><label>Type<select id="e_type" style="width:100%">${ty}</select></label></div><div><label>To pass<select id="e_pass" style="width:100%">${ps}</select></label></div><div class="w"><label>Title (optional)<input id="e_title" value="${esc(e.title||"")}"></label></div><div><label>Date<input type="date" id="e_date" value="${esc(e.date)}"></label></div><div><label>Time (optional)<input type="time" id="e_time" value="${esc(e.time||"")}"></label></div></div>`}
+ else{const x=((S.pri||{})[k[1]]||[]).find(z=>z.id===k[2]);if(!x)return;$("q_t").textContent="Edit priority";
+  h=`<div class="fm"><div class="w"><label>Priority<input id="e_t" maxlength="80" value="${esc(x.t)}"></label></div><div><label>Date<input type="date" id="e_date" value="${esc(k[1])}"></label></div><div><label>Time (optional)<input type="time" id="e_tm" value="${esc(x.tm||"")}"></label></div><div class="w"><label>Notes (optional)<input id="e_n" maxlength="200" value="${esc(x.n||"")}"></label></div></div>`}
+ $("q_b").innerHTML=h;$("q_b").dataset.m="e";$("q_s").hidden=false;$("q_s").textContent="Save";$("qov").classList.add("on")}
+function saveEdit(){const k=QE.split(":"),d=$("e_date").value;if(!d){alert("Please choose a date.");return}
+ if(k[0]==="d"){const e=(S.exams||[]).find(x=>x.id===k[1]);if(!e){qClose();return}e.code=$("e_sub").value;e.type=$("e_type").value;e.pass=$("e_pass").value;e.title=$("e_title").value.trim();e.date=d;e.time=$("e_time").value}
+ else{const a=(S.pri||{})[k[1]]||[],x=a.find(z=>z.id===k[2]),v=$("e_t").value.trim();if(!x){qClose();return}if(!v){alert("Please enter a title.");return}
+  x.t=v;x.tm=$("e_tm").value;x.n=$("e_n").value.trim();if(d!==k[1]){S.pri[k[1]]=a.filter(z=>z!==x);(S.pri[d]=S.pri[d]||[]).push(x)}}
+ save();qClose();renderStudy()}
+function absOpen(cid){const c=CL().find(x=>x.id===cid);if(!c)return;QE=cid;$("q_t").textContent="Log absence · "+c.code;
+ $("q_b").innerHTML=`<div class="fm"><div><label>Date<input type="date" id="a_date" value="${YMD(new Date())}"></label></div><div class="w"><label>Reason (optional)<input id="a_r" maxlength="120" placeholder="e.g. sick, family matter"></label></div></div>`;
+ $("q_b").dataset.m="ea";$("q_s").hidden=false;$("q_s").textContent="Add";$("qov").classList.add("on")}
+function saveAbs(){const c=CL().find(x=>x.id===QE),d=$("a_date").value;if(!c)return;if(!d){alert("Please choose a date.");return}
+ c.abs=(c.abs||0)+1;(c.absLog=c.absLog||[]).push({id:"a"+Date.now(),d,r:$("a_r").value.trim()});save();qClose();renderStudy()}
 function qClose(){$("qov").classList.remove("on");$("ov_qd").classList.remove("on");$("ov_qa").classList.remove("on")}
-function qOpen(m){$("ov_qd").classList.toggle("on",m==="d");$("ov_qa").classList.toggle("on",m==="a");const cl=CL().filter(c=>!isDone(c));$("q_t").textContent=m==="d"?"Add a deadline":"Log an absence";$("q_s").hidden=m!=="d";$("q_b").dataset.m=m;
+function qOpen(m){$("ov_qd").classList.toggle("on",m==="d");$("ov_qa").classList.toggle("on",m==="a");const cl=CL().filter(c=>!isDone(c));$("q_t").textContent=m==="d"?"Add a deadline":"Log an absence";$("q_s").hidden=m!=="d";$("q_s").textContent="Add";$("q_b").dataset.m=m;
  if(m==="d")$("q_b").innerHTML=`<div class="fm"><div class="w"><label>Subject<select id="q_sub" style="width:100%">${cl.map(c=>`<option value="${esc(c.code)}">${esc(c.code)} · ${esc(dsc(c.desc))}</option>`).join("")}<option value="">General</option></select></label></div><div><label>Type<select id="q_type" style="width:100%"><option>Exam</option><option>Quiz</option><option>Assignment</option><option>Final requirement</option><option>Deadline</option></select></label></div><div><label>To pass<select id="q_pass" style="width:100%"><option>Face-to-face</option><option>Online (BBL)</option></select></label></div><div class="w"><label>Title (optional)<input id="q_title"></label></div><div class="w"><label>Date<input type="date" id="q_date" value="${YMD(new Date())}"></label></div></div>`;
  else $("q_b").innerHTML=(cl.map(c=>{const[l,x]=absInfo(c);return `<div class="cl"><div class="bd"><b>${esc(c.code)} · ${esc(dsc(c.desc))}</b><div class="mt2" style="${absStyle(l)}">${c.abs||0} / ${AL} · ${x}</div></div><button data-qa="${c.id}">+1 absent</button></div>`}).join("")||'<div class="lbl">No ongoing classes.</div>')+'<div class="lbl">Tap once per absence. To undo one, use the Tasks tab.</div>';
  $("qov").classList.add("on")}
@@ -512,7 +568,7 @@ $("rem_b").onclick=async()=>{const b=buildRem();if(!b)return;const name="class-t
  if(ios&&f&&navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
  const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)};
 {const ios=/iPhone|iPad/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);$("rem_h").textContent=ios?"After tapping, open the file and choose “Add All” to put the reminders in Calendar.":"Open the downloaded file to add the reminders to Calendar."}
-const PHT={R:"Regular holiday",S:"Special non-working day",W:"Special working day"},PHH={"2026-01-01":["New Year’s Day","R"],"2026-02-17":["Chinese New Year","S"],"2026-02-25":["EDSA People Power Anniversary","W"],"2026-03-20":["Eid’l Fitr","R"],"2026-04-02":["Maundy Thursday","R"],"2026-04-03":["Good Friday","R"],"2026-04-04":["Black Saturday","S"],"2026-04-09":["Araw ng Kagitingan","R"],"2026-05-01":["Labor Day","R"],"2026-05-27":["Eid’l Adha","R"],"2026-06-12":["Independence Day","R"],"2026-08-21":["Ninoy Aquino Day","S"],"2026-08-31":["National Heroes Day","R"],"2026-11-01":["All Saints’ Day","S"],"2026-11-02":["All Souls’ Day","S"],"2026-11-30":["Bonifacio Day","R"],"2026-12-08":["Immaculate Conception","S"],"2026-12-24":["Christmas Eve","S"],"2026-12-25":["Christmas Day","R"],"2026-12-30":["Rizal Day","R"],"2026-12-31":["Last Day of the Year","S"],"2027-01-01":["New Year’s Day","R"],"2027-02-06":["Chinese New Year","S"],"2027-02-25":["EDSA People Power Anniversary","W"],"2027-03-25":["Maundy Thursday","R"],"2027-03-26":["Good Friday","R"],"2027-03-27":["Black Saturday","S"],"2027-04-09":["Araw ng Kagitingan","R"],"2027-05-01":["Labor Day","R"],"2027-06-12":["Independence Day","R"],"2027-08-21":["Ninoy Aquino Day","S"],"2027-08-30":["National Heroes Day","R"],"2027-11-01":["All Saints’ Day","S"],"2027-11-02":["All Souls’ Day","S"],"2027-11-30":["Bonifacio Day","R"],"2027-12-08":["Immaculate Conception","S"],"2027-12-24":["Christmas Eve","S"],"2027-12-25":["Christmas Day","R"],"2027-12-30":["Rizal Day","R"],"2027-12-31":["Last Day of the Year","S"]};
+const PHT={R:"Regular holiday",S:"Special non-working day",W:"Special working day",D:"Davao City special non-working day"},PHH={"2026-03-16":["Araw ng Dabaw (Davao City)","D"],"2026-08-14":["Kadayawan (Davao City)","D"],"2026-01-01":["New Year’s Day","R"],"2026-02-17":["Chinese New Year","S"],"2026-02-25":["EDSA People Power Anniversary","W"],"2026-03-20":["Eid’l Fitr","R"],"2026-04-02":["Maundy Thursday","R"],"2026-04-03":["Good Friday","R"],"2026-04-04":["Black Saturday","S"],"2026-04-09":["Araw ng Kagitingan","R"],"2026-05-01":["Labor Day","R"],"2026-05-27":["Eid’l Adha","R"],"2026-06-12":["Independence Day","R"],"2026-08-21":["Ninoy Aquino Day","S"],"2026-08-31":["National Heroes Day","R"],"2026-11-01":["All Saints’ Day","S"],"2026-11-02":["All Souls’ Day","S"],"2026-11-30":["Bonifacio Day","R"],"2026-12-08":["Immaculate Conception","S"],"2026-12-24":["Christmas Eve","S"],"2026-12-25":["Christmas Day","R"],"2026-12-30":["Rizal Day","R"],"2026-12-31":["Last Day of the Year","S"],"2027-01-01":["New Year’s Day","R"],"2027-02-06":["Chinese New Year","S"],"2027-02-25":["EDSA People Power Anniversary","W"],"2027-03-25":["Maundy Thursday","R"],"2027-03-26":["Good Friday","R"],"2027-03-27":["Black Saturday","S"],"2027-04-09":["Araw ng Kagitingan","R"],"2027-05-01":["Labor Day","R"],"2027-06-12":["Independence Day","R"],"2027-08-21":["Ninoy Aquino Day","S"],"2027-08-30":["National Heroes Day","R"],"2027-11-01":["All Saints’ Day","S"],"2027-11-02":["All Souls’ Day","S"],"2027-11-30":["Bonifacio Day","R"],"2027-12-08":["Immaculate Conception","S"],"2027-12-24":["Christmas Eve","S"],"2027-12-25":["Christmas Day","R"],"2027-12-30":["Rizal Day","R"],"2027-12-31":["Last Day of the Year","S"]};
 const SCH={"2026-08-10":"Classes start","2026-08-28":"1st Exam","2026-09-11":"2nd Exam","2026-09-25":"3rd Exam","2026-10-08":"Finals","2026-10-09":"Finals","2026-10-13":"2nd Term starts","2026-10-30":"1st Exam","2026-11-13":"2nd Exam","2026-11-27":"3rd Exam","2026-12-18":"Finals","2026-12-19":"Finals","2027-01-11":"Classes start","2027-01-29":"1st Exam","2027-02-12":"2nd Exam","2027-02-26":"3rd Exam","2027-03-11":"Finals","2027-03-12":"Finals","2027-03-16":"2nd Term starts","2027-04-02":"1st Exam","2027-04-16":"2nd Exam","2027-04-30":"3rd Exam","2027-05-13":"Finals","2027-05-14":"Finals","2027-06-18":"Prelim Exam","2027-07-02":"Midterm Exam","2027-07-15":"Final Exam","2027-07-16":"Final Exam"};
 const EVC={Exam:"#d64545",Quiz:"#e8913a",Assignment:"#3b7dd8","Final requirement":"#8e5bd0",Deadline:"#b0446a"};
 let CV=new Date(new Date().getFullYear(),new Date().getMonth(),1),CS=YMD(new Date()),PD=YMD(new Date());
@@ -524,7 +580,7 @@ function renderCal(){if(!$("cal_g"))return;
  for(let d=1;d<=n;d++){const k=y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0"),ev=evsOn(k);
   h+=`<div data-cd="${k}" class="${k===td?"td ":""}${k===CS?"sl":""}"><span class="cn">${d}</span>${ev.slice(0,2).map(e=>`<div class="ch" style="background:${e.c}${e.done?";opacity:.45;text-decoration:line-through":""}">${esc(e.t)}</div>`).join("")}${ev.length>2?`<div class="cmo">+${ev.length-2} more</div>`:""}</div>`}
  $("cal_g").innerHTML=h;const ev=evsOn(CS);
- $("cal_d").innerHTML=`<b>${new Date(CS+"T00:00").toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})}</b>`+(ev.map(e=>`<div class="cl${e.done?" dn":""}">${e.ck?`<input type="checkbox" data-ck="${e.ck}"${e.done?" checked":""} style="width:auto;margin-top:3px">`:'<span style="width:18px"></span>'}<div class="sw" style="background:${e.c}"></div><div class="bd">${esc(e.t)}${e.h?`<div class="lbl">${esc(e.h)}</div>`:""}</div></div>`).join("")||'<div class="lbl" style="margin-top:4px">Nothing planned.</div>');cpLab()}
+ $("cal_d").innerHTML=`<b>${new Date(CS+"T00:00").toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})}</b>`+(ev.map(e=>`<div class="cl${e.done?" dn":""}">${e.ck?`<input type="checkbox" data-ck="${e.ck}"${e.done?" checked":""} style="width:auto;margin-top:3px">`:'<span style="width:18px"></span>'}<div class="sw" style="background:${e.c}"></div><div class="bd">${esc(e.t)}${e.h?`<div class="lbl">${esc(e.h)}</div>`:""}</div>${e.ck?`<button class="dnb" data-ed="${e.ck}" title="Edit">✎</button>`:""}</div>`).join("")||'<div class="lbl" style="margin-top:4px">Nothing planned.</div>');cpLab()}
 $("cal_t").parentNode.onclick=ev=>{const t=ev.target.closest("[data-cm]");if(!t)return;const v=+t.dataset.cm;CV=v?new Date(CV.getFullYear(),CV.getMonth()+v,1):new Date(new Date().getFullYear(),new Date().getMonth(),1);if(!v)CS=YMD(new Date());renderCal()};
 $("cal_g").onclick=ev=>{const t=ev.target.closest("[data-cd]");if(t){CS=t.dataset.cd;renderCal()}};
 $("cal_d").onchange=ev=>{const c=ev.target.dataset.ck;if(!c)return;const q=c.split(":");
@@ -532,7 +588,7 @@ $("cal_d").onchange=ev=>{const c=ev.target.dataset.ck;if(!c)return;const q=c.spl
  save();renderStudy()};
 function renderPri(){if(!$("pr_l"))return;const t=YMD(new Date()),L=((S.pri||{})[PD]||[]).slice().sort((a,b)=>(a.tm||"99:99").localeCompare(b.tm||"99:99")),dn=L.filter(x=>x.d).length,nw=Date.now(),VL=L.filter(x=>!x.d||SD||(x.dAt&&nw-x.dAt<10000));$("pr_d").value=PD;clearTimeout(pT);{const f=L.filter(x=>x.d&&x.dAt&&nw-x.dAt<10000);if(f.length&&!SD)pT=setTimeout(renderPri,Math.min(...f.map(x=>10000-(nw-x.dAt)))+60)}{const old=[];Object.keys(S.pri||{}).forEach(k=>{if(k<t)(S.pri[k]||[]).forEach(x=>{if(!x.d)old.push(x)})});$("pr_c").innerHTML=old.length?`<div class="eu"><span>↪ ${old.length} unfinished from earlier days</span><button id="pr_mv">Move to today</button></div>`:""}
  $("pr_t").textContent=PD===t?"Today’s priorities":"Priorities · "+new Date(PD+"T00:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});
- $("pr_l").innerHTML=VL.map(x=>`<div class="cl${x.d?" dn":""}"><input type="checkbox" data-pk="${x.id}"${x.d?" checked":""} style="width:auto;margin-top:3px"><div class="bd">${esc(x.t)}${x.tm?` <span class="lbl">🕒 ${t12(x.tm)}</span>`:""}${x.n?`<div class="mt2">📝 ${esc(x.n)}</div>`:""}<div class="mt2">Planned for ${PD===t?"today":PD===YMD(new Date(Date.now()+864e5))?"tomorrow":new Date(PD+"T00:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}</div></div><button class="dnb" data-px="${x.id}" title="Delete">✕</button></div>`).join("")||(L.length?'<div class="lbl">All done 🎉</div>':'<div class="lbl">Nothing planned yet.</div>');
+ $("pr_l").innerHTML=VL.map(x=>`<div class="cl${x.d?" dn":""}"><input type="checkbox" data-pk="${x.id}"${x.d?" checked":""} style="width:auto;margin-top:3px"><div class="bd">${esc(x.t)}${x.tm?` <span class="lbl">🕒 ${t12(x.tm)}</span>`:""}${x.n?`<div class="mt2">📝 ${esc(x.n)}</div>`:""}<div class="mt2">Planned for ${PD===t?"today":PD===YMD(new Date(Date.now()+864e5))?"tomorrow":new Date(PD+"T00:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}</div></div><button class="dnb" data-ed="p:${PD}:${x.id}" title="Edit">✎</button> <button class="dnb" data-px="${x.id}" title="Delete">✕</button></div>`).join("")||(L.length?'<div class="lbl">All done 🎉</div>':'<div class="lbl">Nothing planned yet.</div>');
  $("pr_s").innerHTML=L.length?dn+" of "+L.length+" done"+(L.length>5?" · that’s a lot, try to keep it to 5":"")+(dn?` · <a href="#" id="pr_sh">${SD?"Hide":"Show"} done</a>`:""):""}
 $("pr_s").onclick=ev=>{if(ev.target.id==="pr_sh"){ev.preventDefault();SD=!SD;renderPri()}};
 $("pr_c").onclick=ev=>{if(!ev.target.closest("#pr_mv"))return;const t=YMD(new Date());Object.keys(S.pri).forEach(k=>{if(k<t){const keep=[];S.pri[k].forEach(x=>{if(x.d)keep.push(x);else(S.pri[t]=S.pri[t]||[]).push(x)});S.pri[k]=keep}});PD=t;priUp()};
@@ -541,8 +597,15 @@ $("pr_d").onchange=()=>{PD=$("pr_d").value||YMD(new Date());renderPri()};
 const priAdd=()=>{const v=$("pr_i").value.trim();if(!v)return;if(!S.pri)S.pri={};(S.pri[PD]=S.pri[PD]||[]).push({id:"p"+Date.now(),t:v,tm:$("pr_tm").value||"",n:$("pr_n").value.trim(),d:false});$("pr_i").value="";$("pr_tm").value="";$("pr_n").value="";priUp()};
 $("pr_a").onclick=priAdd;$("pr_i").onkeydown=e=>{if(e.key==="Enter")priAdd()};$("pr_n").onkeydown=e=>{if(e.key==="Enter")priAdd()};
 $("pr_l").onchange=ev=>{const id=ev.target.dataset.pk;const x=((S.pri||{})[PD]||[]).find(z=>z.id===id);if(x){x.d=ev.target.checked;if(x.d)x.dAt=Date.now();else delete x.dAt;priUp()}};
-$("pr_l").onclick=ev=>{const t=ev.target.closest("[data-px]");if(t){S.pri[PD]=(S.pri[PD]||[]).filter(z=>z.id!==t.dataset.px);priUp()}};
+$("pr_l").onclick=ev=>{const ed=ev.target.closest("[data-ed]");if(ed){editItem(ed.dataset.ed);return}const t=ev.target.closest("[data-px]");if(t){S.pri[PD]=(S.pri[PD]||[]).filter(z=>z.id!==t.dataset.px);priUp()}};
 $("hfb").onclick=()=>{S.hf=!S.hf;save();render()};
+function pnUi(){const t=S.ntfy||"",id=SY.id||"";if(!$("pn_s"))return;$("pn_s").innerHTML=t?`<b>Topic:</b> <code>${esc(t)}</code><br><b>Gist ID:</b> <code>${id?esc(id):"turn on cloud sync first"}</code>`:"No topic yet. Tap “Create my notification topic”.";$("pn_c").textContent=t?"Make a new topic":"Create my notification topic"}
+const pnCopy=(v,what)=>{if(!v){$("pn_h").textContent="Nothing to copy yet.";return}const ok=()=>{$("pn_h").textContent=what+" copied."};try{navigator.clipboard.writeText(v).then(ok,()=>{prompt("Copy this:",v)})}catch(e){prompt("Copy this:",v)}};
+$("pn_c").onclick=()=>{if(S.ntfy&&!confirm("Make a new topic? You will have to subscribe to the new one in the ntfy app."))return;let a;try{a=Array.from(crypto.getRandomValues(new Uint8Array(14)))}catch(e){a=Array.from({length:14},()=>Math.floor(Math.random()*256))}
+ S.ntfy="gwa-"+a.map(b=>"abcdefghijklmnopqrstuvwxyz0123456789"[b%36]).join("");save();pnUi();$("pn_h").textContent="Topic created. Subscribe to it in the ntfy app."};
+$("pn_ct").onclick=()=>pnCopy(S.ntfy,"Topic");$("pn_cg").onclick=()=>pnCopy(SY.id,"Gist ID");
+$("pn_t").onclick=async()=>{if(!S.ntfy){$("pn_h").textContent="Create your topic first.";return}$("pn_h").textContent="Sending…";
+ try{const r=await fetch("https://ntfy.sh",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({topic:S.ntfy,title:"✅ Test from your tracker",message:"If you can read this, push notifications reach your phone.",tags:["tada"],priority:3})});$("pn_h").textContent=r.ok?"Sent. Check your phone (you must be subscribed to the topic in the ntfy app).":"ntfy answered "+r.status+". Try again."}catch(e){$("pn_h").textContent="Could not reach ntfy.sh. Check your connection."}};
 function cpLab(){const b=$("cp_b");if(b)b.textContent="＋ Add priority · "+new Date(CS+"T00:00").toLocaleDateString(undefined,{month:"short",day:"numeric"})}
 $("cp_b").onclick=()=>{$("cp_f").hidden=!$("cp_f").hidden;if(!$("cp_f").hidden)$("cp_t").focus()};
 $("cp_x").onclick=()=>{$("cp_f").hidden=true};
@@ -556,16 +619,19 @@ const QS=["Small steps every day still get you to the finish line.","You don’t
 let QI=Math.floor(Math.random()*QS.length);const showQ=()=>{$("ov_q").textContent="“"+QS[QI]+"”"};showQ();
 $("ov_qn").onclick=()=>{let n;do{n=Math.floor(Math.random()*QS.length)}while(n===QI);QI=n;showQ()};
 $("ov_qd").onclick=()=>qOpen("d");$("ov_qa").onclick=()=>qOpen("a");$("q_x").onclick=qClose;
-$("q_b").onclick=ev=>{const t=ev.target.closest("[data-qa]");if(!t)return;const c=CL().find(x=>x.id===t.dataset.qa);if(c){c.abs=(c.abs||0)+1;save();renderStudy();qOpen("a")}};
-$("q_s").onclick=()=>{const d=$("q_date").value;if(!d){alert("Please choose a date.");return}
+$("q_b").onclick=ev=>{const t=ev.target.closest("[data-qa]");if(!t)return;const c=CL().find(x=>x.id===t.dataset.qa);if(c){c.abs=(c.abs||0)+1;(c.absLog=c.absLog||[]).push({id:"a"+Date.now(),d:YMD(new Date()),r:""});save();renderStudy();qOpen("a")}};
+$("q_s").onclick=()=>{const qm=$("q_b").dataset.m;if(qm==="e"){saveEdit();return}if(qm==="ea"){saveAbs();return}const d=$("q_date").value;if(!d){alert("Please choose a date.");return}
  if(!S.exams)S.exams=[];S.exams.push({id:"x"+Date.now(),code:$("q_sub").value,type:$("q_type").value,pass:$("q_pass").value,title:$("q_title").value.trim(),date:d,time:"",done:false});
  save();renderStudy();qClose()}
 $("x_add").onclick=()=>{const d=$("x_date").value;if(!d){alert("Please choose a date.");return}
  if(!S.exams)S.exams=[];S.exams.push({id:"x"+Date.now(),code:$("x_sub").value,type:$("x_type").value,pass:$("x_pass").value,title:$("x_title").value.trim(),date:d,time:$("x_time").value,done:false});
  $("x_title").value="";save();renderStudy()};
 $("tab-st").onclick=ev=>{const t=ev.target.closest("button");if(!t)return;const d=t.dataset;
+ if(d.ed){editItem(d.ed);return}
  if(d.xx){S.exams=(S.exams||[]).filter(e=>e.id!==d.xx);save();renderStudy();return}
- const c=(d.am||d.ap)?CL().find(x=>x.id===(d.am||d.ap)):null;if(c){c.abs=Math.max(0,(c.abs||0)+(d.ap?1:-1));save();renderStudy()}};
+ if(d.adl){const q=d.adl.split(":"),c=CL().find(x=>x.id===q[0]);if(c){c.absLog=(c.absLog||[]).filter(x=>x.id!==q[1]);c.abs=Math.max(0,(c.abs||0)-1);save();renderStudy()}return}
+ if(d.ap){absOpen(d.ap);return}
+ if(d.am){const c=CL().find(x=>x.id===d.am);if(c){const L=c.absLog||[];if(L.length)L.pop();c.abs=Math.max(0,(c.abs||0)-1);save();renderStudy()}}};
 $("tab-st").onchange=ev=>{const t=ev.target,d=t.dataset;
  if(d.xd){const e=(S.exams||[]).find(x=>x.id===d.xd);if(e){e.done=t.checked;save();renderStudy()}}
  else if(d.al){const c=CL().find(x=>x.id===d.al);if(c){c.lim=t.value===""?null:Math.max(0,+t.value);save();renderStudy()}}};
@@ -687,7 +753,7 @@ $("csv").onclick=()=>{
  const sj=find($("f_desc").value),code=sj?sj[0]:"",desc=sj?dsc(sj[1]):"",u=sj?sj[2]:NaN,s=$("f_s").value,e=$("f_e").value;
  if(!sj){alert("Please choose a subject from the list.");return}
  if((s&&!e)||(!s&&e)||(s&&e&&mins(e)<=mins(s))){alert("Please enter a start time and an end time that is later than the start.");return}
- const o={id:EC||"c"+Date.now(),sec:$("f_sec").value.trim(),code,desc,u,term:$("f_term").value,days:DC[$("f_dc").value]?DC[$("f_dc").value].slice():[],dc:DCL[$("f_dc").value]||"",s,e,room:$("f_room").value.trim(),done:$("f_done").checked,link:nl($("f_link").value),note:$("f_note").value.trim()};{const od=CL().find(x=>x.id===o.id);if(od){o.abs=od.abs;o.rq=od.rq}}
+ const o={id:EC||"c"+Date.now(),sec:$("f_sec").value.trim(),code,desc,u,term:$("f_term").value,days:DC[$("f_dc").value]?DC[$("f_dc").value].slice():[],dc:DCL[$("f_dc").value]||"",s,e,room:$("f_room").value.trim(),done:$("f_done").checked,link:nl($("f_link").value),note:$("f_note").value.trim()};{const od=CL().find(x=>x.id===o.id);if(od){o.abs=od.abs;o.rq=od.rq;o.absLog=od.absLog;o.lim=od.lim}}
  const cf=confl(o,CL());
  if(cf.length&&!confirm("This class overlaps with:\n"+cf.map(q=>"• "+q.code+" · "+q.desc+" ("+q.days.join(" ")+" "+t12(q.s)+"–"+t12(q.e)+")").join("\n")+"\n\nSave it anyway?"))return;
  const cl=CL(),i=cl.findIndex(x=>x.id===o.id);if(i>=0)cl[i]=o;else cl.push(o);{const q=find(code);if(q&&stOf(q)==="none"&&!lkOf(code,"none"))S.st[code]="prog"}
@@ -722,7 +788,7 @@ $("as").innerHTML=opts(S.as);$("ysy").onchange=e=>{S.sy=e.target.value;save();re
 $("as").onchange=e=>{S.as=e.target.value;save();render()};
 $("rs").onclick=()=>{if(confirm("Clear all your edits?")){const t=S.theme;S={g:{},st:{},ex:false,as:"3",theme:t,cel:false};save();$("as").innerHTML=opts(S.as);render()}};
 {const p=curP(new Date()),k=YMD(new Date());if(p&&S.auto!==k){S.sy=p[2];S.sm=p[3];S.tm=p[4]==="2nd Term"?"2":"1";S.auto=k;try{save()}catch(e){}}}
-theme();render();cloud();
+theme();render();bakUi();cloud();
 addEventListener("online",cloud);document.addEventListener("visibilitychange",()=>{if(!document.hidden)cloud()});
 if("serviceWorker"in navigator&&location.protocol.indexOf("http")===0)navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script></body></html>
