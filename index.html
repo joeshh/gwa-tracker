@@ -75,6 +75,12 @@ input[type=date]{font:inherit;color:var(--tx);background:var(--bg);border:1px so
 .hero{display:block;text-align:center;position:relative;padding-top:18px}.hcap{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mu)}.hid,.hsm{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-weight:700;color:var(--ac)}.hid{font-size:24px;margin-top:6px}.hnm{font-size:30px;font-weight:800;line-height:1.15;margin:2px 0 4px}.hun{font-size:14px;color:var(--mu)}.hsm{font-size:17px;margin-top:10px}.hpg{font-size:14px;margin-top:2px}
 .od.dn{opacity:.45}.od.dn b{text-decoration:line-through}.ckb{font-size:20px;line-height:1}
 .eu{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--ln);font-size:14px}.eu:first-child{border-top:0}
+.thp{padding:8px}.thp button{border-radius:20px;white-space:nowrap;flex:none}.thp button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.thT{font-size:17px;font-weight:700;margin:2px 0 10px;line-height:1.3}
+.thr{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--ln);font-size:14px;align-items:baseline}.thr b{text-align:right;font-weight:600}
+.thi{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--ln)}.thi input[type=checkbox]{margin-top:4px;width:18px;height:18px;accent-color:var(--ok);flex:none}.thx{font-weight:600;overflow-wrap:anywhere}.thi.dn .thx{text-decoration:line-through;color:var(--mu)}.thi button{padding:4px 9px}
+.ovd{color:#d64545;font-weight:600}.thg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.fm select,input[type=date]{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:6px 8px;width:100%}
 </style></head><body><main>
 
 <div class="card hero">
@@ -88,7 +94,7 @@ input[type=date]{font:inherit;color:var(--tx);background:var(--bg);border:1px so
 <div class="row" style="margin-top:12px;gap:12px;flex-wrap:wrap;justify-content:center"><label class="lbl">School year <select id="ysy"></select></label><label class="lbl">Term <select id="ytm"><option value="1">1st term</option><option value="2">2nd term</option></select></label><label class="lbl">Semester <select id="ysm"><option value="1">1st semester</option><option value="2">2nd semester</option><option value="3">Summer</option></select></label></div>
 <div class="lbl" id="sy" style="margin-top:8px"></div></div>
 
-<div class="tabs" role="tablist"><button data-tab="ov" class="on">🏠 Overview</button><button data-tab="sch">📅 Schedule</button><button data-tab="st">📝 Tasks</button><button data-tab="eu">🎓 Units</button><button data-tab="pg">📊 Grades</button></div>
+<div class="tabs" role="tablist"><button data-tab="ov" class="on">🏠 Overview</button><button data-tab="sch">📅 Schedule</button><button data-tab="st">📝 Tasks</button><button data-tab="eu">🎓 Units</button><button data-tab="pg">📊 Grades</button><button data-tab="th">🧪 Thesis</button></div>
 
 <div class="pn" id="tab-ov">
 <div class="card"><h2>Deadlines</h2><div id="ov_d"></div></div>
@@ -154,6 +160,11 @@ input[type=date]{font:inherit;color:var(--tx);background:var(--bg);border:1px so
 <div class="lbl" id="euc" style="margin-top:8px"></div></div>
 <div class="card"><h2>Units by subject</h2><div id="eul"></div></div>
 <div class="card"><h2>Units by term</h2><div id="eut2"></div></div>
+</div>
+
+<div class="pn" id="tab-th" hidden>
+<div class="card thp"><div class="row" style="margin:0;flex-wrap:nowrap;overflow-x:auto" id="th_pills"></div></div>
+<div id="th_body"></div>
 </div>
 
 <div class="pn" id="tab-pg" hidden>
@@ -344,7 +355,7 @@ document.querySelectorAll("[data-pe]").forEach(e=>e.onclick=()=>editPre(e.datase
  document.querySelectorAll("[data-rp]").forEach(e=>e.onclick=()=>{const c=e.dataset.rp;S.rt[c]=(S.rt[c]||0)+1;save();render()});
  document.querySelectorAll("[data-rm]").forEach(e=>e.onclick=()=>{const c=e.dataset.rm;S.rt[c]=(S.rt[c]||0)-1;if(S.rt[c]<=0)delete S.rt[c];save();render()});
  document.querySelectorAll("details").forEach(d=>d.ontoggle=()=>{OPEN[d.dataset.n]=d.open});
- renderSch();
+ renderSch();try{renderTh()}catch(e){}
  if(all&&!S.cel){S.cel=true;save();if(UA)celebrate(gw)}else if(!all&&S.cel){S.cel=false;save()}UA=false;
 }
 /* ---- Class schedule + enrolled units ---- */
@@ -531,6 +542,7 @@ function dueList(){const now=new Date(),t0=new Date(now.getFullYear(),now.getMon
  const dl=k=>Math.round((new Date(k+"T00:00")-t0)/864e5);
  (S.exams||[]).forEach(e=>{if(e.done)return;const d=dl(e.date);if(d<=1&&d>=-7)out.push({id:"d:"+e.id,d,time:e.time||"",t:(e.type||"Deadline")+(e.code?" · "+e.code:"")+(e.title?" · "+e.title:"")})});
  Object.keys(S.pri||{}).forEach(k=>{const d=dl(k);if(d<0||d>1)return;S.pri[k].forEach(x=>{if(!x.d)out.push({id:"p:"+k+":"+x.id,d,time:x.tm||"",t:"Priority · "+x.t})})});
+ try{thDue().forEach(o=>{const d=dl(o.k);if(d<=1&&d>=(o.nov?0:-7))out.push({id:"th:"+o.id,d,time:o.tm||"",t:o.t})})}catch(e){}
  return out.sort((a,b)=>a.d-b.d||(a.time||"99").localeCompare(b.time||"99"))}
 const dueLab=d=>d<0?(-d)+" day"+(d===-1?"":"s")+" overdue":d===0?"Today":"Tomorrow";
 function ntState(){const h=$("nt_h"),b=$("nt_b");if(!b)return;const ok=typeof Notification!=="undefined";
@@ -561,6 +573,7 @@ function buildRem(){const st=new Date().toISOString().replace(/[-:]|\.\d{3}/g,""
   L.push("END:VEVENT");n++};
  (S.exams||[]).filter(e=>!e.done&&e.date>=t).forEach(e=>ev(e.id,e.date,e.time,e.type+(e.code?" · "+e.code:"")+(e.title?" · "+e.title:""),e.pass||"",false));
  Object.keys(S.pri||{}).filter(k=>k>=t).forEach(k=>S.pri[k].filter(x=>!x.d).forEach(x=>ev(x.id,k,x.tm||"","Priority: "+x.t,x.n||"Planned task",true)));
+ try{thDue().filter(o=>o.k>=t).forEach(o=>ev("th"+o.id,o.k,o.tm||"",o.t,o.desc||"Thesis",o.task))}catch(e){}
  if(!n){alert("Nothing to remind you about yet. Add a deadline or a priority first.");return null}
  L.push("END:VCALENDAR");return new Blob([L.map(fold).join("\r\n")+"\r\n"],{type:"text/calendar"})}
 $("rem_b").onclick=async()=>{const b=buildRem();if(!b)return;const name="class-tracker-reminders.ics";let f=null;try{f=new File([b],name,{type:"text/calendar"})}catch(e){}
@@ -759,7 +772,7 @@ $("csv").onclick=()=>{
  const cl=CL(),i=cl.findIndex(x=>x.id===o.id);if(i>=0)cl[i]=o;else cl.push(o);{const q=find(code);if(q&&stOf(q)==="none"&&!lkOf(code,"none"))S.st[code]="prog"}
  $("cov").classList.remove("on");save();render()};
 let TB="ov";try{TB=localStorage.getItem("gwa-tab2")||"ov"}catch(e){}
-function tab(t){if(!["ov","sch","st","eu","pg"].includes(t))t="ov";TB=t;try{localStorage.setItem("gwa-tab2",t)}catch(e){}
+function tab(t){if(!["ov","sch","st","eu","pg","th"].includes(t))t="ov";TB=t;try{localStorage.setItem("gwa-tab2",t)}catch(e){}
  document.querySelectorAll(".pn").forEach(p=>p.hidden=p.id!=="tab-"+t);document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t))}
 document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>tab(b.dataset.tab));
 tab(TB);
@@ -788,6 +801,132 @@ $("as").innerHTML=opts(S.as);$("ysy").onchange=e=>{S.sy=e.target.value;save();re
 $("as").onchange=e=>{S.as=e.target.value;save();render()};
 $("rs").onclick=()=>{if(confirm("Clear all your edits?")){const t=S.theme;S={g:{},st:{},ex:false,as:"3",theme:t,cel:false};save();$("as").innerHTML=opts(S.as);render()}};
 {const p=curP(new Date()),k=YMD(new Date());if(p&&S.auto!==k){S.sy=p[2];S.sm=p[3];S.tm=p[4]==="2nd Term"?"2":"1";S.auto=k;try{save()}catch(e){}}}
+
+/* ===== Thesis tab ===== */
+var THP="ov",THE=false,TH_EDIT=null,thTapT=[];
+try{THP=localStorage.getItem("gwa-thp")||"ov"}catch(e){}
+const thNew=()=>({ok:false,title:"",au:["","",""],adv:"",pn:["",""],stat:"",t:{1:[],2:[]}});
+const thId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const thU2=()=>{try{const x=find("BCE 415");return !!x&&stOf(x)==="done"}catch(e){return false}};
+const thN=i=>((S.th.au[i]||"").trim())||("Member "+(i+1));
+const thDays=d=>Math.round((new Date(d+"T00:00:00")-new Date(YMD(new Date())+"T00:00:00"))/864e5);
+const thLab=d=>{const n=thDays(d),t=new Date(d+"T00:00:00").toLocaleDateString(undefined,{month:"short",day:"numeric"});return t+(n<0?" · "+(-n)+"d overdue":n===0?" · today":n===1?" · tomorrow":" · in "+n+"d")};
+function thP(p){THP=p;TH_EDIT=null;THX=null;try{localStorage.setItem("gwa-thp",p)}catch(e){}renderTh()}
+function thTap(){const n=Date.now();thTapT=thTapT.filter(x=>n-x<2500);thTapT.push(n);if(thTapT.length>=5){thTapT=[];THE=true;renderTh()}}
+function thCancelEd(){THE=false;renderTh()}
+function thSave(){const t=S.th,v=i=>($(i).value||"").trim();
+ t.title=v("th_title");t.au=[0,1,2].map(i=>v("th_a"+i));t.adv=v("th_adv");t.pn=[0,1].map(i=>v("th_p"+i));t.stat=v("th_st");
+ t.ok=true;THE=false;save();renderTh()}
+function thAdd(){const t=S.th,p=THP,x=($("tk_t").value||"").trim();if(!x){alert("Please type the task.");return}
+ const o={t:x,w:$("tk_w").value,d:$("tk_d").value||"",n:($("tk_n").value||"").trim()};
+ if(TH_EDIT){const e=t.t[p].find(y=>y.id===TH_EDIT.id);if(e)Object.assign(e,o)}else t.t[p].push(Object.assign({id:thId(),done:false},o));
+ TH_EDIT=null;save();renderTh()}
+function thTog(p,id){const e=S.th.t[p].find(y=>y.id===id);if(!e)return;e.done=!e.done;save();if(e.done)toast("Thesis task");renderTh()}
+function thDel(p,id){if(!confirm("Delete this task?"))return;S.th.t[p]=S.th.t[p].filter(y=>y.id!==id);if(TH_EDIT&&TH_EDIT.id===id)TH_EDIT=null;save();renderTh()}
+function thEd(p,id){TH_EDIT={id};renderTh();const e=$("tk_t");if(e)e.scrollIntoView({block:"center"})}
+function thCancel(){TH_EDIT=null;renderTh()}
+function thStats(p){const a=S.th.t[p],dn=a.filter(x=>x.done).length;return{n:a.length,dn,od:a.filter(x=>!x.done&&x.d&&thDays(x.d)<0).length}}
+function thInfo(){const t=S.th;
+ if(!t.ok||THE){const f=(l,id,v,c)=>`<div class="${c||"w"}"><label>${l}</label><input id="${id}" value="${esc(v)}"></div>`;
+  return `<div class="card"><h2>${t.ok?"Edit research details":"Set up your thesis"}</h2>${t.ok?"":'<div class="lbl">Fill this in once. After you save, it is locked and shown as read-only.</div>'}<div class="fm">${f("Research title","th_title",t.title)}${[0,1,2].map(i=>f("Proponent / author "+(i+1),"th_a"+i,t.au[i])).join("")}${f("Adviser","th_adv",t.adv)}${[0,1].map(i=>f("Panel member "+(i+1),"th_p"+i,t.pn[i],"")).join("")}${f("Statistician","th_st",t.stat)}</div><div class="row"><button onclick="thSave()">${t.ok?"Save changes":"Save &amp; lock"}</button>${t.ok?'<button class="g" onclick="thCancelEd()">Cancel</button>':""}</div></div>`}
+ const li=(l,v)=>`<div class="thr"><span class="lbl">${l}</span><b>${esc(v)||"—"}</b></div>`;
+ return `<div class="card"><h2 style="user-select:none;-webkit-user-select:none;-webkit-touch-callout:none" onclick="thTap()">Research details</h2><div class="thT">${esc(t.title)||"Untitled research"}</div>${li("Proponents",t.au.filter(x=>x.trim()).join(" · "))}${li("Adviser",t.adv)}${li("Panel",t.pn.filter(x=>x.trim()).join(" · "))}${li("Statistician",t.stat)}</div>`}
+function thOv(){const t=S.th,pc=s=>s.n?Math.round(s.dn/s.n*100):0,s1=thStats(1),s2=thStats(2);
+ const card=(p,s)=>{const lk=p===2&&!thU2();return `<div class="card" style="margin:0;cursor:pointer" onclick="thP('${p}')"><div class="lbl">Thesis ${p} · CE Project ${p}</div>${lk?'<div class="big">🔒</div><div class="lbl" style="margin-top:6px">Opens after your BCE 415 grade is released</div>':`<div class="big">${pc(s)}%</div><div class="bar"><i style="width:${pc(s)}%"></i></div><div class="lbl" style="margin-top:6px">${s.dn}/${s.n} tasks done${s.od?` · <span class="ovd">${s.od} overdue</span>`:""}</div>`}</div>`};
+ const all=[...t.t[1],...(thU2()?t.t[2]:[])],wl=[0,1,2,"all"].map(i=>({n:i==="all"?"Everyone":thN(i),o:all.filter(x=>!x.done&&x.w===String(i)).length,d:all.filter(x=>x.done&&x.w===String(i)).length})).filter((r,i)=>i<3||r.o||r.d);
+ const up=(thU2()?[1,2]:[1]).flatMap(p=>t.t[p].filter(x=>!x.done&&x.d).map(x=>Object.assign({p},x))).sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0).slice(0,6);
+ return `<div class="thg">${card(1,s1)}${card(2,s2)}</div>`+thGlance()+thInfo()+
+ `<div class="card"><h2>Who’s doing what</h2>${wl.map(r=>`<div class="thr"><span>${esc(r.n)}</span><span class="lbl">${r.o} open · ${r.d} done</span></div>`).join("")}</div>`+
+ `<div class="card"><h2>Coming up</h2>${up.length?up.map(x=>`<div class="thr"><span>${esc(x.t)} <span class="chip">T${x.p}</span></span><span class="${thDays(x.d)<0?"ovd":"lbl"}">${thLab(x.d)}</span></div>`).join(""):'<div class="lbl">No dated tasks yet. Add due dates in Thesis 1 or 2.</div>'}</div>`}
+function thList(p){if(p==="2"&&!thU2())return `<div class="card" style="text-align:center"><div class="em">🔒</div><h2>Thesis 2 is locked</h2><div class="lbl" style="font-size:14px">Thesis 2 is CE Project 2 (BCE 421). It opens after your grade for CE Project 1 (BCE 415) is released and passed. Set BCE 415 to Completed with its grade and this unlocks automatically.</div></div>`;
+ const t=S.th,a=t.t[p],s=thStats(p),e=TH_EDIT?a.find(y=>y.id===TH_EDIT.id):null,pc=s.n?Math.round(s.dn/s.n*100):0;
+ const row=x=>`<div class="thi${x.done?" dn":""}"><input type="checkbox" ${x.done?"checked":""} onchange="thTog('${p}','${x.id}')"><div style="flex:1;min-width:0"><div class="thx">${esc(x.t)}</div><div class="lbl">👤 ${x.w==="all"?"Everyone":esc(thN(+x.w))}${x.d?` · 📅 <span class="${!x.done&&thDays(x.d)<0?"ovd":""}">${thLab(x.d)}</span>`:""}${x.n?" · 📝 "+esc(x.n):""}</div></div><button class="g" onclick="thEd('${p}','${x.id}')" aria-label="Edit">✎</button><button class="g" onclick="thDel('${p}','${x.id}')" aria-label="Delete">✕</button></div>`;
+ const op=a.filter(x=>!x.done).sort((x,y)=>x.d&&y.d?(x.d<y.d?-1:x.d>y.d?1:0):x.d?-1:y.d?1:0),dn=a.filter(x=>x.done);
+ const opt=(v,l)=>`<option value="${v}"${e&&e.w===v||!e&&v==="all"?" selected":""}>${esc(l)}</option>`;
+ return (p==="2"?thCarryCard():"")+(t.ok?`<div class="card" style="padding:10px 14px"><span class="lbl">Research title</span><div style="font-weight:600">${esc(t.title)||"Untitled research"}</div></div>`:"")+
+ `<div class="card"><h2>Thesis ${p} · CE Project ${p} progress</h2><div class="bar lg"><i style="width:${pc}%"></i></div><div class="lbl" style="margin-top:6px">${s.dn} of ${s.n} tasks done (${pc}%)${s.od?` · <span class="ovd">${s.od} overdue</span>`:""}</div></div>`+
+ `<div class="card"><h2>${e?"Edit task":"Add a task"}</h2><div class="fm"><div class="w"><label>Task</label><input id="tk_t" value="${esc(e?e.t:"")}" placeholder="e.g. Finish Chapter 1 draft"></div><div><label>Assigned to</label><select id="tk_w">${opt("all","Everyone")}${[0,1,2].map(i=>opt(String(i),thN(i))).join("")}</select></div><div><label>Due date (optional)</label><input type="date" id="tk_d" value="${e&&e.d?e.d:""}"></div><div class="w"><label>Notes (optional)</label><input id="tk_n" value="${esc(e?e.n:"")}"></div></div><div class="row"><button onclick="thAdd()">${e?"Save task":"＋ Add task"}</button>${e?'<button class="g" onclick="thCancel()">Cancel</button>':""}</div></div>`+
+ `<div class="card"><h2>To do (${op.length})</h2>${op.length?op.map(row).join(""):'<div class="lbl">Nothing open. Add a task above.</div>'}</div>`+
+ (dn.length?`<details class="card"><summary style="cursor:pointer"><b>Done (${dn.length})</b></summary>${dn.map(row).join("")}</details>`:"")}
+function renderTh(){const B=$("th_body");if(!B)return;
+ if(!S.th)S.th=thNew();const t=S.th;if(!t.t)t.t={1:[],2:[]};if(!t.t[1])t.t[1]=[];if(!t.t[2])t.t[2]=[];if(!t.au)t.au=["","",""];if(!t.pn)t.pn=["",""];if(!t.x)t.x={};Object.keys(THS).forEach(k=>{if(!t.x[k])t.x[k]=[]});if(!t.ch)t.ch={};
+ if(!THPILL.some(x=>x[0]===THP))THP="ov";
+ $("th_pills").innerHTML=THPILL.map(x=>`<button class="g${x[0]===THP?" on":""}" onclick="thP('${x[0]}')">${x[0]==="2"&&!thU2()?"🔒 ":""}${x[1]}</button>`).join("");
+ const open=document.activeElement&&B.contains(document.activeElement);if(open&&document.activeElement.matches("input:not([type=checkbox]),select"))return;
+ B.innerHTML=THP==="ov"?thOv():THP==="1"||THP==="2"?thList(THP):THP==="ch"?thCh():thXPage(THP)}
+
+/* ===== Thesis extras: defense, chapters, comments, consults, tests, budget, links, submission ===== */
+const THPILL=[["ov","Overview"],["1","Thesis 1"],["2","Thesis 2"],["def","🎤 Defense"],["ch","📖 Chapters"],["cmt","💬 Comments"],["con","🗣️ Consults"],["tst","🔬 Tests"],["bud","💰 Budget"],["lnk","🔗 Links"],["sub","📋 Submit"]];
+var THX=null;
+const thWho=()=>{const t=S.th,n=(r,v)=>v&&v.trim()?r+" · "+v.trim():r;return[["adv",n("Adviser",t.adv)],["p1",n("Panel 1",t.pn[0])],["p2",n("Panel 2",t.pn[1])],["st",n("Statistician",t.stat)],["ot","Other"]]};
+const thWhoL=k=>(thWho().find(o=>o[0]===k)||[0,k||"—"])[1];
+const thPay=()=>[0,1,2].map(i=>[String(i),thN(i)]);
+const thTHs=()=>thU2()?[["1","Thesis 1"],["2","Thesis 2"]]:[["1","Thesis 1"]];
+const THS={
+ def:{t:"Defense schedule",ic:"🎤",th:1,req:"d",f:[["ty","Defense","sel",0,["Title defense","Proposal defense","Final defense","Other"]],["d","Date","date"],["tm","Time","time"],["v","Venue","text"],["n","Notes","text",1]]},
+ cmt:{t:"Panel & adviser comments",ic:"💬",th:1,req:"c",chk:1,f:[["fr","From","sel",0,thWho],["c","Comment","text",1],["n","How we’ll fix it (optional)","text",1]]},
+ con:{t:"Consultation log",ic:"🗣️",th:1,req:"n",f:[["d","Date","date"],["wh","Met with","sel",0,thWho],["n","What we discussed","text",1],["nx","Next steps","text",1]]},
+ tst:{t:"Specimen & test log",ic:"🔬",th:1,req:"s",f:[["s","Specimen / test","text",1],["d","Test date","date"],["r","Result","text"],["n","Notes","text",1]]},
+ bud:{t:"Budget & expenses",ic:"💰",th:1,req:"i",f:[["i","Item","text",1],["a","Amount (₱)","number"],["by","Paid by","sel",0,thPay],["d","Date","date"]]},
+ lnk:{t:"Shared links",ic:"🔗",req:"u",f:[["l","Label","text"],["u","Link (https://…)","text",1]]},
+ sub:{t:"Submission checklist",ic:"📋",req:"i",chk:1,f:[["i","Item","text",1],["n","Notes (optional)","text",1]]}
+};
+const thOptH=(o,cur,pre)=>o.map(x=>{const v=Array.isArray(x)?x[0]:x,l=Array.isArray(x)?x[1]:x;return `<option value="${esc(v)}"${String(v)===String(cur)?" selected":""}>${esc(l)}</option>`}).join("");
+function thXForm(sc){const c=THS[sc],e=THX&&THX.sc===sc?S.th.x[sc].find(y=>y.id===THX.id):null,v=k=>e&&e[k]!=null?e[k]:"";
+ const fl=c.f.map(([k,l,ty,w,o])=>`<div class="${w?"w":""}"><label>${l}</label>${ty==="sel"?`<select id="x_${k}">${thOptH(typeof o==="function"?o():o,v(k))}</select>`:`<input id="x_${k}" type="${ty}" ${ty==="number"?'step="any" min="0" ':""}value="${esc(v(k))}">`}</div>`);
+ if(c.th)fl.splice(1,0,`<div><label>Thesis</label><select id="x_th">${thOptH(thTHs(),v("th")||"1")}</select></div>`);
+ return `<div class="card"><h2>${e?"Edit":"Add"} · ${c.t}</h2><div class="fm">${fl.join("")}</div><div class="row"><button onclick="thXSave('${sc}')">${e?"Save":"＋ Add"}</button>${e?`<button class="g" onclick="thXCancel()">Cancel</button>`:""}</div></div>`}
+function thXSave(sc){const c=THS[sc],t=S.th,o={};
+ c.f.forEach(([k,l,ty])=>{const el=$("x_"+k);o[k]=ty==="number"?(+el.value||0):(el.value||"").trim()});if(c.th)o.th=$("x_th").value;
+ if(!o[c.req]){alert("Please fill in: "+c.f.find(f=>f[0]===c.req)[1]);return}
+ if(sc==="lnk"){let u=o.u;if(/^[a-z][a-z0-9+.-]*:/i.test(u)&&!/^https?:/i.test(u)){alert("Only web links (https://…) are allowed.");return}if(!/^https?:/i.test(u))u="https://"+u;o.u=u}
+ const e=THX&&THX.sc===sc?t.x[sc].find(y=>y.id===THX.id):null;if(e)Object.assign(e,o);else t.x[sc].push(Object.assign({id:thId(),done:false},o));
+ THX=null;save();renderTh()}
+function thXEd(sc,id){THX={sc,id};renderTh();const f=$("x_"+THS[sc].f[0][0]);if(f)f.scrollIntoView({block:"center"})}
+function thXCancel(){THX=null;renderTh()}
+function thXDel(sc,id){if(!confirm("Delete this entry?"))return;S.th.x[sc]=S.th.x[sc].filter(y=>y.id!==id);if(THX&&THX.id===id)THX=null;save();renderTh()}
+function thXTog(sc,id){const e=S.th.x[sc].find(y=>y.id===id);if(!e)return;e.done=!e.done;save();if(e.done&&sc==="cmt")toast("Comment");renderTh()}
+function thSubSeed(){const t=S.th.x.sub;["Adviser signature on the routing form","Panel members’ signatures","Statistician’s certification","Similarity / plagiarism check","Hard-bound copies","Soft copy submitted","Clearance signed"].forEach(i=>t.push({id:thId(),done:false,i,n:""}));save();renderTh()}
+const thTg=x=>x.th?` · T${x.th}`:"";
+const thXRow={
+ def:x=>`<div class="thx">${esc(x.ty)}${thTg(x)}</div><div class="lbl">📅 ${x.d?thLab(x.d):"—"}${x.tm?" · 🕒 "+t12(x.tm):""}${x.v?" · 📍 "+esc(x.v):""}${x.n?" · 📝 "+esc(x.n):""}</div>`,
+ cmt:x=>`<div class="thx">${esc(x.c)}</div><div class="lbl">💬 ${esc(thWhoL(x.fr))}${thTg(x)}${x.n?" · 🛠 "+esc(x.n):""}</div>`,
+ con:x=>`<div class="thx">${esc(x.n)}</div><div class="lbl">📅 ${x.d?thLab(x.d).split(" · ")[0]:"—"} · 🗣️ ${esc(thWhoL(x.wh))}${thTg(x)}${x.nx?" · ➡️ "+esc(x.nx):""}</div>`,
+ tst:x=>`<div class="thx">${esc(x.s)}</div><div class="lbl">📅 ${x.d?thLab(x.d).split(" · ")[0]:"—"}${thTg(x)}${x.r?" · 📈 "+esc(x.r):""}${x.n?" · 📝 "+esc(x.n):""}</div>`,
+ bud:x=>`<div class="thx">${esc(x.i)} · ₱${(+x.a||0).toLocaleString()}</div><div class="lbl">👤 ${esc(thN(+x.by))}${x.d?" · 📅 "+thLab(x.d).split(" · ")[0]:""}${thTg(x)}</div>`,
+ lnk:x=>`<div class="thx"><a href="${esc(x.u)}" target="_blank" rel="noopener noreferrer">${esc(x.l||x.u)}</a></div><div class="lbl">${esc(x.u)}</div>`,
+ sub:x=>`<div class="thx">${esc(x.i)}</div>${x.n?`<div class="lbl">📝 ${esc(x.n)}</div>`:""}`
+};
+function thXSum(sc){const t=S.th,a=t.x[sc],td=YMD(new Date());
+ if(sc==="def"){const nx=a.filter(d=>d.d&&d.d>=td).sort((p,q)=>p.d<q.d?-1:p.d>q.d?1:0)[0];
+  return `<div class="card" style="text-align:center">${nx?`<div class="lbl">Next: ${esc(nx.ty)}</div><div class="big">${thDays(nx.d)===0?"Today":thDays(nx.d)+" day"+(thDays(nx.d)===1?"":"s")}</div><div class="lbl">${thLab(nx.d).split(" · ")[0]}${nx.tm?" · "+t12(nx.tm):""}</div>`:'<div class="lbl">No upcoming defense scheduled yet.</div>'}</div>`}
+ if(sc==="cmt"){const o=a.filter(x=>!x.done);return `<div class="card"><h2>${o.length} open · ${a.length-o.length} fixed</h2>${thWho().map(([k,l])=>{const n=o.filter(x=>x.fr===k).length;return n?`<div class="thr"><span>${esc(l)}</span><span class="lbl">${n} open</span></div>`:""}).join("")}</div>`}
+ if(sc==="bud"){const tot=a.reduce((s,b)=>s+(+b.a||0),0),sh=tot/3;return `<div class="card"><h2>Total spent: ₱${tot.toLocaleString(undefined,{maximumFractionDigits:2})}</h2><div class="lbl">Equal share: ₱${sh.toLocaleString(undefined,{maximumFractionDigits:2})} each</div>${[0,1,2].map(i=>{const pd=a.filter(b=>b.by===String(i)).reduce((s,b)=>s+(+b.a||0),0),bl=pd-sh;return `<div class="thr"><span>${esc(thN(i))} <span class="lbl">paid ₱${pd.toLocaleString()}</span></span><span class="${bl<-0.005?"ovd":"lbl"}">${Math.abs(bl)<0.005?"settled":bl>0?"gets back ₱"+bl.toLocaleString(undefined,{maximumFractionDigits:2}):"owes ₱"+(-bl).toLocaleString(undefined,{maximumFractionDigits:2})}</span></div>`}).join("")}</div>`}
+ if(sc==="sub"){const d=a.filter(x=>x.done).length,pc=a.length?Math.round(d/a.length*100):0;return `<div class="card"><h2>Ready to submit? ${pc}%</h2><div class="bar lg"><i style="width:${pc}%"></i></div><div class="lbl" style="margin-top:6px">${d} of ${a.length} done</div>${a.length?"":'<div class="row"><button onclick="thSubSeed()">Add starter checklist</button></div>'}</div>`}
+ return ""}
+function thXPage(sc){const c=THS[sc],t=S.th;if(!c)return "";let a=t.x[sc].slice();
+ if(sc==="def")a.sort((p,q)=>p.d&&q.d?(p.d<q.d?-1:p.d>q.d?1:0):p.d?-1:q.d?1:0);
+ else if(sc==="con"||sc==="tst")a.sort((p,q)=>(q.d||"")<(p.d||"")?-1:(q.d||"")>(p.d||"")?1:0);
+ else if(sc==="cmt")a.sort((p,q)=>(p.done?1:0)-(q.done?1:0));
+ const row=x=>`<div class="thi${x.done?" dn":""}">${c.chk?`<input type="checkbox" ${x.done?"checked":""} onchange="thXTog('${sc}','${x.id}')">`:""}<div style="flex:1;min-width:0">${thXRow[sc](x)}</div><button class="g" onclick="thXEd('${sc}','${x.id}')" aria-label="Edit">✎</button><button class="g" onclick="thXDel('${sc}','${x.id}')" aria-label="Delete">✕</button></div>`;
+ return thXSum(sc)+thXForm(sc)+`<div class="card"><h2>${c.ic} ${c.t} (${a.length})</h2>${a.length?a.map(row).join(""):'<div class="lbl">Nothing here yet. Add one above.</div>'}</div>`}
+const CHA=[["1","Chapter 1 · Introduction",1],["2","Chapter 2 · Review of Related Literature",1],["3","Chapter 3 · Methodology",1],["4","Chapter 4 · Results and Discussion",2],["5","Chapter 5 · Summary, Conclusions and Recommendations",2]],CHS=[["none","Not started",0],["draft","Drafting",.25],["adv","With adviser",.5],["rev","Revised",.75],["fin","Final",1]];
+const thChPct=()=>Math.round(CHA.reduce((s,c)=>s+(CHS.find(x=>x[0]===(S.th.ch[c[0]]||"none"))||[0,0,0])[2],0)/CHA.length*100);
+function thChSet(n,v){S.th.ch[n]=v;save();renderTh()}
+function thCh(){const u=thU2(),pc=thChPct();
+ return `<div class="card"><h2>📖 Manuscript progress: ${pc}%</h2><div class="bar lg"><i style="width:${pc}%"></i></div><div class="lbl" style="margin-top:6px">Chapters 1 to 3 belong to Thesis 1. Chapters 4 and 5 open with Thesis 2.</div></div>`+
+ `<div class="card">${CHA.map(([n,l,tt])=>{const lk=tt===2&&!u,cur=S.th.ch[n]||"none";return `<div class="thi"><div style="flex:1;min-width:0"><div class="thx">${lk?"🔒 ":""}${l}</div><div class="lbl">Thesis ${tt}</div></div>${lk?'<span class="lbl">Locked</span>':`<select onchange="thChSet('${n}',this.value)">${CHS.map(x=>`<option value="${x[0]}"${x[0]===cur?" selected":""}>${x[1]}</option>`).join("")}</select>`}</div>`}).join("")}</div>`}
+function thGlance(){const t=S.th,x=t.x,td=YMD(new Date());
+ const nx=x.def.filter(d=>d.d&&d.d>=td).sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0)[0],spent=x.bud.reduce((s,b)=>s+(+b.a||0),0),sd=x.sub.filter(i=>i.done).length;
+ const r=(l,v,k)=>`<div class="thr" style="cursor:pointer" onclick="thP('${k}')"><span class="lbl">${l}</span><b>${v}</b></div>`;
+ return `<div class="card"><h2>At a glance</h2>${r("Next defense",nx?esc(nx.ty)+" · "+thLab(nx.d):"Not scheduled","def")}${r("Manuscript",thChPct()+"% overall","ch")}${r("Open comments",x.cmt.filter(c=>!c.done).length,"cmt")}${r("Submission checklist",x.sub.length?sd+"/"+x.sub.length+" done":"—","sub")}${r("Total spent","₱"+spent.toLocaleString(undefined,{maximumFractionDigits:2}),"bud")}</div>`}
+function thCarryCard(){const n=S.th.t[1].filter(x=>!x.done).length;return n?`<div class="card"><h2>Carry over from Thesis 1</h2><div class="lbl">${n} unfinished Thesis 1 task${n===1?"":"s"} can move here.</div><div class="row"><button onclick="thCarry()">Move ${n} task${n===1?"":"s"} to Thesis 2</button></div></div>`:""}
+function thCarry(){const t=S.th,o=t.t[1].filter(x=>!x.done);if(!o.length||!confirm("Move "+o.length+" unfinished task(s) from Thesis 1 to Thesis 2?"))return;t.t[2]=t.t[2].concat(o);t.t[1]=t.t[1].filter(x=>x.done);save();renderTh()}
+function thDue(){const t=S.th;if(!t||!t.t)return[];const o=[],u=thU2(),ti=i=>"T"+i;
+ [1,2].forEach(p=>{if(p===2&&!u)return;(t.t[p]||[]).forEach(x=>{if(!x.done&&x.d)o.push({id:x.id,k:x.d,tm:"",t:"Thesis "+p+" · "+x.t+(x.w==="all"?"":" ("+thN(+x.w)+")"),desc:x.n||"Thesis task",task:true})})});
+ ((t.x&&t.x.def)||[]).forEach(x=>{if(x.d)o.push({id:x.id,k:x.d,tm:x.tm||"",t:"🎤 "+x.ty+(x.th?" · T"+x.th:""),desc:x.v?"Venue: "+x.v:"Thesis defense",task:false,nov:true})});return o}
+/* ===== end Thesis extras ===== */
+/* ===== end Thesis tab ===== */
 theme();render();bakUi();cloud();
 addEventListener("online",cloud);document.addEventListener("visibilitychange",()=>{if(!document.hidden)cloud()});
 if("serviceWorker"in navigator&&location.protocol.indexOf("http")===0)navigator.serviceWorker.register("sw.js").catch(()=>{});
