@@ -76,7 +76,7 @@ input[type=date]{font:inherit;color:var(--tx);background:var(--bg);border:1px so
 .od.dn{opacity:.45}.od.dn b{text-decoration:line-through}.ckb{font-size:20px;line-height:1}
 .eu{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--ln);font-size:14px}.eu:first-child{border-top:0}
 .thp{padding:8px}.thp button{border-radius:20px;white-space:nowrap;flex:none}.thp button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
-.thT{font-size:17px;font-weight:700;margin:2px 0 10px;line-height:1.3}
+.thT{font-size:17px;font-weight:700;margin:2px 0 10px;line-height:1.3;text-align:center}
 .thr{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--ln);font-size:14px;align-items:baseline}.thr b{text-align:right;font-weight:600}
 .thi{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--ln)}.thi input[type=checkbox]{margin-top:4px;width:18px;height:18px;accent-color:var(--ok);flex:none}.thx{font-weight:600;overflow-wrap:anywhere}.thi.dn .thx{text-decoration:line-through;color:var(--mu)}.thi button{padding:4px 9px}
 .ovd{color:#d64545;font-weight:600}.thg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
@@ -830,7 +830,7 @@ function thInfo(){const t=S.th;
  if(!t.ok||THE){const f=(l,id,v,c)=>`<div class="${c||"w"}"><label>${l}</label><input id="${id}" value="${esc(v)}"></div>`;
   return `<div class="card"><h2>${t.ok?"Edit research details":"Set up your thesis"}</h2>${t.ok?"":'<div class="lbl">Fill this in once. After you save, it is locked and shown as read-only.</div>'}<div class="fm">${f("Research title","th_title",t.title)}${[0,1,2].map(i=>f("Proponent / author "+(i+1),"th_a"+i,t.au[i])).join("")}${f("Adviser","th_adv",t.adv)}${[0,1].map(i=>f("Panel member "+(i+1),"th_p"+i,t.pn[i],"")).join("")}${f("Statistician","th_st",t.stat)}</div><div class="row"><button onclick="thSave()">${t.ok?"Save changes":"Save &amp; lock"}</button>${t.ok?'<button class="g" onclick="thCancelEd()">Cancel</button>':""}</div></div>`}
  const li=(l,v)=>`<div class="thr"><span class="lbl">${l}</span><b>${esc(v)||"—"}</b></div>`;
- return `<div class="card"><h2 style="user-select:none;-webkit-user-select:none;-webkit-touch-callout:none" onclick="thTap()">Research details</h2><div class="thT">${esc(t.title)||"Untitled research"}</div>${li("Proponents",t.au.filter(x=>x.trim()).join(" · "))}${li("Adviser",t.adv)}${li("Panel",t.pn.filter(x=>x.trim()).join(" · "))}${li("Statistician",t.stat)}</div>`}
+ return `<div class="card"><h2 style="text-align:center;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none" onclick="thTap()">Research details</h2><div class="thT">${esc(t.title)||"Untitled research"}</div><div class="thr"><span class="lbl">Proponents</span><b>${t.au.filter(x=>x.trim()).map(esc).join("<br>")||"—"}</b></div>${li("Adviser",t.adv)}${li("Panel",t.pn.filter(x=>x.trim()).join(" · "))}${li("Statistician",t.stat)}</div>`}
 function thOv(){const t=S.th,pc=s=>s.n?Math.round(s.dn/s.n*100):0,s1=thStats(1),s2=thStats(2);
  const card=(p,s)=>{const lk=p===2&&!thU2();return `<div class="card" style="margin:0;cursor:pointer" onclick="thP('${p}')"><div class="lbl">Thesis ${p} · CE Project ${p}</div>${lk?'<div class="big">🔒</div><div class="lbl" style="margin-top:6px">Opens after your BCE 415 grade is released</div>':`<div class="big">${pc(s)}%</div><div class="bar"><i style="width:${pc(s)}%"></i></div><div class="lbl" style="margin-top:6px">${s.dn}/${s.n} tasks done${s.od?` · <span class="ovd">${s.od} overdue</span>`:""}</div>`}</div>`};
  const all=[...t.t[1],...(thU2()?t.t[2]:[])],wl=[0,1,2,"all"].map(i=>({n:i==="all"?"Everyone":thN(i),o:all.filter(x=>!x.done&&x.w===String(i)).length,d:all.filter(x=>x.done&&x.w===String(i)).length})).filter((r,i)=>i<3||r.o||r.d);
@@ -843,20 +843,20 @@ function thList(p){if(p==="2"&&!thU2())return `<div class="card" style="text-ali
  const row=x=>`<div class="thi${x.done?" dn":""}"><input type="checkbox" ${x.done?"checked":""} onchange="thTog('${p}','${x.id}')"><div style="flex:1;min-width:0"><div class="thx">${esc(x.t)}</div><div class="lbl">👤 ${x.w==="all"?"Everyone":esc(thN(+x.w))}${x.d?` · 📅 <span class="${!x.done&&thDays(x.d)<0?"ovd":""}">${thLab(x.d)}</span>`:""}${x.n?" · 📝 "+esc(x.n):""}</div></div><button class="g" onclick="thEd('${p}','${x.id}')" aria-label="Edit">✎</button><button class="g" onclick="thDel('${p}','${x.id}')" aria-label="Delete">✕</button></div>`;
  const op=a.filter(x=>!x.done).sort((x,y)=>x.d&&y.d?(x.d<y.d?-1:x.d>y.d?1:0):x.d?-1:y.d?1:0),dn=a.filter(x=>x.done);
  const opt=(v,l)=>`<option value="${v}"${e&&e.w===v||!e&&v==="all"?" selected":""}>${esc(l)}</option>`;
- return (p==="2"?thCarryCard():"")+(t.ok?`<div class="card" style="padding:10px 14px"><span class="lbl">Research title</span><div style="font-weight:600">${esc(t.title)||"Untitled research"}</div></div>`:"")+
+ return (p==="2"?thCarryCard():"")+(t.ok?`<div class="card" style="padding:10px 14px;text-align:center"><span class="lbl">Research title</span><div style="font-weight:600">${esc(t.title)||"Untitled research"}</div></div>`:"")+
  `<div class="card"><h2>Thesis ${p} · CE Project ${p} progress</h2><div class="bar lg"><i style="width:${pc}%"></i></div><div class="lbl" style="margin-top:6px">${s.dn} of ${s.n} tasks done (${pc}%)${s.od?` · <span class="ovd">${s.od} overdue</span>`:""}</div></div>`+
  `<div class="card"><h2>${e?"Edit task":"Add a task"}</h2><div class="fm"><div class="w"><label>Task</label><input id="tk_t" value="${esc(e?e.t:"")}" placeholder="e.g. Finish Chapter 1 draft"></div><div><label>Assigned to</label><select id="tk_w">${opt("all","Everyone")}${[0,1,2].map(i=>opt(String(i),thN(i))).join("")}</select></div><div><label>Due date (optional)</label><input type="date" id="tk_d" value="${e&&e.d?e.d:""}"></div><div class="w"><label>Notes (optional)</label><input id="tk_n" value="${esc(e?e.n:"")}"></div></div><div class="row"><button onclick="thAdd()">${e?"Save task":"＋ Add task"}</button>${e?'<button class="g" onclick="thCancel()">Cancel</button>':""}</div></div>`+
  `<div class="card"><h2>To do (${op.length})</h2>${op.length?op.map(row).join(""):'<div class="lbl">Nothing open. Add a task above.</div>'}</div>`+
  (dn.length?`<details class="card"><summary style="cursor:pointer"><b>Done (${dn.length})</b></summary>${dn.map(row).join("")}</details>`:"")}
 function renderTh(){const B=$("th_body");if(!B)return;
- if(!S.th)S.th=thNew();const t=S.th;if(!t.t)t.t={1:[],2:[]};if(!t.t[1])t.t[1]=[];if(!t.t[2])t.t[2]=[];if(!t.au)t.au=["","",""];if(!t.pn)t.pn=["",""];if(!t.x)t.x={};Object.keys(THS).forEach(k=>{if(!t.x[k])t.x[k]=[]});if(!t.ch)t.ch={};
+ if(!S.th)S.th=thNew();const t=S.th;if(!t.t)t.t={1:[],2:[]};if(!t.t[1])t.t[1]=[];if(!t.t[2])t.t[2]=[];if(!t.au)t.au=["","",""];if(!t.pn)t.pn=["",""];if(!t.x)t.x={};Object.keys(THS).forEach(k=>{if(!t.x[k])t.x[k]=[]});if(!t.ch)t.ch={};if(!t.fl)t.fl={};
  if(!THPILL.some(x=>x[0]===THP))THP="ov";
  $("th_pills").innerHTML=THPILL.map(x=>`<button class="g${x[0]===THP?" on":""}" onclick="thP('${x[0]}')">${x[0]==="2"&&!thU2()?"🔒 ":""}${x[1]}</button>`).join("");
  const open=document.activeElement&&B.contains(document.activeElement);if(open&&document.activeElement.matches("input:not([type=checkbox]),select"))return;
  B.innerHTML=THP==="ov"?thOv():THP==="1"||THP==="2"?thList(THP):THP==="ch"?thCh():thXPage(THP)}
 
 /* ===== Thesis extras: defense, chapters, comments, consults, tests, budget, links, submission ===== */
-const THPILL=[["ov","Overview"],["1","Thesis 1"],["2","Thesis 2"],["def","🎤 Defense"],["ch","📖 Chapters"],["cmt","💬 Comments"],["con","🗣️ Consults"],["tst","🔬 Tests"],["bud","💰 Budget"],["lnk","🔗 Links"],["sub","📋 Submit"]];
+const THPILL=[["ov","Overview"],["1","Thesis 1"],["2","Thesis 2"],["def","🎤 Defense"],["ch","📖 Chapters"],["cmt","💬 Comments"],["con","🗣️ Consults"],["bud","💰 Budget"],["lnk","🔗 Links"],["sub","📋 Submit"]];
 var THX=null;
 const thWho=()=>{const t=S.th,n=(r,v)=>v&&v.trim()?r+" · "+v.trim():r;return[["adv",n("Adviser",t.adv)],["p1",n("Panel 1",t.pn[0])],["p2",n("Panel 2",t.pn[1])],["st",n("Statistician",t.stat)],["ot","Other"]]};
 const thWhoL=k=>(thWho().find(o=>o[0]===k)||[0,k||"—"])[1];
@@ -866,10 +866,9 @@ const THS={
  def:{t:"Defense schedule",ic:"🎤",th:1,req:"d",f:[["ty","Defense","sel",0,["Title defense","Proposal defense","Final defense","Other"]],["d","Date","date"],["tm","Time","time"],["v","Venue","text"],["n","Notes","text",1]]},
  cmt:{t:"Panel & adviser comments",ic:"💬",th:1,req:"c",chk:1,f:[["fr","From","sel",0,thWho],["c","Comment","text",1],["n","How we’ll fix it (optional)","text",1]]},
  con:{t:"Consultation log",ic:"🗣️",th:1,req:"n",f:[["d","Date","date"],["wh","Met with","sel",0,thWho],["n","What we discussed","text",1],["nx","Next steps","text",1]]},
- tst:{t:"Specimen & test log",ic:"🔬",th:1,req:"s",f:[["s","Specimen / test","text",1],["d","Test date","date"],["r","Result","text"],["n","Notes","text",1]]},
  bud:{t:"Budget & expenses",ic:"💰",th:1,req:"i",f:[["i","Item","text",1],["a","Amount (₱)","number"],["by","Paid by","sel",0,thPay],["d","Date","date"]]},
  lnk:{t:"Shared links",ic:"🔗",req:"u",f:[["l","Label","text"],["u","Link (https://…)","text",1]]},
- sub:{t:"Submission checklist",ic:"📋",req:"i",chk:1,f:[["i","Item","text",1],["n","Notes (optional)","text",1]]}
+ sub:{t:"Other checklist items",ic:"📋",req:"i",chk:1,f:[["i","Item","text",1],["n","Notes (optional)","text",1]]}
 };
 const thOptH=(o,cur,pre)=>o.map(x=>{const v=Array.isArray(x)?x[0]:x,l=Array.isArray(x)?x[1]:x;return `<option value="${esc(v)}"${String(v)===String(cur)?" selected":""}>${esc(l)}</option>`}).join("");
 function thXForm(sc){const c=THS[sc],e=THX&&THX.sc===sc?S.th.x[sc].find(y=>y.id===THX.id):null,v=k=>e&&e[k]!=null?e[k]:"";
@@ -892,7 +891,6 @@ const thXRow={
  def:x=>`<div class="thx">${esc(x.ty)}${thTg(x)}</div><div class="lbl">📅 ${x.d?thLab(x.d):"—"}${x.tm?" · 🕒 "+t12(x.tm):""}${x.v?" · 📍 "+esc(x.v):""}${x.n?" · 📝 "+esc(x.n):""}</div>`,
  cmt:x=>`<div class="thx">${esc(x.c)}</div><div class="lbl">💬 ${esc(thWhoL(x.fr))}${thTg(x)}${x.n?" · 🛠 "+esc(x.n):""}</div>`,
  con:x=>`<div class="thx">${esc(x.n)}</div><div class="lbl">📅 ${x.d?thLab(x.d).split(" · ")[0]:"—"} · 🗣️ ${esc(thWhoL(x.wh))}${thTg(x)}${x.nx?" · ➡️ "+esc(x.nx):""}</div>`,
- tst:x=>`<div class="thx">${esc(x.s)}</div><div class="lbl">📅 ${x.d?thLab(x.d).split(" · ")[0]:"—"}${thTg(x)}${x.r?" · 📈 "+esc(x.r):""}${x.n?" · 📝 "+esc(x.n):""}</div>`,
  bud:x=>`<div class="thx">${esc(x.i)} · ₱${(+x.a||0).toLocaleString()}</div><div class="lbl">👤 ${esc(thN(+x.by))}${x.d?" · 📅 "+thLab(x.d).split(" · ")[0]:""}${thTg(x)}</div>`,
  lnk:x=>`<div class="thx"><a href="${esc(x.u)}" target="_blank" rel="noopener noreferrer">${esc(x.l||x.u)}</a></div><div class="lbl">${esc(x.u)}</div>`,
  sub:x=>`<div class="thx">${esc(x.i)}</div>${x.n?`<div class="lbl">📝 ${esc(x.n)}</div>`:""}`
@@ -902,7 +900,7 @@ function thXSum(sc){const t=S.th,a=t.x[sc],td=YMD(new Date());
   return `<div class="card" style="text-align:center">${nx?`<div class="lbl">Next: ${esc(nx.ty)}</div><div class="big">${thDays(nx.d)===0?"Today":thDays(nx.d)+" day"+(thDays(nx.d)===1?"":"s")}</div><div class="lbl">${thLab(nx.d).split(" · ")[0]}${nx.tm?" · "+t12(nx.tm):""}</div>`:'<div class="lbl">No upcoming defense scheduled yet.</div>'}</div>`}
  if(sc==="cmt"){const o=a.filter(x=>!x.done);return `<div class="card"><h2>${o.length} open · ${a.length-o.length} fixed</h2>${thWho().map(([k,l])=>{const n=o.filter(x=>x.fr===k).length;return n?`<div class="thr"><span>${esc(l)}</span><span class="lbl">${n} open</span></div>`:""}).join("")}</div>`}
  if(sc==="bud"){const tot=a.reduce((s,b)=>s+(+b.a||0),0),sh=tot/3;return `<div class="card"><h2>Total spent: ₱${tot.toLocaleString(undefined,{maximumFractionDigits:2})}</h2><div class="lbl">Equal share: ₱${sh.toLocaleString(undefined,{maximumFractionDigits:2})} each</div>${[0,1,2].map(i=>{const pd=a.filter(b=>b.by===String(i)).reduce((s,b)=>s+(+b.a||0),0),bl=pd-sh;return `<div class="thr"><span>${esc(thN(i))} <span class="lbl">paid ₱${pd.toLocaleString()}</span></span><span class="${bl<-0.005?"ovd":"lbl"}">${Math.abs(bl)<0.005?"settled":bl>0?"gets back ₱"+bl.toLocaleString(undefined,{maximumFractionDigits:2}):"owes ₱"+(-bl).toLocaleString(undefined,{maximumFractionDigits:2})}</span></div>`}).join("")}</div>`}
- if(sc==="sub"){const d=a.filter(x=>x.done).length,pc=a.length?Math.round(d/a.length*100):0;return `<div class="card"><h2>Ready to submit? ${pc}%</h2><div class="bar lg"><i style="width:${pc}%"></i></div><div class="lbl" style="margin-top:6px">${d} of ${a.length} done</div>${a.length?"":'<div class="row"><button onclick="thSubSeed()">Add starter checklist</button></div>'}</div>`}
+ if(sc==="sub")return thFlow();
  return ""}
 function thXPage(sc){const c=THS[sc],t=S.th;if(!c)return "";let a=t.x[sc].slice();
  if(sc==="def")a.sort((p,q)=>p.d&&q.d?(p.d<q.d?-1:p.d>q.d?1:0):p.d?-1:q.d?1:0);
@@ -919,12 +917,31 @@ function thCh(){const u=thU2(),pc=thChPct();
 function thGlance(){const t=S.th,x=t.x,td=YMD(new Date());
  const nx=x.def.filter(d=>d.d&&d.d>=td).sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0)[0],spent=x.bud.reduce((s,b)=>s+(+b.a||0),0),sd=x.sub.filter(i=>i.done).length;
  const r=(l,v,k)=>`<div class="thr" style="cursor:pointer" onclick="thP('${k}')"><span class="lbl">${l}</span><b>${v}</b></div>`;
- return `<div class="card"><h2>At a glance</h2>${r("Next defense",nx?esc(nx.ty)+" · "+thLab(nx.d):"Not scheduled","def")}${r("Manuscript",thChPct()+"% overall","ch")}${r("Open comments",x.cmt.filter(c=>!c.done).length,"cmt")}${r("Submission checklist",x.sub.length?sd+"/"+x.sub.length+" done":"—","sub")}${r("Total spent","₱"+spent.toLocaleString(undefined,{maximumFractionDigits:2}),"bud")}</div>`}
+ return `<div class="card"><h2>At a glance</h2>${r("Next defense",nx?esc(nx.ty)+" · "+thLab(nx.d):"Not scheduled","def")}${r("Manuscript",thChPct()+"% overall","ch")}${r("Open comments",x.cmt.filter(c=>!c.done).length,"cmt")}${r("Thesis process",thFlowSum(),"sub")}${r("Total spent","₱"+spent.toLocaleString(undefined,{maximumFractionDigits:2}),"bud")}</div>`}
 function thCarryCard(){const n=S.th.t[1].filter(x=>!x.done).length;return n?`<div class="card"><h2>Carry over from Thesis 1</h2><div class="lbl">${n} unfinished Thesis 1 task${n===1?"":"s"} can move here.</div><div class="row"><button onclick="thCarry()">Move ${n} task${n===1?"":"s"} to Thesis 2</button></div></div>`:""}
 function thCarry(){const t=S.th,o=t.t[1].filter(x=>!x.done);if(!o.length||!confirm("Move "+o.length+" unfinished task(s) from Thesis 1 to Thesis 2?"))return;t.t[2]=t.t[2].concat(o);t.t[1]=t.t[1].filter(x=>x.done);save();renderTh()}
 function thDue(){const t=S.th;if(!t||!t.t)return[];const o=[],u=thU2(),ti=i=>"T"+i;
  [1,2].forEach(p=>{if(p===2&&!u)return;(t.t[p]||[]).forEach(x=>{if(!x.done&&x.d)o.push({id:x.id,k:x.d,tm:"",t:"Thesis "+p+" · "+x.t+(x.w==="all"?"":" ("+thN(+x.w)+")"),desc:x.n||"Thesis task",task:true})})});
  ((t.x&&t.x.def)||[]).forEach(x=>{if(x.d)o.push({id:x.id,k:x.d,tm:x.tm||"",t:"🎤 "+x.ty+(x.th?" · T"+x.th:""),desc:x.v?"Venue: "+x.v:"Thesis defense",task:false,nov:true})});return o}
+
+const THFL=[
+["1","Approved thesis title",[["1a","Thesis title approved through the program’s review process",1]]],
+["2","Assignment of research personnel (by the Research Coordinator)",[["2a","Research Adviser assigned"],["2b","Statistician assigned"],["2c","Panel members assigned (for proposal and defense)"],["2d","Form 2.1: Assignment of Research Personnel Form, signed by the Research Coordinator"],["2e","Form 2.2: Acceptance Form, accomplished and signed by the Research Adviser"],["2f","Form 2.2: Acceptance Form, signed by the Statistician"],["2g","Form 2.2: Acceptance Form, signed by the Panel Members"]]],
+["3","Go to the research personnel for manuscript guidance (up to Chapter 2)",[["3a","Meet the assigned Research Adviser for manuscript guidance"],["3b","Meet the assigned Statistician for manuscript guidance"]]],
+["4","Check the Google Drive (provided by the Research Coordinator) for required forms",[["4a","Open the Google Drive folder from the Research Coordinator"],["4b","Download the latest templates and forms"]]],
+["5","Parallel activities (done at the same time)",[["5a","A. Prepare the outline proposal manuscript (prescribed format and guidelines)"],["5b","B. Consult the thesis adviser (content, direction, objectives, scope, methodology)"],["5c","C. Consult the statistician (statistical methods and tools, data analysis and presentation)"]]],
+["6","Develop the manuscript up to Part II: Materials and Methods",[["6a","Complete the manuscript up to Part II: Materials and Methods (Chapters 1 and 2)"],["6b","Check clarity, completeness and required format with the Adviser and Statistician"]]],
+["7","Prepare the endorsement for outline defense",[["7a","Prepare the endorsement for outline defense using the prescribed form"]]],
+["8","Secure signatures on the endorsement form",[["8a","Research Adviser’s signature"],["8b","Research Subject Teacher’s signature"]]],
+["End","Ready for outline defense",[["9a","Submit the endorsed manuscript and supporting documents to the Research Coordinator"],["9b","Wait for the outline defense schedule to be emailed"]]]];
+const thFlI=i=>S.th.fl[i[0]]!==undefined?!!S.th.fl[i[0]]:!!i[2];
+function thFlState(){let cur=null,dn=0,tot=0;THFL.forEach(s=>{const d=s[2].filter(thFlI).length;dn+=d;tot+=s[2].length;if(cur===null&&d<s[2].length)cur=s[0]});return{cur,dn,tot}}
+function thFlowSum(){const f=thFlState();return f.cur?(f.cur==="End"?"Final step":"Step "+f.cur+" of 8")+" · "+f.dn+"/"+f.tot+" done":"Ready for outline defense"}
+function thFlTog(id){const st=THFL.find(x=>x[2].some(i=>i[0]===id)),it=st[2].find(i=>i[0]===id),was=st[2].every(thFlI);S.th.fl[id]=!thFlI(it);save();if(!was&&st[2].every(thFlI))toast(st[0]==="End"?"Final step":"Step "+st[0]);renderTh()}
+function thFlow(){const f=thFlState(),pc=f.tot?Math.round(f.dn/f.tot*100):0;
+ return `<div class="card"><h2>📋 Thesis process checklist</h2><div class="lbl">From approved title to outline defense</div><div class="bar lg" style="margin-top:8px"><i style="width:${pc}%"></i></div><div class="lbl" style="margin-top:6px">${f.dn} of ${f.tot} done (${pc}%) · ${f.cur?(f.cur==="End"?"last step: submit and wait for the schedule":"you are on <b>step "+f.cur+"</b>"):"ready for the outline defense! 🎉"}</div></div>`+
+ THFL.map(([n,t,a])=>{const d=a.filter(thFlI).length,full=d===a.length,cur=f.cur===n;
+  return `<div class="card" style="${cur?"border:2px solid var(--ac)":""}"><div class="thr" style="border:0;padding-top:0"><b style="text-align:left">${full?"✅":cur?"👉":"⬜"} ${n==="End"?"End":"Step "+n} · ${t}</b><span class="lbl">${d}/${a.length}</span></div>${cur?'<div class="lbl" style="margin-bottom:4px">You are here</div>':""}${a.map(i=>`<label class="thi${thFlI(i)?" dn":""}" style="cursor:pointer"><input type="checkbox" ${thFlI(i)?"checked":""} onchange="thFlTog('${i[0]}')"><div class="thx" style="font-weight:500">${i[1]}</div></label>`).join("")}</div>`}).join("")}
 /* ===== end Thesis extras ===== */
 /* ===== end Thesis tab ===== */
 theme();render();bakUi();cloud();
