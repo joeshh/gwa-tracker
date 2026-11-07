@@ -67,6 +67,19 @@ async function send(title, message, priority = 3, tags = []) {
 const items = [];
 (S.exams || []).forEach(e => { if (!e.done) items.push({ id: "d:" + e.id, kind: "d", date: e.date, time: e.time || "", label: (e.type || "Deadline") + (e.code ? " · " + e.code : "") + (e.title ? " · " + e.title : ""), note: e.pass || "" }); });
 Object.entries(S.pri || {}).forEach(([d, L]) => (L || []).forEach(x => { if (!x.d) items.push({ id: "p:" + d + ":" + x.id, kind: "p", date: d, time: x.tm || "", label: "Priority · " + x.t, note: x.n || "" }); }));
+// Thesis tasks and defense dates (same rules as the app: open dated tasks, Thesis 2 only after BCE 415 is completed, defenses are never overdue)
+const T = S.th;
+if (T && T.t) {
+  const g415 = (S.g || {})["BCE 415"], n415 = (g415 === undefined || g415 === null || g415 === "") ? null : Number(g415);
+  const st415 = (S.st || {})["BCE 415"];
+  const thesis2 = (n415 === 7.1 || n415 === 7.2 || n415 === 1) ? false : (st415 ? st415 === "done" : n415 !== null);
+  const who = w => (w === undefined || w === null || w === "all") ? "" : " (" + (((T.au || [])[+w] || "").trim() || "Member " + (+w + 1)) + ")";
+  [1, 2].forEach(p => {
+    if (p === 2 && !thesis2) return;
+    ((T.t || {})[p] || []).forEach(x => { if (!x.done && x.d) items.push({ id: "th:" + x.id, kind: "th", date: x.d, time: "", label: "Thesis " + p + " · " + x.t + who(x.w), note: x.n || "" }); });
+  });
+  ((T.x && T.x.def) || []).forEach(x => { if (x.d) items.push({ id: "thd:" + x.id, kind: "def", date: x.d, time: x.tm || "", label: "🎤 " + x.ty + (x.th ? " · T" + x.th : ""), note: x.v ? "Venue: " + x.v : "" }); });
+}
 const byTime = (a, b) => (a.time || "99:99").localeCompare(b.time || "99:99");
 const line = o => "• " + (o.time ? t12(o.time) + " · " : "") + o.label + (o.note ? " (" + o.note + ")" : "");
 const dayItems = d => items.filter(o => o.date === d).sort(byTime);
@@ -79,7 +92,7 @@ try {
   if (nowMin >= 420 && nowMin < 720 && !done("dg|" + today)) {
     const parts = [];
     const hl = holLine(today, "Today"); if (hl) parts.push(hl);
-    const od = items.filter(o => o.kind === "d" && diff(o.date) < 0 && diff(o.date) >= -7);
+    const od = items.filter(o => (o.kind === "d" || o.kind === "th") && diff(o.date) < 0 && diff(o.date) >= -7);
     if (od.length) parts.push("Overdue:\n" + od.map(line).join("\n"));
     const t = dayItems(today); if (t.length) parts.push("Today:\n" + t.map(line).join("\n"));
     const m = dayItems(tomorrow); if (m.length) parts.push("Tomorrow:\n" + m.map(line).join("\n"));
