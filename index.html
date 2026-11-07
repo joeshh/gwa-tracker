@@ -97,7 +97,7 @@ input[type=date]{font:inherit;color:var(--tx);background:var(--bg);border:1px so
 <div class="tabs" role="tablist"><button data-tab="ov" class="on">🏠 Overview</button><button data-tab="th">🧪 Thesis</button><button data-tab="sch">📅 Schedule</button><button data-tab="st">📝 Tasks</button><button data-tab="eu">🎓 Units</button><button data-tab="pg">📊 Grades</button></div>
 
 <div class="pn" id="tab-ov">
-<div class="card"><h2>Deadlines</h2><div id="ov_d"></div></div>
+<div class="card" id="ov_dc"><h2>⏰ Deadlines</h2><div id="ov_ds" class="lbl" style="display:none;margin:-4px 0 6px"></div><div id="ov_d"></div></div>
 <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2 id="pr_t" style="margin:0">Today’s priorities</h2><input type="date" id="pr_d" style="width:auto"></div>
 <div id="pr_c"></div><div id="pr_l"></div><div class="lbl" id="pr_s" style="margin:4px 0"></div>
 <div class="row"><input id="pr_i" placeholder="Add a priority…" maxlength="80" style="flex:1"></div>
@@ -105,7 +105,6 @@ input[type=date]{font:inherit;color:var(--tx);background:var(--bg);border:1px so
 <div class="lbl" style="margin-top:8px">Tip: keep it short and realistic. Pick 3 to 5 things you can truly finish.</div></div>
 <div class="row"><button class="qb" id="ov_qd">＋ Deadline</button><button class="qb" id="ov_qa">＋ Absence</button></div>
 <div class="card"><h2 id="ov_t">Today</h2><div id="ov_c"></div><div class="lbl" style="margin-top:8px">Free time today</div><div id="ov_f"></div></div>
-<div class="card" id="ov_al" style="border-color:#d64545;display:none"><h2>⏰ Due soon</h2><div id="ov_ab"></div><div class="row" style="margin-top:6px"><button id="ov_ax" class="ic" style="width:auto;padding:0 12px">Hide for today</button></div></div>
 <div class="card" id="ov_hc" style="border-color:var(--pen)"><h2>⚠ Heads up</h2><div id="ov_r"></div></div>
 <div class="card" id="ov_uc"><h2>Unlocking after this semester</h2><div class="lbl" style="margin:-6px 0 6px">If you pass your current subjects</div><div id="ov_u"></div></div>
 <div class="card" style="display:flex;gap:10px;align-items:center;justify-content:space-between"><div id="ov_q" style="font-style:italic"></div><button class="ic" id="ov_qn" title="Another quote">↻</button></div>
@@ -144,7 +143,7 @@ input[type=date]{font:inherit;color:var(--tx);background:var(--bg);border:1px so
 <div class="card"><h2>Course requirements</h2><div class="lbl" style="margin-bottom:6px">List what each subject needs (plates, projects, final requirement) and tick them off so you never get a 7.2.</div><div id="rq_l"></div></div>
 <div class="card"><h2>Phone reminders</h2><div class="lbl" style="margin-bottom:6px">Sends your open deadlines and planned tasks to your Calendar with alerts the day before and on the day. Run it again after adding more; it updates instead of duplicating.</div><div class="row"><button id="rem_b">📲 Add reminders to my phone</button></div><div class="lbl" id="rem_h" style="margin-top:4px"></div><div class="lbl" style="margin:10px 0 6px">Also get a notification when you open the tracker and something is due today or tomorrow. It only fires while the app is open; the calendar reminders above cover the times it is closed.</div><div class="row"><button id="nt_b">🔔 Alerts: Off</button></div><div class="lbl" id="nt_h" style="margin-top:4px"></div></div>
 <details id="dd_push"><summary><b>Push notifications when the app is closed</b><span>tap to open</span></summary><div style="padding:0 14px 14px">
-<div class="lbl" style="margin-bottom:8px">A free GitHub job checks your deadlines and priorities every 15 minutes and sends a real push through the free ntfy app: a morning summary at 7 AM, a heads-up at 8 PM for tomorrow, and a reminder 1 hour before anything with a time. One-time setup, about 10 minutes. Full steps are in push-setup.md.</div>
+<div class="lbl" style="margin-bottom:8px">A free GitHub job checks your deadlines and priorities every 15 minutes and sends a real push through the free ntfy app: a morning summary at 7 AM, a heads-up at 8 PM for tomorrow, and reminders 30 and 15 minutes before anything with a time. One-time setup, about 10 minutes. Full steps are in push-setup.md.</div>
 <div class="lbl" id="pn_s" style="margin-bottom:8px"></div>
 <div class="row"><button id="pn_c">Create my notification topic</button><button class="g" id="pn_t">Send test notification</button></div>
 <div class="row"><button class="g" id="pn_ct">Copy topic</button><button class="g" id="pn_cg">Copy Gist ID</button></div>
@@ -480,8 +479,9 @@ function renderOv(){
  $("ov_f").innerHTML=gaps.map(g=>`<span class="chip">${t12(HM(g[0]))} – ${t12(HM(g[1]))} · ${DUR(g[1]-g[0])}</span>`).join("")||'<span class="lbl">No free time left today.</span>';
  const rc=x=>x&&x.dAt&&Date.now()-x.dAt<30000,tk=[];
  Object.keys(S.pri||{}).forEach(k=>S.pri[k].forEach(x=>{if(!x.d||rc(x)){const d=Math.round((new Date(k+"T00:00")-t0)/864e5);if(d>=1)tk.push({e:{type:"Task",code:"",title:x.t,date:k,time:x.tm||"",pass:x.n?"📝 "+x.n:"",done:x.d,id:"p:"+k+":"+x.id},d})}}));
- const ex=(S.exams||[]).filter(e=>!e.done||rc(e)).map(e=>({e:{...e,id:"d:"+e.id},d:Math.round((new Date(e.date+"T00:00")-t0)/864e5)})).concat(tk).sort((a,b)=>(!!a.e.done-!!b.e.done)||a.d-b.d),soon=ex.filter(o=>o.d<=14),later=ex.length-soon.length;
- $("ov_d").innerHTML=soon.map(({e,d})=>{const lab=d<0?(-d)+" day"+(d===-1?"":"s")+" overdue":d===0?"Today":d===1?"Tomorrow":"in "+d+" days";return `<div class="eu od${e.done?" dn":""}" data-od="${e.id}" style="cursor:pointer;gap:10px;align-items:flex-start"><span class="ckb">${e.done?"☑":"☐"}</span><span style="flex:1"><b>${esc(e.type)}${e.code?" · "+esc(e.code):""}</b>${e.title?" · "+esc(e.title):""}<br><span class="lbl">${new Date(e.date+"T00:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}${e.time?" · "+t12(e.time):""}${e.pass?" · "+esc(e.pass):""}</span></span><span style="${!e.done&&d<=2?"color:#d64545;font-weight:600":""}">${e.done?"done":lab}</span></div>`}).join("")||'<div class="lbl">No deadlines in the next 2 weeks.</div>';
+ const ex=(S.exams||[]).filter(e=>!e.done||rc(e)).map(e=>({e:{...e,id:"d:"+e.id},d:Math.round((new Date(e.date+"T00:00")-t0)/864e5)})).concat(tk).concat((()=>{try{return thDue().map(o=>({e:{type:o.t,code:"",title:"",date:o.k,time:o.tm||"",pass:"",done:false,id:"th:"+o.id},d:Math.round((new Date(o.k+"T00:00")-t0)/864e5),nov:o.nov})).filter(o=>!o.nov||o.d>=0)}catch(e){return[]}})()).sort((a,b)=>(!!a.e.done-!!b.e.done)||a.d-b.d||(a.e.time||"99").localeCompare(b.e.time||"99")),soon=ex.filter(o=>o.d<=14),later=ex.length-soon.length;
+ const urg=soon.filter(o=>!o.e.done&&o.d<=1).length;$("ov_dc").style.borderColor=urg?"#d64545":"";$("ov_ds").style.display=urg?"":"none";$("ov_ds").innerHTML=urg?`<b style="color:#d64545">${urg} need${urg===1?"s":""} attention now</b> · due today, tomorrow or overdue`:"";
+ $("ov_d").innerHTML=soon.map(({e,d})=>{const ur=!e.done&&d<=1,th=String(e.id).startsWith("th:");const lab=d<0?(-d)+" day"+(d===-1?"":"s")+" overdue":d===0?"Today":d===1?"Tomorrow":"in "+d+" days";return `<div class="eu od${e.done?" dn":""}"${th?"":` data-od="${e.id}"`} style="${th?"":"cursor:pointer;"}gap:10px;align-items:flex-start${ur?";border-left:3px solid #d64545;padding-left:8px;background:rgba(214,69,69,.07)":""}"><span class="ckb">${th?"📌":e.done?"☑":"☐"}</span><span style="flex:1"><b>${esc(e.type)}${e.code?" · "+esc(e.code):""}</b>${e.title?(e.type||e.code?" · ":"")+esc(e.title):""}<br><span class="lbl">${new Date(e.date+"T00:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}${e.time?" · "+t12(e.time):""}${e.pass?" · "+esc(e.pass):""}</span></span><span style="${!e.done&&d<=2?"color:#d64545;font-weight:600":""}">${e.done?"done":lab}</span></div>`}).join("")||'<div class="lbl">No deadlines in the next 2 weeks.</div>';
  for(let i=0;i<=7;i++){const dt=new Date(t0);dt.setDate(t0.getDate()+i);const hh=PHH[YMD(dt)];if(hh)$("ov_d").innerHTML+=`<div class="eu"><span>🇵🇭 ${esc(hh[0])} <span class="lbl">· ${PHT[hh[1]]}</span></span><span class="lbl">${i===0?"today":i===1?"tomorrow":"in "+i+" days"}</span></div>`;const sn=S.sy==="2026-2027"?SCH[YMD(dt)]:"";if(sn)$("ov_d").innerHTML+=`<div class="eu"><span>🏫 ${sn}</span><span class="lbl">${i===0?"today":i===1?"tomorrow":"in "+i+" days"}</span></div>`}
  if(later>0)$("ov_d").innerHTML+=`<div class="lbl" style="margin-top:6px">+ ${later} more later</div>`;
  const R=[];act.filter(c=>(c.abs||0)>=AW).forEach(c=>{const[l,m]=absInfo(c);R.push(`<span style="${absStyle(l)}"><b>${esc(c.code)}</b> · ${c.abs}/${AL} absences: ${m.replace("⚠ ","")}</span>`)});
@@ -547,18 +547,15 @@ function dueList(){const now=new Date(),t0=new Date(now.getFullYear(),now.getMon
 const dueLab=d=>d<0?(-d)+" day"+(d===-1?"":"s")+" overdue":d===0?"Today":"Tomorrow";
 function ntState(){const h=$("nt_h"),b=$("nt_b");if(!b)return;const ok=typeof Notification!=="undefined";
  const on=ok&&NF.on&&Notification.permission==="granted";b.textContent="🔔 Alerts: "+(on?"On":"Off");
- h.textContent=!ok?"Notifications are not available here. On iPhone, add the tracker to your Home Screen and open it from there (iOS 16.4 or newer). The Due soon banner still works.":ok&&Notification.permission==="denied"?"Notifications are blocked for this site. Allow them in your phone or browser settings, then tap again.":""}
+ h.textContent=!ok?"Notifications are not available here. On iPhone, add the tracker to your Home Screen and open it from there (iOS 16.4 or newer). The Deadlines card still works.":ok&&Notification.permission==="denied"?"Notifications are blocked for this site. Allow them in your phone or browser settings, then tap again.":""}
 function ntShow(title,body){try{if("serviceWorker"in navigator&&navigator.serviceWorker.ready){navigator.serviceWorker.ready.then(r=>r.showNotification(title,{body,tag:"gwa-due",renotify:true})).catch(()=>{try{new Notification(title,{body})}catch(e){}});return}}catch(e){}try{new Notification(title,{body})}catch(e){}}
-function chkAlerts(){const L=dueList(),card=$("ov_al");if(!card)return;ntState();const td=YMD(new Date());
- const hide=NF.hide===td;card.style.display=L.length&&!hide?"":"none";
- $("ov_ab").innerHTML=L.map(o=>`<div class="eu"><span><b>${esc(o.t)}</b>${o.time?" · "+t12(o.time):""}</span><span style="${o.d<=0?"color:#d64545;font-weight:600":""}">${dueLab(o.d)}</span></div>`).join("");
+function chkAlerts(){const L=dueList();ntState();const td=YMD(new Date());
  if(typeof Notification==="undefined"||!NF.on||Notification.permission!=="granted"||!L.length)return;
  NF.sent=NF.sent||{};const nm=new Date().getHours()*60+new Date().getMinutes(),fresh=[];
  L.forEach(o=>{const k=o.id+"|"+td;if(!NF.sent[k]){NF.sent[k]=1;fresh.push(dueLab(o.d)+": "+o.t+(o.time?" at "+t12(o.time):""))}
-  if(o.d===0&&o.time){const m=mins(o.time),k2=o.id+"|"+td+"|1h";if(m-nm<=60&&m-nm>=0&&!NF.sent[k2]){NF.sent[k2]=1;fresh.push("In "+(m-nm)+" min: "+o.t)}}});
+  if(o.d===0&&o.time){const m=mins(o.time),L=m-nm,a=o.id+"|"+td+"|"+o.time+"|30m",b=o.id+"|"+td+"|"+o.time+"|15m";if(L<=15&&L>=0){if(!NF.sent[b]){NF.sent[a]=1;NF.sent[b]=1;fresh.push("In "+L+" min: "+o.t)}}else if(L<=30&&L>15&&!NF.sent[a]){NF.sent[a]=1;fresh.push("In "+L+" min: "+o.t)}}});
  const ks=Object.keys(NF.sent);if(ks.length>300)ks.filter(k=>k.indexOf(td)<0).forEach(k=>delete NF.sent[k]);
  if(fresh.length){ntSave();ntShow("⏰ "+fresh.length+" deadline"+(fresh.length===1?"":"s")+" due",fresh.slice(0,5).join("\n"))}}
-$("ov_ax").onclick=()=>{NF.hide=YMD(new Date());ntSave();chkAlerts()};
 $("nt_b").onclick=async()=>{if(typeof Notification==="undefined"){ntState();return}
  if(NF.on&&Notification.permission==="granted"){NF.on=false;ntSave();chkAlerts();return}
  let p=Notification.permission;if(p!=="granted"){try{p=await Notification.requestPermission()}catch(e){}}
@@ -568,7 +565,7 @@ function buildRem(){const st=new Date().toISOString().replace(/[-:]|\.\d{3}/g,""
  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Class Tracker//EN","CALSCALE:GREGORIAN"];let n=0;
  const al=tr=>L.push("BEGIN:VALARM","TRIGGER:"+tr,"ACTION:DISPLAY","DESCRIPTION:Reminder","END:VALARM");
  const ev=(uid,k,tm,sum,desc,task)=>{L.push("BEGIN:VEVENT","UID:"+uid+"@class-tracker","DTSTAMP:"+st);
-  if(tm){L.push("DTSTART:"+n8(k)+"T"+tm.replace(":","")+"00","DURATION:PT1H","SUMMARY:"+e2(sum),"DESCRIPTION:"+e2(desc));if(!task)al("-P1D");al("-PT1H")}
+  if(tm){L.push("DTSTART:"+n8(k)+"T"+tm.replace(":","")+"00","DURATION:PT1H","SUMMARY:"+e2(sum),"DESCRIPTION:"+e2(desc));if(!task)al("-P1D");al("-PT30M");al("-PT15M")}
   else{L.push("DTSTART;VALUE=DATE:"+n8(k),"SUMMARY:"+e2(sum),"DESCRIPTION:"+e2(desc));if(!task)al("-PT15H");al("PT8H")}
   L.push("END:VEVENT");n++};
  (S.exams||[]).filter(e=>!e.done&&e.date>=t).forEach(e=>ev(e.id,e.date,e.time,e.type+(e.code?" · "+e.code:"")+(e.title?" · "+e.title:""),e.pass||"",false));
